@@ -1,0 +1,46 @@
+## Reference Files
+
+- `~/.claude/agents/llms-index.md` — Verified llms.txt endpoints for stack libraries.
+
+## Knowledge Vault
+
+Developer vault at `~/Documents/Developer/knowledge-os/`
+
+- **LLM entry point**: `Projects/<name>/_context.md`
+- **Project contexts**: `Projects/<name>/_context.md`
+- **Cross-project patterns**: `Knowledge/patterns/`
+- **Frontmatter**: All docs have `type`, `project`, `status`, `confidence`, `summary`
+
+### Navigation: L0 → L1 → L2 (tiered context loading)
+
+| Level | What | When |
+|-------|------|-------|
+| L0 | `NEXT.md` (repo root) | Every session — ~15 lines |
+| L1 | `BRIEF.md` (repo) or `_context.md` (vault) | Every session — ~50 lines |
+| L2 | Full docs (ARCHITECTURE.md, etc.) | Only when L1 indicates relevance |
+
+### Multi-Repo Knowledge Routing
+
+When working on a project with a code repo:
+1. Read `NEXT.md` + `docs/_context/BRIEF.md` (L0 + L1)
+2. Read the repo's own CLAUDE.md for operational instructions
+3. Check vault `Projects/<name>/_context.md` only for strategic/research context
+4. Read L2 docs only when brief or task requires it
+5. Check `Knowledge/patterns/_index.md` when implementing common problems
+
+### Pattern Library
+
+Before implementing these types of tasks, check the pattern:
+
+| Task Type | Pattern | Path |
+|-----------|---------|------|
+| SaaS pricing tiers | OODA Tier Gating | `Knowledge/patterns/OODA Tier Gating Pattern.md` |
+
+### Project Registry
+
+**Repo-Backed Projects:**
+
+| Project | Repo | Vault Context | Session Start |
+|---------|------|---------------|---------------|
+| my-app | ~/Developer/my-app/ | Projects/my-app/_context.md | `NEXT.md` → `docs/_context/BRIEF.md` |
+| another-project | ~/Developer/another-project/ | Projects/another-project/_context.md | `NEXT.md` → `BRIEF.md` |
