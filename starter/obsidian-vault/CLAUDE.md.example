@@ -1,0 +1,54 @@
+# Knowledge Vault — Agent Instructions
+
+This vault stores research, decisions, and session logs for all projects.
+It is separate from code repos. Agents read it for context; they never push to
+a code remote from here.
+
+## Vault Structure
+
+| Folder | Purpose |
+|--------|---------|
+| `Projects/{name}/` | Per-project research, notes, decisions, session logs |
+| `Projects/{name}/_context.md` | LLM entry point for that project (L1) |
+| `Projects/{name}/Research/` | Source-extracted research docs |
+| `Projects/{name}/sessions/` | SESSION_LOG.md + archive |
+| `Knowledge/` | Cross-project insights and extracts |
+| `Knowledge/patterns/` | Reusable patterns with context/pattern/why structure |
+| `_inbox/` | Zero-friction capture. Process with `/process-inbox` |
+| `_meta/` | Vault conventions, this file, indexes |
+
+## Context Loading Protocol (L0 → L1 → L2)
+
+| Level | File | When to read |
+|-------|------|-------------|
+| L0 | `NEXT.md` in the code repo | Every session — what to work on |
+| L1 | `Projects/{name}/_context.md` | Every session — project summary and doc index |
+| L2 | Full docs in `Projects/{name}/Research/` or `docs/` | Only when L1 indicates relevance |
+
+**Rule:** Never read L2 docs unless the L1 summary or current task explicitly
+requires them. This keeps token usage predictable.
+
+## Knowledge Location Rules
+
+| Belongs in vault | Belongs in repo |
+|-----------------|-----------------|
+| Research notes and extracts | Source code |
+| Session logs | NEXT.md (session continuity) |
+| Decision rationale and history | docs/_context/DECISIONS.md (decision log) |
+| Cross-project patterns | docs/_context/BRIEF.md (project overview) |
+| Long-form notes | README, inline comments |
+
+When in doubt: **repo for operational, vault for knowledge.**
+
+## Frontmatter Requirements
+
+Every file must include the fields defined in `_meta/conventions.md`.
+Required fields: `title`, `type`, `project`, `tags`, `created`, `updated`,
+`status`, `confidence`, `language`, `summary`.
+
+See `_meta/conventions.md` for allowed values and naming rules.
+
+## Inbox Rule
+
+Drop raw captures into `_inbox/`. Never route them manually.
+Run `/process-inbox` to classify, add frontmatter, and place them correctly.
