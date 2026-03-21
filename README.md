@@ -129,6 +129,64 @@ Most memory systems store conversation fragments, summaries, or raw context. Mem
 **3. Every artifact expires.**
 No permanent notes. Every `[D]`, `[I]`, `[E]` has an invalidation trigger — a specific condition that would make it wrong. When that condition fires, the artifact gets re-evaluated. Memory that knows when to forget is more trustworthy than memory that doesn't.
 
+## Works with Obsidian
+
+Memento OS stores everything as plain markdown — which means [Obsidian](https://obsidian.md) users get graph view, backlinks, and search for free. No Obsidian required, but it's the best way to browse your memory visually.
+
+### Setup
+
+Point an Obsidian vault at your memory folder (created by `/memento:init`). That's it.
+
+### Vault Structure
+
+```
+my-project/memento/
+├── _context.md              # Active artifacts table (the brain)
+├── NEXT.md                  # Session continuity (15 lines max)
+├── Decisions/               # Full decision records (critical/volatile)
+├── Sessions/                # Session log + archive
+└── patterns/                # Cross-project reusable patterns (optional)
+```
+
+Folders are created on demand — `Decisions/` appears when your first critical artifact is recorded, not before.
+
+### Tag System
+
+Artifacts use nested tags for classification: `domain/subtopic`
+
+```yaml
+---
+tags: [tech/architecture, ai/agents, product/auth]
+type: decision          # or: research, insight, note, project-context
+status: active          # or: draft, archived, superseded
+confidence: high        # or: medium, low
+---
+```
+
+Common tag domains: `tech/`, `business/`, `product/`, `ai/`, `personal/`
+
+Keep it focused — 3-7 tags per document. Project identity goes in the `project:` field, not tags.
+
+### Obsidian Graph View
+
+With wikilinks and tags, your decisions form a visible knowledge graph:
+- **Artifacts link to each other** via `[[wikilinks]]` in the `## Related` section
+- **Cross-project patterns** surface in `patterns/` and link back to origin projects
+- **MOC (Map of Content) hubs** connect project silos — e.g., `[[MOC — AI & Agents]]`
+- **Tag-based filtering** lets you see all `tech/architecture` decisions across every project
+
+### Knowledge Location Rules
+
+| Content | Where | Why |
+|---------|-------|-----|
+| Active decisions & artifacts | `_context.md` | Fast LLM access — loaded every session |
+| Full decision records | `Decisions/` | Detailed rationale with alternatives considered |
+| Session history | `Sessions/SESSION_LOG.md` | What happened, when, what was produced |
+| Reusable patterns | `patterns/` | Cross-project insights that save time |
+| Research & deep dives | `Research/` (optional) | Competitive intel, market analysis |
+
+**Rule:** Never duplicate. If a doc exists in a repo, the vault has a pointer, not a copy.
+
 ## Before / After
 
 **Without Memento OS** (session 5):
@@ -181,7 +239,7 @@ How we got here — failure by failure, fix by fix.
 
 ## Self-Evaluation
 
-Current system score: **6.1 / 10** — core engine is strong, documentation catching up.
+Current system score: **7.8 / 10** — core engine is strong, onboarding designed, documentation shipped.
 
 Score your own memory system: [system/scorecard.md](system/scorecard.md)
 
