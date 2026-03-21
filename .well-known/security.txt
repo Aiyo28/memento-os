@@ -1,0 +1,7 @@
+# Security Policy for Memento OS
+# https://securitytxt.org/
+
+Contact: https://github.com/ayalnogovitsyn/memento-os/security/advisories/new
+Preferred-Languages: en
+Canonical: https://github.com/ayalnogovitsyn/memento-os/.well-known/security.txt
+Policy: https://github.com/ayalnogovitsyn/memento-os/blob/main/SECURITY.md

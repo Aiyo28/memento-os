@@ -1,0 +1,44 @@
+# Memento OS
+
+> Claude Code plugin for persistent AI memory using reasoning artifacts.
+
+## What This Is
+
+Memento OS gives AI coding agents persistent, validated memory. It stores pre-computed reasoning outputs (decisions, insights, errors, seeds) with invalidation triggers — so the agent knows what was decided, why, and when to re-evaluate.
+
+## Core Concept: Reasoning Artifacts
+
+Four types of artifacts, each with an expiration condition:
+
+- [D] Decision — a choice between alternatives. Format: `[D] conclusion — invalidates if trigger [priority] [date]`
+- [I] Insight — a reusable conclusion from research/experience
+- [E] Error — a mistake with root cause analysis
+- [S] Seed — a forward-looking idea with activation trigger (surfaces when conditions are met)
+
+Priority matrix: confidence (high/medium/low) x impact (high/low) → critical/volatile/settled/noise
+
+## Plugin Components
+
+Skills (5): memento:decide, memento:grill-me, memento:session-start, memento:session-complete, memento:vault-audit
+Commands (2): memento:init, memento:stats
+Hooks (2): Stop (auto-capture), PreCompact (save before compression)
+
+## Install
+
+```
+/plugin install memento-os
+/memento:init
+```
+
+## Key Files
+
+- README.md — full documentation
+- skills/*/SKILL.md — skill implementations
+- commands/memento/*.md — command implementations
+- hooks/hooks.json — hook definitions
+- evolution/*.md — case studies of problems solved
+
+## Links
+
+- Repository: https://github.com/ayalnogovitsyn/memento-os
+- License: MIT

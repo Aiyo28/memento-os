@@ -1,0 +1,15 @@
+{
+  "schema_version": "v1",
+  "name": "memento-os",
+  "description": "Claude Code plugin for persistent AI memory. Stores reasoning artifacts (decisions, insights, errors, seeds) with invalidation triggers. OODA-driven decision capture with priority matrix.",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "plugin",
+    "url": "https://github.com/ayalnogovitsyn/memento-os"
+  },
+  "logo_url": "https://raw.githubusercontent.com/ayalnogovitsyn/memento-os/main/assets/banner.png",
+  "contact_email": "https://github.com/ayalnogovitsyn",
+  "legal_info_url": "https://github.com/ayalnogovitsyn/memento-os/blob/main/LICENSE"
+}

@@ -1,93 +1,199 @@
-# Agentic Total Recall
+<p align="center">
+  <img src="assets/banner.png" alt="Memento OS — Store conclusions, not notes" width="100%">
+</p>
 
-A living field guide to building memory systems for AI coding agents — documented through real failures and fixes.
+<p align="center">
+  <em>Unlike the guy in Memento, your AI actually remembers correctly — and knows when to forget.</em>
+</p>
+
+<p align="center">
+  <a href="#install">Install</a> &middot;
+  <a href="#how-it-works">How It Works</a> &middot;
+  <a href="#the-atomic-unit">Reasoning Artifacts</a> &middot;
+  <a href="#what-makes-this-different">What's Different</a> &middot;
+  <a href="#evolution-log">Evolution</a>
+</p>
+
+---
+
+**Memento OS** is a Claude Code plugin that gives your AI sessions persistent, validated memory. Every conclusion is stored as a reasoning artifact with an invalidation trigger — so your agent remembers what matters and knows when to re-evaluate.
+
+```
+/memento:init
+```
+
+Three questions. Thirty seconds. Your first decision captured.
+
+---
 
 ## The Problem
 
-AI coding agents are stateless by default. Every conversation starts from zero. The solutions people share are architecture diagrams — clean, symmetrical, and useless when your agent forgets a critical decision made 20 minutes ago.
+AI coding agents are stateless by default. Every conversation starts from zero.
 
-What actually breaks:
-- Decisions discussed but never written down — lost when the session ends
-- Context destroyed when the conversation gets too long (compaction)
-- Research done in one project, invisible to every other project
-- Knowledge scattered across inboxes, plans, and memory files — never found again
+- Decisions discussed but never written down — **lost when the session ends**
+- Context destroyed when the conversation gets too long — **compaction kills memory**
+- Research done in one project — **invisible to every other project**
+- "We decided to use Supabase" — **but nobody remembers why, or when that stops being true**
 
-This repo documents one developer's journey building a memory system that solves these problems — failure by failure, fix by fix.
+## Install
 
-## Two Core Goals
+```bash
+/plugin install memento-os
+```
 
-Everything in this system serves one or both:
+Then initialize your first project:
 
-1. **Token efficiency** — load only what's needed, when it's needed. Every irrelevant token competes for the agent's attention.
-2. **Memory loss prevention** — decisions, research, and context that survive session boundaries, compaction, and project switches.
+```bash
+/memento:init
+```
 
-## Current Score: 6.5 / 10
+The init asks 3 questions:
+1. **Where to store memory?** (auto-detects, confirm or change)
+2. **What are you building?** (1-2 sentences)
+3. **What's the hardest decision you've already made?** (becomes your first artifact)
 
-| # | Dimension | Score | Evolution Entry |
-|---|-----------|-------|-----------------|
-| 1 | Persistence durability | 9/10 | — |
-| 2 | Semantic retrieval | 4/10 | — |
-| 3 | Recency awareness | 6/10 | — |
-| 4 | Compaction handling | 3/10 | [007](evolution/007-compaction-loss.md) |
-| 5 | Auto-capture reliability | 5.5/10 | [008](evolution/008-write-discipline.md) |
-| 6 | Cross-file linking | 7/10 | [004](evolution/004-cross-project-linking.md) |
-| 7 | Storage scalability | 6/10 | [001](evolution/001-tiered-context.md) |
-| 8 | Knowledge OS fit | 9/10 | [003](evolution/003-vault-bridge.md) |
-| 9 | Portability / ownership | 9/10 | — |
-| 10 | Setup complexity | 3/10 | — |
+Your memory folder is plain markdown. If you use Obsidian, point a vault at it for graph view and backlinks.
 
-Score your own system: [system/scorecard.md](system/scorecard.md)
+## How It Works
+
+Five skills. One loop. Think → Decide → Capture → Recall → Maintain.
+
+| Skill | What it does | When to use |
+|-------|-------------|-------------|
+| `/memento:grill-me` | **Think** — stress-test your plan through 6-dimension interrogation | Before committing to any design |
+| `/memento:decide` | **Decide** — OODA loop that produces `[D]` artifacts or plants `[S]` seeds | When facing a choice between alternatives |
+| `/memento:session-complete` | **Capture** — extracts all artifacts from the conversation | End of session or before compaction |
+| `/memento:session-start` | **Recall** — loads context, surfaces active decisions, checks seeds | Start of every session |
+| `/memento:vault-audit` | **Maintain** — health check, staleness scan, inbox processing | Periodically, when things feel messy |
+
+Plus two commands:
+
+| Command | What it does |
+|---------|-------------|
+| `/memento:init` | Set up memory for a project (3 questions, first artifact) |
+| `/memento:stats` | Memory score, artifact breakdown, session streak |
+
+Hooks run automatically — **Stop** captures artifacts when sessions end, **PreCompact** saves before context compression.
+
+## The Atomic Unit
+
+Everything in Memento OS is a **reasoning artifact** — a pre-computed conclusion with an expiration condition.
+
+```
+[D] Use Supabase over Firebase — invalidates if Firebase adds RLS [critical] [2026-03-21]
+[I] Chrome MV3 service workers die after 30s — invalidates if Chrome changes policy [settled] [2026-03-01]
+[E] Deployed without testing webhooks — root cause: no staging env [settled] [2026-03-05]
+[S] Consider caching layer — activates when: API p95 > 200ms [settled] [2026-03-21]
+```
+
+Four types:
+
+| Prefix | Type | Purpose |
+|--------|------|---------|
+| `[D]` | Decision | A choice between alternatives — has an invalidation trigger |
+| `[I]` | Insight | A reusable conclusion — survives the session that produced it |
+| `[E]` | Error | A mistake with root cause — defaults to settled, drops to noise once learning extracted |
+| `[S]` | Seed | A forward-looking idea — **activates** when conditions are met, not when time passes |
+
+### Priority Matrix
+
+Every artifact gets a priority from confidence (Claude proposes) x impact (you confirm):
+
+|  | High Impact | Low Impact |
+|---|---|---|
+| **High Confidence** | **critical** — pinned forever | **settled** — evict first |
+| **Medium Confidence** | **volatile** — needs resolution | **settled** |
+| **Low Confidence** | **volatile** | **noise** — evict or discard |
+
+Cap: 24 artifacts per project. Eviction order: noise → settled → volatile → critical (never).
+
+### Memory Score
+
+Every session shows your memory health:
+
+```
+## Session Briefing — My Project
+Memory: 7.2/10 | 18 artifacts | 3 seeds | streak: 5
+```
+
+Run `/memento:stats` for the full breakdown. Score is calculated from: artifact count, critical decisions, recency, staleness, seeds planted, and session streak.
+
+## What Makes This Different
+
+**1. Store conclusions, not notes.**
+Most memory systems store conversation fragments, summaries, or raw context. Memento OS stores *reasoning outputs* — pre-computed conclusions that don't need re-reasoning. Your agent loads a decision, not a transcript.
+
+**2. Seeds: ideas that surface when ready.**
+`[S]` artifacts have activation triggers, not invalidation triggers. "Consider splitting this service — activates when: file count > 50." The vault pushes to you when conditions are met. You don't search — it finds you.
+
+**3. Every artifact expires.**
+No permanent notes. Every `[D]`, `[I]`, `[E]` has an invalidation trigger — a specific condition that would make it wrong. When that condition fires, the artifact gets re-evaluated. Memory that knows when to forget is more trustworthy than memory that doesn't.
+
+## Before / After
+
+**Without Memento OS** (session 5):
+```
+> What auth approach did we decide on?
+I don't have context on previous decisions. Could you remind me
+what was discussed?
+```
+
+**With Memento OS** (session 5):
+```
+## Session Briefing — My Project
+Memory: 6.8/10 | 14 artifacts | 2 seeds | streak: 5
+
+### Active Decisions
+[D] OAuth via Supabase Auth — invalidates if rate limits hit [critical]
+[D] Mobile-first, no desktop v1 — invalidates if desktop demand >30% [critical]
+
+### Seeds Ready
+[S] Consider Redis caching — activates when: API p95 > 200ms ← CONDITION MET
+```
 
 ## Evolution Log
 
-The core content. Each entry is a case study: problem encountered, approaches tried, what actually worked, and how it was verified.
+How we got here — failure by failure, fix by fix.
 
-| # | Problem | Status | Score Impact | Core Goal |
-|---|---------|--------|-------------|-----------|
-| [001](evolution/001-tiered-context.md) | Tiered Context Loading | Solved | Token efficiency 4→8 | Token efficiency |
-| [002](evolution/002-safety-hooks.md) | Safety Hooks | Solved | Auto-capture 3→5 | Memory loss |
-| [003](evolution/003-vault-bridge.md) | Vault Bridge | Solved | Knowledge OS fit 6→9 | Both |
-| [004](evolution/004-cross-project-linking.md) | Cross-Project Linking | Solved | Cross-file linking 3→7 | Both |
-| [005](evolution/005-scattered-captures.md) | Scattered Captures | In Progress | TBD | Memory loss |
-| [006](evolution/006-decision-rot.md) | Decision Rot | Upcoming | Target 7 | Memory loss |
-| [007](evolution/007-compaction-loss.md) | Compaction Loss | Upcoming | Target 7 | Memory loss |
-| [008](evolution/008-write-discipline.md) | Write Discipline | Upcoming | Target 8 | Memory loss |
+<details>
+<summary>Click to expand</summary>
 
-## How This Repo Works
+| # | Problem | Status | Score Impact |
+|---|---------|--------|-------------|
+| [001](evolution/001-tiered-context.md) | Tiered Context Loading | Solved | Token efficiency 4→8 |
+| [002](evolution/002-safety-hooks.md) | Safety Hooks | Solved | Auto-capture 3→5 |
+| [003](evolution/003-vault-bridge.md) | Vault Bridge | Solved | Knowledge OS fit 6→9 |
+| [004](evolution/004-cross-project-linking.md) | Cross-Project Linking | Solved | Cross-file linking 3→7 |
+| [005](evolution/005-scattered-captures.md) | Scattered Captures | In Progress | TBD |
+| [006](evolution/006-decision-rot.md) | Decision Rot | Upcoming | Target 7 |
+| [007](evolution/007-compaction-loss.md) | Compaction Loss | Upcoming | Target 7 |
+| [008](evolution/008-write-discipline.md) | Write Discipline | Upcoming | Target 8 |
 
-**[evolution/](evolution/)** — The core. Each entry is a problem we hit, what we tried, and what worked. Numbered, chronological. Solved entries have verified results. Upcoming entries are unsolved — we're building in public.
-
-**[system/](system/)** — A living snapshot of the current system. Updated after each evolution entry. Includes a [self-evaluation scorecard](system/scorecard.md) so you can grade your own setup.
-
-**[starter/](starter/)** — Drop-in configs for Claude Code + Obsidian. Includes 3 safety hooks and 4 skills. See the [quickstart guide](starter/quickstart.md).
-
-**[reference/](reference/)** — Benchmarks ([OpenClaw comparison](reference/openclaw-comparison.md)), [glossary](reference/glossary.md), and tools evaluated.
+</details>
 
 ## Who This Is For
 
-- **AI-assisted developers** frustrated by agent amnesia — any tool (Claude Code, Cursor, Windsurf, Copilot)
-- **Claude Code users** who want a plug-and-play memory setup with hooks and skills
-- **Anyone building agentic workflows** who wants to learn from real failure modes, not theory
+- **Claude Code users** who want persistent memory without building their own system
+- **Solo developers** tired of re-explaining decisions to their AI every session
+- **Anyone building with AI agents** who wants conclusions that survive compaction
 
-## Quick Start
+**Not for:** Teams wanting Jira integration. Non-CLI workflows (yet). People who think more context = better (it doesn't).
 
-[starter/quickstart.md](starter/quickstart.md) — set up a working memory system with safety hooks and 4 skills.
+## Self-Evaluation
 
-## The Core Insight
+Current system score: **6.1 / 10** — core engine is strong, documentation catching up.
 
-> Architecture without write discipline is a well-organized graveyard of stale docs.
-
-The hardest part of agent memory isn't the file structure, the retrieval algorithm, or the knowledge base integration. It's getting the agent to *write things down* at the moments that matter — before compaction, after decisions, at session end. Everything in this repo is ultimately about solving that problem.
+Score your own memory system: [system/scorecard.md](system/scorecard.md)
 
 ## Contributing
 
-Contributions welcome via issues and PRs:
+Contributions welcome:
 - Evolution entries from your own memory system experiences
-- Starter kit configs for non-Claude-Code tools (Cursor, Windsurf, Copilot)
-- Scorecard rubric improvements
+- Starter configs for non-Claude-Code tools (Cursor, Windsurf, Copilot)
+- Scorecard improvements
 - Translations
 
-Not accepted: vendor-specific plugins, paid tool integrations, AI-generated filler content.
+Not accepted: vendor-specific plugins, paid tool integrations, AI-generated filler.
 
 ## License
 

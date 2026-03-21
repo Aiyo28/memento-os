@@ -1,5 +1,37 @@
 # Changelog
 
+## [0.4.0] — 2026-03-21
+
+### Added
+- `[S]` Seed artifacts — forward-looking ideas with activation triggers
+- `/memento:init` command — 3-question onboarding, seeds first artifact
+- `/memento:stats` command — memory score, artifact breakdown, session streak
+- `/memento:grill-me` skill — stress-test plans, produces artifacts
+- Memory score in session-start briefing
+- AICEO/GEO: `llms.txt`, `AGENTS.md`, `.well-known/security.txt`, `.well-known/ai-plugin.json`
+- SECURITY.md with threat model
+- Banner (`assets/banner.png`)
+
+### Changed
+- All skills namespaced as `memento:*` (prevents collision with personal skills)
+- session-start v2.0.0 — seed checking, memory score display
+- session-complete v4.0.0 — extracts `[S]` seeds
+- decide v2.0.0 — seed planting support
+- README rewritten (Memento OS plugin pitch, not "Agentic Total Recall" field guide)
+- quickstart.md updated for plugin install flow
+
+### Removed
+- Stale starter skills moved to `starter/archive/`
+
+## [0.2.0] — 2026-03-17
+
+### Added
+- Pivot to "Memento OS" from "Agentic Total Recall"
+- Priority matrix: confidence x impact → critical/volatile/settled/noise
+- 24-artifact cap (Kobe rule) with priority-based eviction
+- Auto-log toggle
+- Plugin scaffold (plugin.json)
+
 ## [0.1.0] — 2026-03-14
 
 ### Added
