@@ -1,0 +1,24 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "BEFORE finishing, write a session log entry.\n\n1. Determine today's date (YYYY-MM-DD) and the project context (from cwd or CLAUDE.md).\n2. Write/append to the project's journal or session log.\n3. Include:\n   - What happened (2-3 sentences)\n   - Key changes (bulleted list)\n   - Artifacts: any [D]/[I]/[E]/[S] from this turn. Format: `[D] conclusion — invalidates if trigger [priority] [date]` or `[S] idea — activates when condition [priority] [date]`. Priority from confidence × impact matrix. Errors default settled; resolved errors become noise. Seeds are deferred ideas with activation conditions.\n   - Next steps\n4. If artifacts have critical or volatile priority, also update the project _context.md Active Reasoning Artifacts table.\n5. Do NOT ask for confirmation — write silently."
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "BEFORE compaction, save any unsaved reasoning artifacts.\n\n1. Scan conversation for decisions [D], insights [I], errors [E], or seeds [S] not yet written.\n2. For each new artifact, assign priority: confidence (Claude judges) × impact (default to settled if unknown). Use critical only for clearly architectural/strategic artifacts.\n3. Update the project _context.md Active Reasoning Artifacts table.\n4. Cap at 24 entries (Kobe) — if over, evict by priority: noise → settled → volatile. Never evict critical. Archive evicted to Decisions/ folder.\n5. Update NEXT.md: move completed items, add new items, update date, keep under 15 lines.\n6. Do NOT ask for confirmation — save silently. Context is under pressure.\n7. Output one line: 'Pre-compact: saved N artifacts, updated NEXT.md' or 'Pre-compact: no unsaved artifacts'."
+          }
+        ]
+      }
+    ]
+  }
+}
