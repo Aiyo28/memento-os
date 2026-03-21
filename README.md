@@ -209,6 +209,43 @@ Memory: 6.8/10 | 14 artifacts | 2 seeds | streak: 5
 [S] Consider Redis caching — activates when: API p95 > 200ms ← CONDITION MET
 ```
 
+## Why I Built This
+
+Memento OS started as a personal knowledge base. Like most developers, I reached for Obsidian, created a vault, and started dumping everything into it — notes, context, research, raw captures. The usual approach.
+
+Then I started using Claude Code across multiple projects, feeding it context from the vault. It worked — until I noticed a pattern that kept bothering me: Claude and I would reach the same conclusion two or three times across different sessions. Sometimes the wording changed slightly. Sometimes the reasoning took a different path. But the conclusion was the same one we'd already made.
+
+The problem wasn't that the AI forgot. The problem was that I was saving the wrong things. The vault was full of notes, but the actual decisions — the conclusions that mattered — were buried in noise. I had plenty of context but no memory.
+
+So I flipped the approach. Instead of capturing everything and hoping the important parts surface, I started capturing *only* the conclusions: decisions made, insights discovered, errors understood. Each one with a specific condition that would make it invalid — so the system knows when to question itself instead of blindly trusting old conclusions.
+
+That change — from "save everything" to "save only conclusions" — turned out to be the entire product. The skills, the hooks, the seeds, the priority matrix — all of it flows from that one shift.
+
+### The Vault-Beside-Code Architecture
+
+The vault works best when it sits alongside your project folders — same parent directory, like `~/Documents/Developer/`:
+
+```
+~/Documents/Developer/
+├── knowledge-vault/          # Your memory vault (Obsidian optional)
+│   ├── Projects/my-app/      # Memory for my-app
+│   ├── Projects/other-app/   # Memory for other-app
+│   └── Knowledge/patterns/   # Cross-project patterns
+├── my-app/                   # Actual codebase
+├── other-app/                # Another codebase
+└── ...
+```
+
+This way, when you're working in any project, the vault has direct access to every codebase — and every project session can pull context from the shared vault. Cross-project patterns surface naturally because the vault sees everything.
+
+This is how I use it, but it's not required. You can put the vault anywhere — Dropbox, a separate folder, wherever makes sense. One note: iCloud sync can cause issues with Obsidian reading vault files. If you hit that, the workaround is keeping the vault local and using Obsidian Sync for mobile access. If anyone has found a better solution for iCloud, I'm open to suggestions.
+
+### Building in Public
+
+This repo documents the journey — not just the finished product. The [evolution log](#evolution-log) is a series of case studies: problems I hit, approaches I tried, what actually worked. Some entries are solved, some are in progress, some are upcoming problems I know are coming but haven't fixed yet.
+
+The self-evaluation score (currently 7.8/10) is honest. I haven't had anyone else try this yet. If something breaks for you, that's the most valuable feedback I can get.
+
 ## Evolution Log
 
 How we got here — failure by failure, fix by fix.
