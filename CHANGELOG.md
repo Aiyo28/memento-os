@@ -1,5 +1,34 @@
 # Changelog
 
+## [2.0.0] — 2026-04-11
+
+### Added
+- **Multi-AI adapters** — Memento OS now works with 8 AI coding tools:
+  - Tier 1 (full skills): Claude Code, Codex (OpenAI CLI)
+  - Tier 2 (rules): Cursor, Windsurf, Cline, Gemini Code Assist
+  - Tier 3 (manual): Aider, Continue
+- `adapters/` directory with per-tool install guides and config files
+- **Artifact Tier System** (L0/L1/L2) — formal promotion, eviction, and lifecycle rules
+- **Mid-Task Retrieval Protocol** — confidence gate + protected domains before decisions
+- **People/Self.md** peer card template — loaded by session-start for communication calibration
+- **Tag taxonomy template** — starter `_meta/tag-taxonomy.md` with 10 domains
+- `experiment-context` document type for time-boxed explorations
+- `superseded` status value for replaced artifacts
+- MOC pattern formalization (naming, linking, creation triggers)
+- Scaled Vault Pattern (INDEX.md) for large vaults
+- Context Directory (L0.5) optional pattern for business projects
+- Retrieval Patterns documentation (Telescope vs Radar)
+
+### Changed
+- conventions.md — 8 new sections covering tier system, retrieval, MOCs, experiments
+- session-complete v4.2.0 — `superseded` status, expanded eviction rules (embedded, resolved, dormant)
+- grill-me v1.1.0 — Context Loading upgraded to structured Vault Retrieval Gate
+- vault-audit v1.1.0 — `superseded` status check, MOC orphan detection, experiment teardown, dormant seeds
+- session-start v2.0.1 — Self.md reference improved, suggests creating on first session
+- `_context.md` template — `repo_path`/`repo_docs_path` fields, Kobe cap annotation, Active Reasoning Artifacts table, `## Related` section
+- init command — new `_context.md` template with Key Numbers table
+- plugin.json version bumped to 2.0.0
+
 ## [0.4.0] — 2026-03-21
 
 ### Added

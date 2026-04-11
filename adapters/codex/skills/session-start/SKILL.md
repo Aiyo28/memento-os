@@ -1,5 +1,5 @@
 ---
-name: memento:session-start
+name: session-start
 version: 2.0.1
 description: >
   Session opening ritual. Loads context via L0→L1 protocol, displays briefing
@@ -21,7 +21,7 @@ Read `NEXT.md` in the project root.
 ### 2. Load L1 — Project Context (~600 tokens)
 
 Read (skip if missing):
-- Project `CLAUDE.md`
+- Project `AGENTS.md`
 - Vault `_context.md` — **top 3 sections only**: Summary + Key Numbers + Active Reasoning Artifacts table. STOP before Doc Index / Decision Log / Open Questions / Related sections. This is the L1 partial read rule.
 - Peer Card (`People/Self.md` in vault or memory folder) — structured user profile with communication style, decision patterns, strengths, growth areas. Load the **Communication Style** and **Decision Patterns** tables only (~20 lines). Template provided in starter vault. Skip if missing — suggest creating one on first session.
 
@@ -74,7 +74,7 @@ Memory score calculation: count artifacts (0-2pts), critical decisions (0-2pts),
 
 ### 6. Enable Auto-Logging
 
-Write `on` to `~/.claude/memento-auto-log`. This activates the Stop hook for journal entries.
+Write `on` to `~/.memento/auto-log`. This activates the Stop hook for journal entries.
 
 To disable: user says "turn off auto-logging" → write `off` to the same file.
 
@@ -88,9 +88,9 @@ Never auto-load full docs or research files at session start.
 
 If memory score < 5, append one tip to the briefing (rotate through these):
 
-- "We all need mirrors to remind ourselves who we are." — Run `/memento:decide` to capture your next choice.
+- "We all need mirrors to remind ourselves who we are." — Run `/decide` to capture your next choice.
 - "Remember Sammy Jankis." — Your artifacts remember so you don't have to.
 - "I have to believe in a world outside my own mind." — Plant a `[S]` seed for ideas that aren't ready yet.
-- "The world doesn't just disappear when you close your eyes." — Run `/memento:session-complete` before you leave.
+- "The world doesn't just disappear when you close your eyes." — Run `/session-complete` before you leave.
 
 If score >= 5, skip the tip. The system is working — don't nag.

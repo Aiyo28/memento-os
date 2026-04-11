@@ -1,0 +1,116 @@
+---
+description: "Memento OS — reasoning artifact conventions for persistent AI memory"
+alwaysApply: true
+---
+
+# Memento OS — Conventions
+
+This project uses Memento OS for persistent AI memory. Store conclusions, not notes.
+The vault is a retrieval source — search before generating from training data.
+
+## Artifact Format
+
+Every piece of memory is a reasoning artifact — a pre-computed conclusion with an expiration condition.
+
+```
+[D] conclusion — invalidates if trigger [priority] [YYYY-MM-DD]
+[I] insight — invalidates if condition [priority] [YYYY-MM-DD]
+[E] what went wrong — root cause: why [settled] [YYYY-MM-DD]
+[S] idea — activates when condition [priority] [YYYY-MM-DD]
+```
+
+| Prefix | Type | Purpose |
+|--------|------|---------|
+| `[D]` | Decision | A choice between alternatives — has an invalidation trigger |
+| `[I]` | Insight | A reusable conclusion — survives the session that produced it |
+| `[E]` | Error | A mistake with root cause — defaults to settled |
+| `[S]` | Seed | A deferred idea — activates when its condition is met, not when time passes |
+
+Optional expiry (for time-bound conclusions only):
+```
+[D] conclusion — invalidates if trigger — expires: YYYY-MM-DD [priority] [YYYY-MM-DD]
+```
+Do NOT add expiry to foundational architecture decisions.
+
+## Priority Matrix
+
+Priority is derived from **confidence × impact**:
+
+|                     | High Impact   | Low Impact  |
+|---------------------|---------------|-------------|
+| **High Confidence** | **critical**  | **settled** |
+| **Medium Confidence**| **volatile** | **settled** |
+| **Low Confidence**  | **volatile**  | **noise**   |
+
+- AI proposes confidence (high / medium / low)
+- Ask user: "High or low impact?"
+- `[E]` errors default to **settled**; once resolved → **noise**
+- **noise** priority: ask "store anyway or discard?" — default: discard
+
+## Kobe Cap: 24 Artifacts
+
+Maximum 24 artifacts per project in the Active Reasoning Artifacts table.
+
+Eviction order when over cap: noise → settled → volatile → critical (never auto-evict).
+Archive evicted artifacts to `Decisions/` folder with status: `superseded`, `archived`, or `active`.
+
+Additional eviction triggers:
+- Embedded artifacts (decision is in code, not referenced in 30+ days)
+- Resolved errors (learning extracted into a `[D]`)
+- Dormant `[S]` seeds (not activated after 90 days)
+
+## Vault File Frontmatter
+
+Every vault file requires frontmatter:
+
+```yaml
+---
+tags: [tech/architecture, ai/agents, product/auth]
+type: decision          # or: research, insight, note, project-context
+status: active          # or: draft, archived, superseded
+confidence: high        # or: medium, low
+---
+```
+
+Tag domains: `tech/`, `business/`, `product/`, `ai/`, `personal/`
+Keep 3–7 tags per document. Project identity goes in `project:` field, not tags.
+
+## Vault Structure
+
+```
+project/memento/
+├── _context.md          # Active artifacts table (load every session)
+├── NEXT.md              # Session continuity (15 lines max)
+├── Decisions/           # Full decision records (critical/volatile only)
+├── Sessions/            # Session log + archive
+└── patterns/            # Cross-project reusable patterns (optional)
+```
+
+Folders are created on demand — `Decisions/` only appears when the first critical artifact is recorded.
+
+## Storage Rules
+
+| Priority | Where |
+|----------|-------|
+| critical | Full file in `Decisions/` + inline entry in `_context.md` |
+| volatile | Full file in `Decisions/` + inline entry in `_context.md` |
+| settled  | Inline entry in `_context.md` only |
+| noise    | Discard (default) |
+
+## Retrieval-First Protocol
+
+Before making any decision or generating content from training data, search the vault:
+
+1. Scan project `_context.md` Active Reasoning Artifacts table for matching `[D]` entries
+2. Glob `{vault}/Knowledge/*{topic}*` for existing knowledge notes
+3. Glob `{vault}/Projects/*/Decisions/*{topic}*` for cross-project decisions
+4. If prior decision found: surface it, ask "Reaffirm, revise, or override?"
+5. If no prior decision: proceed with fresh analysis
+
+## Do Not
+
+- Hardcode vault paths — users configure their vault location during init
+- Store raw notes or conversation fragments — store conclusions only
+- Auto-evict critical artifacts
+- Add expiry to foundational architecture decisions
+- Duplicate content — if a doc exists in a repo, the vault has a pointer, not a copy

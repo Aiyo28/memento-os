@@ -11,13 +11,14 @@ Developer vault at `~/Documents/Developer/knowledge-os/`
 - **Cross-project patterns**: `Knowledge/patterns/`
 - **Frontmatter**: All docs have `type`, `project`, `status`, `confidence`, `summary`
 
-### Navigation: L0 → L1 → L2 (tiered context loading)
+### Navigation: L0 → L1 → L2 → L3 (tiered context loading)
 
-| Level | What | When |
-|-------|------|-------|
-| L0 | `NEXT.md` (repo root) | Every session — ~15 lines |
-| L1 | `BRIEF.md` (repo) or `_context.md` (vault) | Every session — ~50 lines |
-| L2 | Full docs (ARCHITECTURE.md, etc.) | Only when L1 indicates relevance |
+| Level | What | ~Tokens | When |
+|-------|------|---------|------|
+| L0 | `NEXT.md` (repo root) | 200 | Every session — continuity + blockers |
+| L1 | `_context.md` **top 3 sections only** (Summary + Key Numbers + Active Artifacts) | 600 | Every session — state + decisions |
+| L2 | Full `_context.md` + referenced docs | 2000 | When L1 indicates relevance |
+| L3 | Deep vault grep — `Knowledge/`, cross-project `_context.md`, MOCs | 4000 | Cross-project research or unfamiliar domain |
 
 ### Multi-Repo Knowledge Routing
 

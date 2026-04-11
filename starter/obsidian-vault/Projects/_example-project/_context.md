@@ -8,6 +8,8 @@ updated: YYYY-MM-DD
 status: active
 confidence: high
 language: en
+repo_path: ""
+repo_docs_path: ""
 summary: >
   Replace with a one-paragraph project summary for LLM consumption. Describe
   what the project does, its current state, and the key technical decisions
@@ -19,10 +21,21 @@ summary: >
 
 > One-sentence description of what this project does.
 
-## Key Metrics
-- **Status:** Planning | Active | Maintenance
-- **Tech stack:** [list key technologies]
-- **Target:** [who is this for]
+## Key Numbers
+
+| Metric | Value | Confidence |
+|--------|-------|------------|
+| Status | Planning / Active / Maintenance | high |
+| Tech stack | [list key technologies] | high |
+| Target | [who is this for] | high |
+
+## Active Reasoning Artifacts
+
+<!-- Kobe cap: 24 artifacts. Evict: noise → settled → volatile. Never evict critical. -->
+
+| # | Artifact | Priority | Date |
+|---|----------|----------|------|
+| 1 | `[D] example decision — invalidates if conditions change [settled] [YYYY-MM-DD]` | settled | YYYY-MM-DD |
 
 ## Repo Knowledge Map
 <!-- Delete this section for vault-only projects (no code repo) -->
@@ -36,9 +49,9 @@ summary: >
 
 ## Document Index
 
-| Document | Summary | Status |
-|----------|---------|--------|
-| *(add research docs as they're created)* | | |
+| Document | Location | Description | Status |
+|----------|----------|-------------|--------|
+| *(add research docs as they're created)* | | | |
 
 ## Open Questions
 - [List unanswered questions that need research or decisions]

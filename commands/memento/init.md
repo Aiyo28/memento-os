@@ -100,13 +100,23 @@ created: {today}
 updated: {today}
 status: active
 confidence: medium
+repo_path: "{absolute path to project root, or empty for vault-only}"
+repo_docs_path: "{relative path to docs/ if found, or empty}"
 summary: >
   {user's answer from Step 2}
 ---
 
 # {Project Name} Memory
 
+## Key Numbers
+
+| Metric | Value | Confidence |
+|--------|-------|------------|
+| Status | Active | high |
+
 ## Active Reasoning Artifacts
+
+<!-- Kobe cap: 24 artifacts. Evict: noise → settled → volatile. Never evict critical. -->
 
 | # | Artifact | Priority | Date |
 |---|----------|----------|------|
@@ -120,6 +130,9 @@ summary: >
 ## Open Questions
 
 - [ ] {any obvious unknowns from the project description}
+
+## Related
+- [[MOC — relevant hub]]
 ```
 
 **`NEXT.md`** — use this template:

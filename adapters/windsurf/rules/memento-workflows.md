@@ -1,0 +1,157 @@
+# Memento OS — Workflows
+
+Trigger these workflows with natural language. Each produces structured output and vault writes.
+
+## Session Start Workflow
+
+Triggers: "start session", "what's the context", "where were we", "catch me up"
+
+### Step 1 — Load L0 (Session Continuity)
+Read `NEXT.md` in the project root. This is the 15-line continuity doc — Continue, Decide, Blocked sections.
+
+### Step 2 — Load L1 (Project Context, ~600 tokens)
+Read (skip if missing):
+- Project instructions file (`CLAUDE.md`, `AGENTS.md`, or `.windsurfrules`)
+- Vault `_context.md` — **top 3 sections only**: Summary + Key Numbers + Active Reasoning Artifacts table.
+  STOP before Doc Index / Decision Log / Open Questions / Related sections. This is the L1 partial-read rule.
+- Peer Card (`People/Self.md` in vault) — **Communication Style** and **Decision Patterns** tables only (~20 lines). Skip if missing.
+
+Never auto-load full docs or research files at session start (L2/L3 only on demand).
+
+### Step 3 — Seed Activation Check
+Scan `[S]` entries in the Active Reasoning Artifacts table:
+- Activation condition appears met → surface under "Seeds Ready" in briefing
+- Dormant > 90 days → flag for review
+- When a seed activates: "This seed is ready. Want to decide on it?"
+
+### Step 4 — Staleness Check
+
+First, check for expired artifacts (past `expires: YYYY-MM-DD` date) — flag as **EXPIRED** regardless of priority.
+
+Then priority-based staleness:
+
+| Priority | Age        | Status |
+|----------|------------|--------|
+| critical | > 90 days  | STALE — review invalidation trigger |
+| volatile | > 30 days  | NEEDS RESOLUTION — decide, upgrade, or delete |
+| settled  | > 90 days  | STALE — likely safe to archive |
+| noise    | Any        | Should not be in table — flag for removal |
+
+### Step 5 — Display Briefing
+
+```
+## Session Briefing — {Project Name}
+Date: {today}
+Memory: {score}/10 | {total} artifacts | {seeds} seeds | streak: {n}
+
+### Continue
+{from NEXT.md}
+
+### Active Decisions
+{critical and volatile only, up to 7}
+
+### Seeds Ready (if any)
+{[S] artifacts where activation condition appears met}
+
+### Stale Artifacts (if any)
+{list with age and invalidation trigger}
+
+### Pending
+{from NEXT.md "Decide" section}
+```
+
+Memory score: artifact count (0–2pts) + critical decisions (0–2pts) + recency (0–2pts) + no stale (0–1.5pts) + seeds (0–1pt) + session streak (0–1.5pts).
+
+---
+
+## Session Complete Workflow
+
+Triggers: "done", "wrap up", "session complete", "end of session", "about to compact", "context getting long"
+
+Two modes: default (end of session) and compact (before context compression — faster, skips log).
+
+### Step 1 — Scan Conversation for Artifacts
+Extract:
+- Decisions made → `[D]` artifacts
+- Insights learned → `[I]` artifacts
+- Errors resolved → `[E]` artifacts with root cause
+- Ideas deferred with conditions → `[S]` seeds
+
+For each, draft inline format per conventions. In compact mode: skip impact prompt, default all to `settled`.
+
+### Step 2 — Contradiction Check
+Before confirming, scan existing `_context.md` artifacts for overlaps:
+- New artifact supersedes existing → mark old for eviction to `Decisions/` with `status: superseded`. Show: "superseded: `<old>` → `<new>`"
+- New artifact contradicts existing → flag: "Conflict: new vs #X — keep both, or resolve?"
+- In compact mode: auto-supersede without prompting; flag conflicts only.
+
+### Step 3 — Confirm with User
+Present extracted artifacts. Ask "Anything to add or correct?"
+For each artifact, confirm impact: "High or low impact?" (skip in compact mode).
+
+### Step 4 — Write Artifacts
+- Inline artifacts → add to `_context.md` Active Reasoning Artifacts table
+- Full artifact files → create in `Decisions/` for critical/volatile
+- Error entries → inline to `_context.md` at settled priority
+
+### Step 5 — Update NEXT.md
+- Move completed items out of "Continue"
+- Add new items from this session
+- Update "Decide" with pending decisions
+- Update "Blocked" with new blockers
+- Update date. Keep under 15 lines.
+
+### Step 6 — Append Session Log (default mode only)
+Add at the TOP of `Sessions/SESSION_LOG.md`:
+
+```
+### {YYYY-MM-DD} — {most important decision or outcome}
+
+**Artifacts produced:** {count} ([D]: n, [I]: n, [E]: n, [S]: n)
+**Changed:** {1-2 sentences on what changed}
+**Next:** {what should happen next session}
+```
+
+Move entries beyond 200 lines to `SESSION_LOG_ARCHIVE.md`.
+
+### Step 7 — Enforce Kobe Cap
+If Active Reasoning Artifacts table exceeds 24 entries:
+Evict by priority: noise → settled → volatile. Never auto-evict critical.
+Archive to `Decisions/` with status: `superseded`, `archived`, or keep `active`.
+
+### Step 8 — Show Progress
+```
+Session captured: {n} artifacts ([D]: d, [I]: i, [E]: e, [S]: s)
+Memory: {old_score} → {new_score}/10 ({delta})
+```
+
+---
+
+## Decide Workflow
+
+Triggers: "decide", "should we", "which option", "evaluate", "compare", "let's think about"
+
+### Retrieval Gate (always first)
+1. Scan `_context.md` Active Reasoning Artifacts table for `[D]` entries matching the decision domain
+2. Glob `{vault}/Knowledge/*{topic}*` for existing knowledge notes
+3. Glob `{vault}/Projects/*/Decisions/*{topic}*` for cross-project decisions
+4. If prior decision found: surface it, ask "Reaffirm, revise, or override?"
+5. If no prior decision: proceed
+
+### OODA Loop
+**Observe:** Read current `_context.md` and `NEXT.md`. Note existing decisions to avoid re-deciding settled questions.
+
+**Orient:** Present decision landscape:
+- Options (2–5): each with concrete pros, cons, effort estimate
+- Recommendation: which option and why
+- Confidence: High (>85%) / Medium (60–85%) / Low (<60%) with reasoning
+
+**Decide:** Ask user to choose. Accept their decision even if it differs from recommendation.
+
+**Act:** Record the artifact:
+1. Propose confidence level
+2. Ask: "High or low impact?"
+3. Derive priority from matrix (see conventions)
+4. Write inline format: `[D] conclusion — invalidates if trigger [priority] [YYYY-MM-DD]`
+5. If decision is "not now, but when X": plant `[S]` seed instead
+6. Write to `_context.md` (all priorities) + `Decisions/` file (critical/volatile only)

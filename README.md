@@ -54,6 +54,23 @@ The init asks 3 questions:
 
 Your memory folder is plain markdown. If you use Obsidian, point a vault at it for graph view and backlinks.
 
+## Works With
+
+Memento OS adapts to your AI coding tool. Same vault, same artifacts, different integration depth.
+
+| Tool | Tier | What You Get | Install |
+|------|------|-------------|---------|
+| **Claude Code** | Full Plugin | 5 skills, 2 hooks, 2 commands | `/plugin install memento-os` |
+| **Codex** (OpenAI) | Full Skills | AGENTS.md + 5 skills | [adapters/codex/](adapters/codex/) |
+| **Cursor** | Rules | Conventions + workflow rules | [adapters/cursor/](adapters/cursor/) |
+| **Windsurf** | Rules | Conventions + workflow rules | [adapters/windsurf/](adapters/windsurf/) |
+| **Cline** | Rules | Conventions + workflow rules | [adapters/cline/](adapters/cline/) |
+| **Gemini** | Rules | GEMINI.md with all workflows | [adapters/gemini/](adapters/gemini/) |
+| **Aider** | Manual | CONVENTIONS.md + config | [adapters/aider/](adapters/aider/) |
+| **Continue** | Manual | Config snippet + prompts | [adapters/continue/](adapters/continue/) |
+
+See [adapters/README.md](adapters/README.md) for detailed install instructions per tool.
+
 ## How It Works
 
 Five skills. One loop. Think → Decide → Capture → Recall → Maintain.
@@ -268,11 +285,11 @@ How we got here — failure by failure, fix by fix.
 
 ## Who This Is For
 
-- **Claude Code users** who want persistent memory without building their own system
+- **AI coding tool users** — Claude Code, Codex, Cursor, Windsurf, Cline, Gemini, Aider, Continue
 - **Solo developers** tired of re-explaining decisions to their AI every session
 - **Anyone building with AI agents** who wants conclusions that survive compaction
 
-**Not for:** Teams wanting Jira integration. Non-CLI workflows (yet). People who think more context = better (it doesn't).
+**Not for:** Teams wanting Jira integration. People who think more context = better (it doesn't).
 
 ## Self-Evaluation
 
@@ -284,7 +301,7 @@ Score your own memory system: [system/scorecard.md](system/scorecard.md)
 
 Contributions welcome:
 - Evolution entries from your own memory system experiences
-- Starter configs for non-Claude-Code tools (Cursor, Windsurf, Copilot)
+- Adapter improvements or new tool adapters
 - Scorecard improvements
 - Translations
 
