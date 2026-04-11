@@ -1,5 +1,5 @@
 ---
-name: memento:decide
+name: decide
 version: 2.0.0
 description: >
   Composable decision skill. Core OODA loop: present options, assess confidence,

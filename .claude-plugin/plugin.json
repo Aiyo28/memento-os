@@ -1,12 +1,12 @@
 {
   "name": "memento-os",
   "description": "Decision-centric memory system for AI coding agents. Store conclusions, not notes. OODA-driven reasoning artifacts with priority matrix, invalidation triggers, and seed activation.",
-  "version": "0.4.0",
+  "version": "2.0.0",
   "author": {
     "name": "Ayal Nogovitsyn"
   },
   "homepage": "https://github.com/ayalnogovitsyn/memento-os",
   "repository": "https://github.com/ayalnogovitsyn/memento-os",
   "license": "MIT",
-  "keywords": ["memory", "decisions", "ooda", "reasoning-artifacts", "knowledge-management", "session-continuity", "vault"]
+  "keywords": ["memory", "decisions", "ooda", "reasoning-artifacts", "knowledge-management", "session-continuity", "vault", "adapters", "multi-tool", "codex", "cursor", "windsurf", "cline", "gemini"]
 }

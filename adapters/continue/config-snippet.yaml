@@ -1,0 +1,50 @@
+# Paste this block into your ~/.continue/config.yaml under the `rules:` key.
+# If you already have a rules list, append these entries to it.
+
+rules:
+  - >
+    Memento OS — Artifact Format:
+    All session conclusions use typed artifacts.
+    [D] decision — invalidates if: trigger [priority] [YYYY-MM-DD]
+    [I] insight — invalidates if: condition [priority] [YYYY-MM-DD]
+    [E] error — root cause: why [settled] [YYYY-MM-DD]
+    [S] seed — activates when: condition [priority] [YYYY-MM-DD]
+    Never store raw notes — store conclusions only.
+
+  - >
+    Memento OS — Priority Matrix (confidence × impact):
+    High confidence + high impact = critical.
+    High/medium confidence + low impact = settled.
+    Low/medium confidence + high impact = volatile.
+    Low confidence + low impact = noise (ask before storing, default discard).
+    [E] errors always default to settled.
+
+  - >
+    Memento OS — Kobe Cap (24 artifacts max per project):
+    Active Reasoning Artifacts table holds at most 24 entries.
+    Eviction order when over cap: noise → settled → volatile.
+    Never auto-evict critical — confirm with user first.
+    Archive evicted artifacts to the project Decisions/ folder.
+
+  - >
+    Memento OS — Retrieval-First Protocol:
+    Before deciding: search vault for prior [D] artifacts on the same topic.
+    Before designing: check Knowledge/ for existing research.
+    Before recommending: surface [E] errors from similar past work.
+    Before brainstorming: check if a [S] seed already captures the idea.
+    The vault is a retrieval source, not just a write destination.
+
+  - >
+    Memento OS — Vault Frontmatter Schema:
+    Every vault note must include YAML frontmatter with:
+    title, type (decision|insight|research|log|reference),
+    project, tags (list), created (YYYY-MM-DD), updated (YYYY-MM-DD),
+    status (active|archived|draft).
+
+  - >
+    Memento OS — Session Lifecycle:
+    At session start: read NEXT.md, read top 3 sections of _context.md,
+    check [S] seeds for activated conditions, flag stale [D]/[I] artifacts,
+    display briefing.
+    At session end: extract artifacts, confirm with user, write to
+    _context.md, update NEXT.md, append session log entry.

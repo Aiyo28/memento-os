@@ -44,7 +44,7 @@ Cross-project knowledge base. Each project has a `_context.md` file (L1 summary)
 **Strengths:** Version-controlled, co-located with code, always accessible.
 **Weakness:** Project-scoped. Cross-project knowledge stays in the vault.
 
-## Routing Protocol (L0 → L1 → L2)
+## Routing Protocol (L0 → L1 → L2 → L3)
 
 The core token-saving mechanism. Load context in tiers, not all at once.
 
@@ -59,22 +59,29 @@ Session Start
           │
           ▼
 ┌─────────────────────┐
-│  L1: CLAUDE.md +    │  ~500 tokens, ALWAYS loaded
-│  _context.md        │  Project overview, key rules, document index
+│  L1: CLAUDE.md +    │  ~600 tokens, ALWAYS loaded
+│  _context.md TOP 3  │  Summary + Key Numbers + Active Artifacts ONLY
+│  SECTIONS ONLY      │  STOP before Doc Index / Decision Log / Related
 └─────────┬───────────┘
           │
           ▼ (only if L1 indicates relevance)
 ┌─────────────────────┐
-│  L2: Full docs      │  ~1-2K tokens each, ON DEMAND
-│  ARCHITECTURE.md    │  Only when the task requires deep context
-│  DECISIONS.md       │
-│  TECH_STACK.md      │
+│  L2: Full docs      │  ~2000 tokens, ON DEMAND
+│  Full _context.md   │  When task touches a listed doc or needs full history
+│  + referenced docs  │
+└─────────┬───────────┘
+          │
+          ▼ (only for cross-project research)
+┌─────────────────────┐
+│  L3: Deep vault     │  ~4000 tokens, ON DEMAND
+│  grep Knowledge/,   │  Cross-project _context.md, MOCs
+│  cross-project      │  Unfamiliar domain, pattern lookup
 └─────────────────────┘
 ```
 
-**The rule:** Never load L2 at session start. Read L0 + L1, then decide if L2 is needed.
+**The rule:** Never load L2/L3 at session start. Read L0 + L1 (partial `_context.md`), then decide if deeper layers are needed.
 
-**Token savings:** 3-5K tokens per session vs. loading everything upfront.
+**Token savings:** 3-5K tokens per session vs. loading everything upfront. L1 tightened from ~2000 to ~600 tokens (2026-04-08).
 
 ## Connective Tissue
 

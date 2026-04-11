@@ -1,5 +1,5 @@
 ---
-name: memento:grill-me
+name: grill-me
 version: 1.1.0
 description: >
   Stress-test a plan, design, or architecture through relentless structured

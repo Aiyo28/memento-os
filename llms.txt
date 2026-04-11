@@ -1,6 +1,6 @@
 # Memento OS
 
-> Claude Code plugin for persistent AI memory using reasoning artifacts.
+> Persistent AI memory using reasoning artifacts. Works with Claude Code, Codex, Cursor, Windsurf, Cline, Gemini, Aider, and Continue.
 
 ## What This Is
 
@@ -30,12 +30,20 @@ Hooks (2): Stop (auto-capture), PreCompact (save before compression)
 /memento:init
 ```
 
+## Multi-Tool Support
+
+- Claude Code: Full plugin (skills, hooks, commands)
+- Codex (OpenAI): Full skills via adapters/codex/
+- Cursor, Windsurf, Cline, Gemini: Rules-based adapters
+- Aider, Continue: Manual integration via config
+
 ## Key Files
 
 - README.md — full documentation
-- skills/*/SKILL.md — skill implementations
+- skills/*/SKILL.md — skill implementations (Claude Code)
 - commands/memento/*.md — command implementations
 - hooks/hooks.json — hook definitions
+- adapters/*/README.md — per-tool install guides
 - evolution/*.md — case studies of problems solved
 
 ## Links

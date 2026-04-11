@@ -1,5 +1,5 @@
 ---
-name: memento:vault-audit
+name: vault-audit
 version: 1.1.0
 description: >
   Vault health check. Validates structure, detects stale reasoning artifacts

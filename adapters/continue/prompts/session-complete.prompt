@@ -1,0 +1,59 @@
+name: session-complete
+description: Memento OS session-closing ritual — extract artifacts, write to vault, update NEXT.md
+
+---
+You are closing a Memento OS session. Follow these steps in order.
+
+## Step 1 — Scan the Conversation
+Review the full conversation from this session. Identify every candidate for an artifact:
+- A decision that was made and should be remembered → `[D]`
+- A pattern or learning that emerged → `[I]`
+- A mistake or failure with a clear root cause → `[E]`
+- An idea deferred for later under a specific condition → `[S]`
+
+Do not store raw notes or conversation fragments. Store conclusions only.
+
+## Step 2 — Draft Artifacts
+For each candidate, draft a complete artifact using the format:
+
+```
+[D] conclusion — invalidates if: trigger [priority] [YYYY-MM-DD]
+[I] insight — invalidates if: condition [priority] [YYYY-MM-DD]
+[E] what went wrong — root cause: why [settled] [YYYY-MM-DD]
+[S] idea — activates when: condition [priority] [YYYY-MM-DD]
+```
+
+Assign priority using confidence × impact:
+- High confidence + high impact → `critical`
+- High/medium confidence + low impact → `settled`
+- Low/medium confidence + high impact → `volatile`
+- Low confidence + low impact → `noise` (flag for user confirmation)
+
+Today's date for `[YYYY-MM-DD]`: use the actual current date.
+
+## Step 3 — Contradiction Check
+Read the current Active Artifacts table from the project's `_context.md`. Check each drafted artifact against existing `[D]` entries. If any new artifact contradicts an existing decision, flag the conflict explicitly before proceeding.
+
+## Step 4 — Confirm with User
+Present the drafted artifact list to the user. Ask: "Confirm these artifacts to write to vault?" Wait for confirmation before writing anything. If the user modifies or removes any artifact, update the list.
+
+## Step 5 — Write to Vault
+After confirmation:
+1. Add confirmed artifacts to the Active Artifacts table in `_context.md`
+2. If the table now exceeds 24 entries, evict by priority: noise → settled → volatile. Never auto-evict `critical` — flag it and ask.
+3. Archive any evicted artifacts to the project's `Decisions/` folder
+
+## Step 6 — Update NEXT.md
+Review `NEXT.md` and apply changes from this session:
+- Mark completed items as done or remove them
+- Add any new blockers identified during the session
+- Add any new next actions that emerged
+
+## Step 7 — Session Log
+Append a one-line entry to the session log section of `_context.md` (or a `logs/` file if the project uses one):
+
+```
+YYYY-MM-DD — [brief description of what changed this session]
+```
+
+Output a confirmation: "Session complete. N artifacts written. NEXT.md updated."

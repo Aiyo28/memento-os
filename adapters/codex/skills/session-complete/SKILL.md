@@ -1,5 +1,5 @@
 ---
-name: memento:session-complete
+name: session-complete
 version: 4.2.0
 description: >
   Run at end of session OR before compaction. Extracts reasoning artifacts

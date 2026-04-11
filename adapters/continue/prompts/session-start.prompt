@@ -1,0 +1,35 @@
+name: session-start
+description: Memento OS session-opening ritual — load vault context and display briefing
+
+---
+You are starting a Memento OS session. Follow these steps in order.
+
+## Step 1 — Read NEXT.md
+Read the `NEXT.md` file in the project root. Extract:
+- What is the current focus / next actions?
+- Are there any blockers?
+
+## Step 2 — Read _context.md (top 3 sections only)
+Read the project's `_context.md` file. Load only:
+1. **Summary** — one-paragraph project state
+2. **Key Numbers** — metrics, counts, or dates that matter
+3. **Active Artifacts** — the reasoning artifacts table (`[D]`, `[I]`, `[E]`, `[S]` entries)
+
+Do not load the full file if it is long — stop after the Active Artifacts section.
+
+## Step 3 — Check Seeds
+Scan all `[S]` seed artifacts in the Active Artifacts table. For each seed, evaluate whether its activation condition is now met. If yes, flag it as ready to act on.
+
+## Step 4 — Check Staleness
+Review all `[D]` and `[I]` artifacts. Check each artifact's invalidation trigger against current project state. Flag any artifact whose invalidation condition may have been met since it was written.
+
+## Step 5 — Display Briefing
+Output a structured briefing with these sections:
+
+**Current Focus:** (from NEXT.md)
+**Active Artifacts:** (count of [D] / [I] / [E] / [S])
+**Seeds Ready:** (list any [S] with activated conditions, or "none")
+**Stale Flags:** (list any [D]/[I] that may need re-evaluation, or "none")
+**Blockers:** (from NEXT.md, or "none")
+
+Keep the briefing concise — it is a status snapshot, not a summary of history.
