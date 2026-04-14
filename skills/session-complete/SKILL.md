@@ -1,6 +1,6 @@
 ---
 name: memento:session-complete
-version: 4.2.0
+version: 4.3.0
 description: >
   Run at end of session OR before compaction. Extracts reasoning artifacts
   with priority matrix, updates NEXT.md, appends to session log.
@@ -76,9 +76,20 @@ In `--compact` mode: skip impact confirmation, present briefly.
 
 ### 4. Write Artifacts
 
-**Inline artifacts** → add to `_context.md` Active Reasoning Artifacts table
+Route each artifact to the correct `_context.md` Active Reasoning Artifacts table:
+
+| Condition | Target |
+|-----------|--------|
+| Project-specific | `Projects/{name}/_context.md` |
+| Cross-project engineering | `Projects/_context.md` |
+| Personal (hobby, health, learning) | `Personal/_context.md` |
+| Business-specific | `Business/{name}/_context.md` |
+| Cross-business | `Business/_context.md` |
+| General cross-domain | `Knowledge/_context.md` |
+| Ambiguous | Ask user |
+
 **Full artifact files** → create in `Decisions/` for critical/volatile artifacts
-**Error entries** → inline to `_context.md` (settled priority)
+**Kobe cap** (24) applies per `_context.md` — check each target independently
 
 ### 5. Update NEXT.md
 

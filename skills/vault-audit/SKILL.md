@@ -17,6 +17,12 @@ Check structure. Flag staleness. Process inbox. Suggest cleanup.
 
 ### 1. Structure Check
 
+Verify area-level `_context.md` files exist:
+- `Projects/_context.md` (cross-project decisions)
+- `Personal/_context.md` (hobbies, health, learning)
+- `Business/_context.md` (cross-business decisions)
+- `Knowledge/_context.md` (general cross-domain insights)
+
 Verify each project under `Projects/` has:
 - `_context.md` (required)
 - Active Reasoning Artifacts table in `_context.md`
