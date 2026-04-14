@@ -28,14 +28,14 @@ Extract what matters. Discard the rest. Update continuity docs.
 Extract:
 - **Decisions made** → `[D]` artifacts
 - **Insights learned** → `[I]` artifacts
-- **Errors resolved** → `[E]` artifacts with root cause
+- **Errors resolved** → `[E]` artifacts with root cause + fix
 - **Ideas deferred with conditions** → `[S]` seeds (forward-looking ideas that surface when a condition is met)
 
 For each, draft the inline format:
 ```
 `[D] <conclusion> — invalidates if <trigger> [priority] [YYYY-MM-DD]`
 `[I] <insight> — invalidates if <condition> [priority] [YYYY-MM-DD]`
-`[E] <what went wrong> — root cause: <why> [settled] [YYYY-MM-DD]`
+`[E] <what went wrong> — root cause: <why> — fix: <what solved it> [settled] [YYYY-MM-DD]`
 `[S] <idea> — activates when <condition> [priority] [YYYY-MM-DD]`
 ```
 

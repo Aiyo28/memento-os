@@ -12,7 +12,7 @@ Four types of artifacts, each with an expiration condition:
 
 - [D] Decision — a choice between alternatives. Format: `[D] conclusion — invalidates if trigger [priority] [date]`
 - [I] Insight — a reusable conclusion from research/experience
-- [E] Error — a mistake with root cause analysis
+- [E] Error — a mistake with root cause + fix
 - [S] Seed — a forward-looking idea with activation trigger (surfaces when conditions are met)
 
 Priority matrix: confidence (high/medium/low) x impact (high/low) → critical/volatile/settled/noise

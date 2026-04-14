@@ -79,7 +79,7 @@ Two modes: default (end of session) and compact (before context compression — 
 Extract:
 - Decisions made → `[D]` artifacts
 - Insights learned → `[I]` artifacts
-- Errors resolved → `[E]` artifacts with root cause
+- Errors resolved → `[E]` artifacts with root cause + fix
 - Ideas deferred with conditions → `[S]` seeds
 
 For each, draft inline format per conventions. In compact mode: skip impact prompt, default all to `settled`.

@@ -35,7 +35,7 @@ For each, draft the inline format:
 ```
 `[D] <conclusion> — invalidates if <trigger> [priority] [YYYY-MM-DD]`
 `[I] <insight> — invalidates if <condition> [priority] [YYYY-MM-DD]`
-`[E] <what went wrong> — root cause: <why> [settled] [YYYY-MM-DD]`
+`[E] <what went wrong> — root cause: <why> — fix: <what solved it> [settled] [YYYY-MM-DD]`
 `[S] <idea> — activates when <condition> [priority] [YYYY-MM-DD]`
 ```
 
