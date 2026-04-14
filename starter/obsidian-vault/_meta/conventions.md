@@ -153,9 +153,23 @@ Reasoning artifacts live at three tiers based on access frequency and authority:
 - **L1 → L0**: when violating an artifact would waste >1 hour. Copy the rule to CLAUDE.md Critical Gotchas AND keep in L1.
 - **L1 → L2**: critical and volatile artifacts automatically get a full file in `Decisions/` alongside the inline L1 entry.
 
+### Artifact Routing
+
+Every `[D]`/`[I]`/`[E]`/`[S]` artifact must be written to the correct `_context.md`:
+
+| Condition | Target |
+|-----------|--------|
+| Project-specific | `Projects/{name}/_context.md` |
+| Cross-project engineering | `Projects/_context.md` |
+| Personal (hobby, health, learning) | `Personal/_context.md` |
+| Business-specific | `Business/{name}/_context.md` |
+| Cross-business | `Business/_context.md` |
+| General cross-domain | `Knowledge/_context.md` |
+| Ambiguous | Ask user |
+
 ### Eviction Rules (L1 → L2)
 
-When at Kobe cap (24 artifacts), evict by priority: **noise → settled → volatile**. Never auto-evict critical.
+When at Kobe cap (24 artifacts per `_context.md`), evict by priority: **noise → settled → volatile**. Never auto-evict critical.
 
 Eviction triggers:
 - `embedded` — decision is in code/config, self-documenting (has file/line reference, not referenced in 30+ days)
