@@ -1,6 +1,6 @@
 ---
 name: memento:session-start
-version: 2.0.1
+version: 2.1.0
 description: >
   Session opening ritual. Loads context via L0→L1 protocol, displays briefing
   with active decisions and pending items, checks for stale artifacts by priority.
@@ -18,21 +18,25 @@ Load context. Display briefing. Flag staleness. Get to work.
 
 Read `NEXT.md` in the project root.
 
-### 2. Load L1 — Project Context (~600 tokens)
+### 2. Load L0.5 — Context Directory (~800 tokens, optional)
+
+If `context/` exists at project root, load all files (domain-terms, stakeholder-profiles, constraints). Skip if missing — not all projects need this.
+
+### 3. Load L1 — Project Context (~600 tokens)
 
 Read (skip if missing):
 - Project `CLAUDE.md`
 - Vault `_context.md` — **top 3 sections only**: Summary + Key Numbers + Active Reasoning Artifacts table. STOP before Doc Index / Decision Log / Open Questions / Related sections. This is the L1 partial read rule.
 - Peer Card (`People/Self.md` in vault or memory folder) — structured user profile with communication style, decision patterns, strengths, growth areas. Load the **Communication Style** and **Decision Patterns** tables only (~20 lines). Template provided in starter vault. Skip if missing — suggest creating one on first session.
 
-### 3. Seed Activation Check
+### 4. Seed Activation Check
 
 Scan `[S]` entries in the Active Reasoning Artifacts table:
 - If activation condition appears met → surface in briefing under "Seeds Ready"
 - If dormant > 90 days → flag for review
 - When a seed activates, suggest: "This seed is ready. Want to `/decide` on it?"
 
-### 4. Staleness Check
+### 5. Staleness Check
 
 Scan `[D]`, `[I]`, `[E]` entries in the Active Reasoning Artifacts table:
 
@@ -47,7 +51,7 @@ Scan `[D]`, `[I]`, `[E]` entries in the Active Reasoning Artifacts table:
 | settled | > 90 days | STALE — likely safe to archive |
 | noise | Any | Should not be in table — flag for removal |
 
-### 5. Display Briefing
+### 6. Display Briefing
 
 ```
 ## Session Briefing — {Project Name}
@@ -72,19 +76,19 @@ Scan `[D]`, `[I]`, `[E]` entries in the Active Reasoning Artifacts table:
 
 Memory score calculation: count artifacts (0-2pts), critical decisions (0-2pts), recency (0-2pts), no stale (0-1.5pts), seeds (0-1pt), session streak (0-1.5pts). See `/memento stats` for full breakdown.
 
-### 6. Enable Auto-Logging
+### 7. Enable Auto-Logging
 
 Write `on` to `~/.claude/memento-auto-log`. This activates the Stop hook for journal entries.
 
 To disable: user says "turn off auto-logging" → write `off` to the same file.
 
-### 7. Do NOT Load L2/L3
+### 8. Do NOT Load L2/L3
 
 Never auto-load full docs or research files at session start.
 - **L2** (full `_context.md` + referenced docs, ~2000 tok): load when L1 indicates relevance or task touches a listed doc.
 - **L3** (deep vault grep — `Knowledge/`, cross-project `_context.md`, MOCs, ~4000 tok): load only for cross-project research or unfamiliar domain.
 
-### 8. Memento Tip (optional, once per session)
+### 9. Memento Tip (optional, once per session)
 
 If memory score < 5, append one tip to the briefing (rotate through these):
 

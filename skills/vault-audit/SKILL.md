@@ -1,6 +1,6 @@
 ---
 name: memento:vault-audit
-version: 1.1.0
+version: 1.2.0
 description: >
   Vault health check. Validates structure, detects stale reasoning artifacts
   by priority level, processes inbox, and suggests cleanup.
@@ -33,13 +33,15 @@ For each project `_context.md`, check Active Reasoning Artifacts table:
 
 **Priority-based staleness (for artifacts without expiry):**
 
-| Priority | Age | Action |
+| Priority / State | Age | Action |
 |----------|-----|--------|
 | critical | > 90 days | Flag for review — ask if invalidation trigger has fired |
 | volatile | > 30 days | Flag for resolution — upgrade to critical or delete |
 | settled | > 90 days | Suggest archiving to Decisions/ folder |
 | noise | Any age | Flag for immediate removal |
 | superseded | Any age | Should already be evicted — flag if still in L1 |
+| embedded | > 30 days no reference | Decision is in code/config — safe to evict to L2 |
+| resolved | Any age | Error that produced a `[D]`/`[I]` — evict, keep the derived artifact |
 
 ### 3. Inbox Processing
 

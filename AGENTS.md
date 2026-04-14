@@ -30,6 +30,37 @@ Skills that make decisions MUST search the vault before acting:
 
 The vault is a retrieval source, not just a write destination. Search first, then fill gaps.
 
+### Confidence Gate
+
+Before any implementation decision: self-assess "Do I have full context?" If < 96% → pause and retrieve before acting.
+
+**Protected domains (always retrieve, regardless of confidence):**
+- Authentication / authorization patterns
+- Database schema / migration decisions
+- API contract decisions
+- Deployment / infrastructure choices
+- Pricing tiers / subscription logic
+- Tag architecture / taxonomy
+
+**Retrieval sequence:**
+1. `_context.md` Active Reasoning Artifacts table — `[D]` entries matching domain
+2. `Decisions/*{topic}*` — full artifact files
+3. If found → surface: "Existing decision: `[D] {statement}` — {date}". Ask: reaffirm, revise, or override?
+4. If not found → fresh analysis
+
+## Artifact Tiers
+
+| Tier | Location | Cap | Loaded |
+|------|----------|-----|--------|
+| L0 | CLAUDE.md "Critical Gotchas" | ~20 | Always (auto) |
+| L0.5 | `context/` directory | ~800 tok | session-start if present |
+| L1 | `_context.md` artifacts table | 24 (Kobe) | Every session |
+| L2 | `Decisions/` folder | Unlimited | On demand |
+
+Promotion L1→L0: "Would violating this waste >1hr?" → copy to Critical Gotchas.
+
+Lifecycle states: `active → embedded → archived`, `active → superseded → archived`, `active → resolved → archived` (errors only).
+
 ## Do Not
 
 - Hardcode vault paths — users configure via `/memento:init`

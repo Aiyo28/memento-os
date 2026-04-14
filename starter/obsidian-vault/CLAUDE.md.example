@@ -11,22 +11,28 @@ a code remote from here.
 | `Projects/{name}/` | Per-project research, notes, decisions, session logs |
 | `Projects/{name}/_context.md` | LLM entry point for that project (L1) |
 | `Projects/{name}/Research/` | Source-extracted research docs |
-| `Projects/{name}/sessions/` | SESSION_LOG.md + archive |
-| `Knowledge/` | Cross-project insights and extracts |
-| `Knowledge/patterns/` | Reusable patterns with context/pattern/why structure |
+| `Projects/{name}/Sessions/` | SESSION_LOG.md + archive |
+| `Knowledge/` | Cross-project insights, MOCs (`MOC — {Scope}.md`) |
+| `People/` | Peer cards — Self.md + collaborators |
 | `_inbox/` | Zero-friction capture. Process with `/process-inbox` |
 | `_meta/` | Vault conventions, this file, indexes |
 
-## Context Loading Protocol (L0 → L1 → L2)
+## Context Loading Protocol (L0 → L0.5 → L1 → L2 → L3)
 
-| Level | File | When to read |
-|-------|------|-------------|
-| L0 | `NEXT.md` in the code repo | Every session — what to work on |
-| L1 | `Projects/{name}/_context.md` | Every session — project summary and doc index |
-| L2 | Full docs in `Projects/{name}/Research/` or `docs/` | Only when L1 indicates relevance |
+| Level | File | Tokens | When to read |
+|-------|------|--------|-------------|
+| L0 | `NEXT.md` + CLAUDE.md Critical Gotchas | ~200 | Every session |
+| L0.5 | `context/` directory (if present) | ~800 | Every session — stable domain knowledge |
+| L1 | `Projects/{name}/_context.md` (top 3 sections) | ~600 | Every session |
+| L2 | Full `_context.md` + referenced docs | ~2000 | When L1 indicates relevance |
+| L3 | Deep vault grep — `Knowledge/`, cross-project | ~4000 | Cross-project research only |
 
-**Rule:** Never read L2 docs unless the L1 summary or current task explicitly
+**Rule:** Never read L2+ docs unless the L1 summary or current task explicitly
 requires them. This keeps token usage predictable.
+
+## Knowledge Filing Rule
+
+File by **impact domain**, not by method/tool. A caching study goes under `infra/`, not `research/`.
 
 ## Knowledge Location Rules
 
