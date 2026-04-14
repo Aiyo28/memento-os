@@ -160,6 +160,10 @@ That shift — from "save everything" to "save only conclusions" — turned out 
 
 </details>
 
+## Acknowledgments
+
+The `/memento:grill-me` skill is based on [Matt Pocock](https://github.com/mattpocock)'s grill-me prompt, adapted for the Memento OS artifact system. If you like what it does, check out his repos — there's more where that came from.
+
 ## Contributing
 
 Welcome: evolution entries, adapter improvements, scorecard improvements, translations.
