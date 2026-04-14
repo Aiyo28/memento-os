@@ -62,7 +62,7 @@ The atomic unit. Not a note — a pre-computed conclusion with an expiration con
 ```
 [D] Use Supabase over Firebase — invalidates if Firebase adds RLS            [critical]
 [I] MV3 service workers die after 30s — invalidates if Chrome changes policy [settled]
-[E] Deployed without testing webhooks — root cause: no staging env           [settled]
+[E] Deployed without testing webhooks — root cause: no staging env — fix: added pre-deploy checklist [settled]
 [S] Consider caching layer — activates when: API p95 > 200ms                [volatile]
 ```
 
@@ -70,7 +70,7 @@ The atomic unit. Not a note — a pre-computed conclusion with an expiration con
 |--------|------|---------|
 | `[D]` | Decision | Choice between alternatives — has invalidation trigger |
 | `[I]` | Insight | Reusable conclusion — survives the session that produced it |
-| `[E]` | Error | Mistake with root cause — drops to noise once learning extracted |
+| `[E]` | Error | Mistake with root cause + fix — drops to noise once learning extracted |
 | `[S]` | Seed | Forward-looking idea — activates when conditions are met |
 
 ### Priority Matrix
@@ -83,7 +83,7 @@ Confidence (Claude proposes) × Impact (you confirm):
 | **Medium** | **volatile** — needs resolution | **settled** |
 | **Low Confidence** | **volatile** | **noise** — discard |
 
-Cap: 24 artifacts per project. Eviction: noise → settled → volatile → critical (never).
+Cap: 24 artifacts per context. Eviction: noise → settled → volatile → critical (never).
 
 ## Works With
 
@@ -105,15 +105,28 @@ Same vault, same artifacts, different integration depth.
 Memory is plain markdown. Point [Obsidian](https://obsidian.md) at your vault for graph view, backlinks, and search.
 
 ```
-my-project/memento/
-├── _context.md        # Active artifacts (the brain)
-├── NEXT.md            # Session continuity
-├── Decisions/         # Full decision records
-├── Sessions/          # Session log
-└── patterns/          # Cross-project patterns (optional)
+knowledge-vault/
+├── Projects/
+│   ├── _context.md          # Cross-project decisions
+│   └── my-app/
+│       ├── _context.md      # Project artifacts (the brain)
+│       ├── NEXT.md          # Session continuity
+│       ├── Decisions/       # Full decision records
+│       └── Sessions/        # Session log
+├── Personal/
+│   └── _context.md          # Hobbies, health, learning artifacts
+├── Business/
+│   └── _context.md          # Cross-business decisions
+├── Knowledge/
+│   ├── _context.md          # General cross-domain insights
+│   └── MOC — Patterns.md    # Map of Content hubs
+├── People/
+│   └── Self.md              # Your peer card
+└── _meta/
+    └── conventions.md       # Vault rules
 ```
 
-Tags: `tech/`, `business/`, `product/`, `ai/`, `personal/` — nested as `domain/subtopic`. Folders created on demand.
+Every area has its own `_context.md` with an artifacts table. Artifacts route automatically to the right context based on domain. Tags: `tech/`, `business/`, `product/`, `ai/`, `personal/` — nested as `domain/subtopic`. Folders created on demand.
 
 ## Before / After
 
