@@ -23,7 +23,7 @@ Every piece of memory is a reasoning artifact — a pre-computed conclusion with
 |--------|------|---------|
 | `[D]` | Decision | A choice between alternatives — has an invalidation trigger |
 | `[I]` | Insight | A reusable conclusion — survives the session that produced it |
-| `[E]` | Error | A mistake with root cause — defaults to settled |
+| `[E]` | Error | A mistake with root cause + fix — defaults to settled |
 | `[S]` | Seed | A deferred idea — activates when its condition is met, not when time passes |
 
 Optional expiry (for time-bound conclusions only):

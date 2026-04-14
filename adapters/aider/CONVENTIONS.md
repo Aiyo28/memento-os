@@ -17,7 +17,7 @@ All conclusions extracted from a session MUST use one of these four artifact typ
 
 - `[D]` Decision — a resolved choice with a stated trigger for reconsideration
 - `[I]` Insight — a pattern or learning that may change under stated conditions
-- `[E]` Error — a mistake with its root cause; defaults to `settled` priority
+- `[E]` Error — a mistake with root cause + fix; defaults to `settled` priority
 - `[S]` Seed — a deferred idea to revisit when a specific condition is met
 
 ---
