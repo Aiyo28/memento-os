@@ -183,6 +183,14 @@ Welcome: evolution entries, adapter improvements, scorecard improvements, transl
 
 Not accepted: vendor plugins, paid integrations, AI-generated filler.
 
+## Support
+
+If Memento OS saved you time:
+
+[![PayPal](https://img.shields.io/badge/PayPal-Buy%20me%20a%20coffee-00457C?logo=paypal&logoColor=white)](https://paypal.me/aiyo28)
+
+[paypal.me/aiyo28](https://paypal.me/aiyo28) — any amount, any currency.
+
 ## License
 
 [MIT](LICENSE)
