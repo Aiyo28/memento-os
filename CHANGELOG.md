@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.1.0] — 2026-05-20
+
+### Added
+- **Area-level artifact routing** — DIES (`[D]`/`[I]`/`[E]`/`[S]`) artifacts now route to the correct `_context.md` based on the file's area, instead of all landing in a single root file
+- **`fix:` field on error artifacts** — `[E]` entries gain a `fix:` line across all 8 adapters (Claude Code, Codex, Cursor, Windsurf, Cline, Gemini, Aider, Continue), making the "what unblocks this" explicit
+- **Knowledge OS gaps port** — L0.5 context directory pattern, confidence gate before mid-task decisions, `embedded`/`resolved` artifact states
+- **PayPal donation link** — Path B reputation-lane CTA per project policy
+
+### Changed
+- README — area-level vault structure documented, error artifact `fix:` field illustrated
+- Acknowledgments — credit to Matt Pocock for `grill-me` skill lineage
+- `plugin.json` — `repository`/`homepage` URLs corrected to `Aiyo28/memento-os` (were stale `ayalnogovitsyn/memento-os`)
+- `plugin.json` version bumped to 2.1.0
+
 ## [2.0.0] — 2026-04-11
 
 ### Added
