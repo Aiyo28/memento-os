@@ -1,0 +1,12 @@
+memento:lint — vault validation report (vault: /Users/ayalnogovitsyn/Documents/Developer/memento-os/tests/fixtures/violations)
+
+_context.md
+  L12   [D]#1      R1: missing 'invalidates if|invalidates when|dies if' clause
+  L13   [I]#2      R1: missing 'invalidates if|invalidates when|dies if' clause
+  L14   [E]#3      R3: missing 'fix:' clause
+  L15   [S]#4      R2: missing 'Activation:' or 'activates when' clause
+  L16   [D]#?      R4: missing # number
+  L17   [D]#6      R5: missing priority
+  L18   [D]#7      R6: no YYYY-MM-DD date in row
+
+Summary: 7 violations across 1 files (7 artifacts checked)

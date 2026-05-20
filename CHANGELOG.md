@@ -1,5 +1,30 @@
 # Changelog
 
+## [2.2.0] — 2026-05-20
+
+### Added
+- **`memento:lint`** (Tier 1 / Claude Code) — schema validator for reasoning artifacts. Walks every `_context.md` under a vault root and enforces:
+  - `[D]`/`[I]` must contain `invalidates if` / `invalidates when` / `dies if`
+  - `[S]` must contain `Activation:` (or `activates when` in lax mode)
+  - `[E]` must contain `fix:`
+  - Every artifact must have a `#` number, a priority, and a `YYYY-MM-DD` date
+
+  Exits non-zero on any violation — runnable as a pre-commit hook or in CI. `--strict`, `--format json`, `--quiet` flags. Script: `skills/memento-lint/lint.py`.
+- **`memento:decay`** (Tier 1 / Claude Code) — finds aged `[D]` artifacts whose invalidation triggers may have fired. Scores decay from three signals:
+  - Git log keyword search (best-effort; gracefully skipped when no repo)
+  - Newer vault artifacts with overlapping terms (supersession evidence)
+  - Age past 90 days with no other signal (weak)
+
+  Emits ranked candidates (text or JSON). The agent reads JSON output and prompts user `y/n` on each `LIKELY STALE` candidate; on confirmation the artifact is marked `superseded`. Script: `skills/memento-decay/decay.py`.
+- **`docs/specs/`** — new home for design docs. First entry covers both v2.2 verbs.
+- **`tests/`** — bash-driven assertion harness with fixture `_context.md` files. `tests/run.sh` runs lint + decay against fixtures and asserts on exit codes and signal evidence. No external test framework added.
+
+### Rationale
+- Strategic seed `[S]#27` in `Projects/memento-os/_context.md` (2026-05-20): Jeff Su (~2M-sub productivity YouTuber, 2026-05-19) gave away the structured CLAUDE.md / memory.md / archive.md ontology free, with HubSpot sponsoring a paid course launching. The structural pattern is mass-market commodity within 2–3 months. Memento OS's durable differentiator collapses to the **judgment layer** — schema enforcement and drift detection — neither of which a prose template can replicate. `lint` + `decay` operationalize that layer.
+
+### Deferred
+- Tier 2/3 adapter ports (Codex full-skills mirror; Cursor/Windsurf/Cline/Gemini rule snippets; Aider/Continue manual docs) — planned for v2.2.x follow-up. Both verbs invoke language-neutral Python scripts, so ports are mechanical.
+
 ## [2.1.0] — 2026-05-20
 
 ### Added
