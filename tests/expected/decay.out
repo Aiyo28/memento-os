@@ -1,0 +1,18 @@
+memento:decay — aged decisions (vault: /Users/ayalnogovitsyn/Documents/Developer/memento-os/tests/fixtures/decay)
+
+[LIKELY STALE] _context.md [D]#1 (age 292d, score 3)
+  artifact: `[D] Ship the auth refactor before Q3 — invalidates if scope creeps past two epics`
+  invalidator: scope creeps past two epics
+  + vault (+3): _context.md [D]#3 (2026-02-15) overlap: auth,epics,scope
+
+[REVIEW] _context.md [D]#2 (age 139d, score 1)
+  artifact: `[D] Use SendGrid for transactional email — invalidates if pricing changes`
+  invalidator: pricing changes
+  + age (+1): age 139d
+
+[REVIEW] _context.md [D]#3 (age 94d, score 1)
+  artifact: `[D] Auth refactor scope expanded to four epics — invalidates if engineering capacity drops`
+  invalidator: engineering capacity drops
+  + age (+1): age 94d
+
+Summary: 3 candidates (1 likely stale)

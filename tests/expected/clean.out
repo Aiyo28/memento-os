@@ -1,0 +1,10 @@
+memento:lint — vault validation report (vault: /Users/ayalnogovitsyn/Documents/Developer/memento-os/tests/fixtures/clean)
+
+_context.md
+  L12   [D]#1      OK
+  L13   [I]#2      OK
+  L14   [E]#3      OK
+  L15   [S]#4      OK
+  L16   [S]#5      OK
+
+Summary: 0 violations across 0 files (5 artifacts checked)
