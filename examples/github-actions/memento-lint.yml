@@ -1,0 +1,27 @@
+# Example GitHub Actions workflow — runs memento:lint on every push and PR.
+# Copy to .github/workflows/memento-lint.yml and adjust the vault path.
+
+name: memento:lint
+
+on:
+  push:
+    paths:
+      - "**/_context.md"
+      - ".claude/plugins/memento-os/**"
+  pull_request:
+    paths:
+      - "**/_context.md"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run memento:lint
+        run: |
+          python3 .claude/plugins/memento-os/skills/memento-lint/lint.py \
+            --ci \
+            "${GITHUB_WORKSPACE}/vault"

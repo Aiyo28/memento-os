@@ -48,3 +48,22 @@ rules:
     display briefing.
     At session end: extract artifacts, confirm with user, write to
     _context.md, update NEXT.md, append session log entry.
+
+  - >
+    Memento OS — Schema Lint (memento:lint):
+    Validate every _context.md against the artifact schema.
+    [D]/[I] need invalidates clause; [S] needs Activation/activates when;
+    [E] needs fix:. Every artifact needs # number + priority + date.
+    Malformed rows surface as R7 warnings (--strict promotes to violations).
+    Invoke: python3 <plugin>/skills/memento-lint/lint.py [vault_root] [--ci].
+    Exit codes: 0 clean, 1 violations, 2 usage error.
+
+  - >
+    Memento OS — Decay Audit (memento:decay):
+    Find aged [D] artifacts (default >30 days) whose invalidation triggers
+    may have fired. Scores from git-log keyword AND in same commit, vault
+    overlap (≥2 keywords), and age past 90 days.
+    Per-vault stopword list at <vault_root>/.memento-stopwords loaded auto.
+    Invoke: python3 <plugin>/skills/memento-decay/decay.py --format json.
+    Prompt user y/n on each LIKELY STALE candidate; on y, change priority
+    cell to superseded. Never auto-supersede.

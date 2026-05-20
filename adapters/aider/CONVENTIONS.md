@@ -111,3 +111,46 @@ The vault is a retrieval source, not just a write destination. Search first, fil
 - Auto-evict `critical` artifacts — always confirm with the user
 - Reference "Knowledge OS" or "Agentic Total Recall" — this system is called "Memento OS"
 - Skip session-complete — every session that produces conclusions must end with a write
+
+---
+
+## Schema Validation: `memento:lint`
+
+When the user asks to "lint", "validate artifacts", or "check the schema", run:
+
+```bash
+python3 ${MEMENTO_PLUGIN_ROOT}/skills/memento-lint/lint.py [vault_root] [--strict] [--ci] [--format json] [--quiet]
+```
+
+Rules enforced (case-insensitive):
+- `[D]` / `[I]` MUST contain `invalidates if` / `invalidates when` / `dies if`
+- `[S]` MUST contain `Activation:` (or `activates when` without `--strict`)
+- `[E]` MUST contain `fix:`
+- Every artifact MUST have a `#` number, a priority, and a `YYYY-MM-DD` date
+- R7 (warning): malformed table rows surface as warnings; `--strict` promotes them to violations
+
+`--ci` = `--strict --quiet`. Exit codes: 0 clean, 1 violations, 2 usage error.
+
+For each violation, ask the user the missing field, then edit the artifact row in place. Re-run lint to confirm clean. Never auto-fix without confirmation.
+
+---
+
+## Decay Audit: `memento:decay`
+
+When the user asks for "decay check", "what's stale", or "audit aged decisions", run:
+
+```bash
+python3 ${MEMENTO_PLUGIN_ROOT}/skills/memento-decay/decay.py [vault_root] [--age 30] [--format json] [--no-git] [--all] [--stopwords <file>]
+```
+
+Finds aged `[D]` artifacts (default >30 days) whose invalidation triggers may have fired. Scores from three signals: git-log keyword grep (multi-keyword AND in same commit weighted higher), vault-state contradiction (newer artifact with ≥2 overlapping terms), and age past 90 days.
+
+A per-vault stopword list at `<vault_root>/.memento-stopwords` is loaded automatically.
+
+Agent flow:
+1. Run with `--format json`.
+2. For each LIKELY STALE candidate, prompt user: "Mark `[D]#N` as superseded? (y/n/skip)".
+3. On `y`, change the priority cell in `_context.md` to `superseded`.
+4. On `n` / `skip`, optionally capture an `[I]` insight explaining why the trigger hasn't fired.
+
+Never auto-supersede. Every supersession requires user confirmation.

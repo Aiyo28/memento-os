@@ -1,0 +1,17 @@
+name: memento-lint
+description: Validate every reasoning artifact in the vault against the schema
+
+---
+Run `python3 <path-to-memento-os>/skills/memento-lint/lint.py [vault_root]` for the user's vault.
+
+Schema rules (case-insensitive):
+- `[D]` / `[I]` must contain `invalidates if` / `invalidates when` / `dies if`
+- `[S]` must contain `Activation:` (or `activates when` without `--strict`)
+- `[E]` must contain `fix:`
+- Every artifact must have a `#` number, a priority, and a `YYYY-MM-DD` date
+- R7 (warning): malformed table rows surface as warnings; promoted to violations under `--strict`
+
+Flags: `--strict`, `--ci` (= --strict --quiet), `--format json`, `--quiet`.
+Exit codes: 0 clean, 1 violations, 2 usage error.
+
+For each violation, ask the user the missing field, then edit the artifact row in place. Re-run lint to confirm clean. Do not auto-fix without confirmation.

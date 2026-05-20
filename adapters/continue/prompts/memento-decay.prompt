@@ -1,0 +1,22 @@
+name: memento-decay
+description: Find aged [D] artifacts whose invalidation triggers may have fired
+
+---
+Run `python3 <path-to-memento-os>/skills/memento-decay/decay.py --format json [vault_root]` for the user's vault.
+
+Scoring signals:
+- Git-log keyword grep (commits grouped per-hash; multi-keyword in same commit weighted higher)
+- Newer vault artifact with ≥2 overlapping terms
+- Age past 90 days with no other signal (weak)
+
+Tiers: score ≥3 = LIKELY STALE; 1–2 = REVIEW; 0 = skipped unless `--all`.
+
+A per-vault stopword list at `<vault_root>/.memento-stopwords` is loaded automatically. Use it to suppress project-specific noise.
+
+Parse the JSON output. For each LIKELY STALE candidate, prompt the user:
+"Mark `[D]#N` as superseded? (y/n/skip)"
+
+On `y`: change the priority cell in `_context.md` to `superseded`. Update `Decisions/` file frontmatter if present.
+On `n` / `skip`: leave artifact, optionally capture an `[I]` insight explaining why the trigger hasn't fired.
+
+Never auto-supersede.

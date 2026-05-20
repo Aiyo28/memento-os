@@ -20,6 +20,21 @@ Tier 3 (Manual) integration. Loads Memento OS conventions as read-only context s
 - Priority matrix applied when the AI stores conclusions
 - Kobe 24-artifact cap respected on writes
 - Session-start and session-complete workflows encoded as explicit instructions
+- `memento:lint` and `memento:decay` Python scripts callable from `/run` commands
+
+## Optional: schema validation + decay audit
+
+Add these `commands:` entries to your `.aider.conf.yml` (export `MEMENTO_PLUGIN_ROOT` to wherever you cloned memento-os):
+
+```yaml
+commands:
+  - name: lint
+    run: python3 ${MEMENTO_PLUGIN_ROOT}/skills/memento-lint/lint.py
+  - name: decay
+    run: python3 ${MEMENTO_PLUGIN_ROOT}/skills/memento-decay/decay.py --format json
+```
+
+Then `/lint` and `/decay` inside the Aider session invoke the scripts. See `CONVENTIONS.md` for the full schema rules and agent flow.
 
 ## Differences from Tier 1/2
 

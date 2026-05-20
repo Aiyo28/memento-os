@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>DIES vs DICE — Memento OS vNext architecture decision</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  :root {
+    --bg: #0f1115;
+    --panel: #161922;
+    --panel-2: #1c2030;
+    --border: #2a2f3e;
+    --text: #e6e9ef;
+    --muted: #8a92a6;
+    --accent: #7aa2f7;
+    --warn: #e0af68;
+    --good: #9ece6a;
+    --bad: #f7768e;
+    --d: #7aa2f7;
+    --i: #9ece6a;
+    --e: #f7768e;
+    --s: #e0af68;
+    --c: #bb9af7;
+    --mono: ui-monospace, SF Mono, Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { background: var(--bg); color: var(--text); margin: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; line-height: 1.5; padding: 32px 24px 80px; }
+  .wrap { max-width: 1280px; margin: 0 auto; }
+  header { margin-bottom: 32px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+  h1 { font-size: 28px; margin: 0 0 8px; letter-spacing: -0.01em; }
+  h1 .vs { color: var(--muted); font-weight: 400; }
+  h2 { font-size: 20px; margin: 32px 0 16px; letter-spacing: -0.005em; }
+  h3 { font-size: 15px; margin: 16px 0 8px; color: var(--text); font-weight: 600; }
+  p.sub { color: var(--muted); margin: 0; font-size: 14px; }
+  code, .mono { font-family: var(--mono); font-size: 13px; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 980px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .panel-title { display: flex; align-items: baseline; gap: 12px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .panel-title h2 { margin: 0; font-size: 18px; }
+  .panel-title .tag { font-size: 11px; padding: 3px 8px; border-radius: 999px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+  .tag.now { background: rgba(158, 206, 106, 0.15); color: var(--good); }
+  .tag.spec { background: rgba(224, 175, 104, 0.15); color: var(--warn); }
+  .tag.rec { background: rgba(187, 154, 247, 0.15); color: var(--c); }
+
+  .marker { display: inline-flex; align-items: center; justify-content: center; min-width: 28px; padding: 2px 8px; border-radius: 6px; font-family: var(--mono); font-weight: 700; font-size: 12px; }
+  .m-d { background: rgba(122,162,247,.16); color: var(--d); border: 1px solid rgba(122,162,247,.35); }
+  .m-i { background: rgba(158,206,106,.16); color: var(--i); border: 1px solid rgba(158,206,106,.35); }
+  .m-e { background: rgba(247,118,142,.16); color: var(--e); border: 1px solid rgba(247,118,142,.35); }
+  .m-s { background: rgba(224,175,104,.16); color: var(--s); border: 1px solid rgba(224,175,104,.35); }
+  .m-c { background: rgba(187,154,247,.16); color: var(--c); border: 1px solid rgba(187,154,247,.35); }
+
+  /* Flowchart */
+  .flow { display: grid; gap: 12px; margin-top: 8px; }
+  .node { background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; font-size: 13px; position: relative; }
+  .node .nh { display: flex; gap: 10px; align-items: center; margin-bottom: 4px; font-weight: 600; }
+  .node .nb { color: var(--muted); font-size: 12px; line-height: 1.45; }
+  .arrow { text-align: center; color: var(--muted); font-family: var(--mono); font-size: 14px; }
+  .row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: center; }
+  .row > .node { flex: 1; }
+  .row > .conn { color: var(--muted); font-family: var(--mono); padding: 0 6px; font-size: 12px; }
+
+  /* Inline artifact card */
+  .artifact { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: start; padding: 10px 12px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; margin-top: 6px; font-size: 13px; }
+  .artifact .meta { color: var(--muted); font-size: 11px; font-family: var(--mono); text-align: right; white-space: nowrap; }
+  .artifact .text { line-height: 1.45; }
+  .artifact .text .em { color: var(--accent); }
+
+  /* Diff table */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+  thead th { text-align: left; color: var(--muted); font-weight: 600; padding: 8px 10px; border-bottom: 1px solid var(--border); font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
+  td { padding: 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  td:first-child { color: var(--muted); white-space: nowrap; width: 180px; font-weight: 600; }
+  td.dies-cell { background: rgba(122,162,247,.04); }
+  td.dice-cell { background: rgba(187,154,247,.04); }
+  tr:last-child td { border-bottom: none; }
+
+  /* Recommendation */
+  .rec { background: linear-gradient(135deg, rgba(187,154,247,.08), rgba(122,162,247,.04)); border: 1px solid rgba(187,154,247,.35); border-radius: 12px; padding: 24px; margin-top: 16px; }
+  .rec h2 { margin-top: 0; color: var(--c); }
+  .rec .lead { font-size: 15px; line-height: 1.55; margin: 0 0 16px; }
+  .rec .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+  @media (max-width: 720px) { .rec .pros-cons { grid-template-columns: 1fr; } }
+  .pc { background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+  .pc h4 { margin: 0 0 8px; font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .pc ul { margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.55; }
+  .pc li { margin-bottom: 6px; }
+  .pc.good h4 { color: var(--good); }
+  .pc.bad h4 { color: var(--bad); }
+
+  /* Option grid */
+  .options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 12px; }
+  @media (max-width: 980px) { .options { grid-template-columns: 1fr; } }
+  .opt { background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; position: relative; }
+  .opt.recommended { border-color: var(--c); }
+  .opt.recommended::before { content: "RECOMMENDED"; position: absolute; top: -10px; right: 12px; background: var(--c); color: var(--bg); font-size: 10px; padding: 3px 8px; border-radius: 4px; letter-spacing: 0.08em; font-weight: 700; }
+  .opt h4 { margin: 0 0 6px; font-size: 14px; }
+  .opt .blurb { color: var(--muted); font-size: 12px; line-height: 1.55; margin-bottom: 10px; }
+  .opt .when { font-size: 12px; }
+  .opt .when strong { color: var(--accent); }
+
+  /* footer */
+  footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--muted); font-size: 12px; }
+  footer a { color: var(--accent); text-decoration: none; }
+
+  ul.feature-list { padding-left: 20px; font-size: 13px; }
+  ul.feature-list li { margin-bottom: 6px; line-height: 1.45; }
+  ul.feature-list code { background: var(--panel-2); padding: 1px 5px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>DIES <span class="vs">vs.</span> DICE — Memento OS vNext architecture</h1>
+  <p class="sub">Side-by-side architecture map · 2026-05-20 · <strong style="color: var(--good);">DECIDED — Option B</strong> (see <code>docs/specs/2026-05-20-v2.4-knowledge-os-feature-port.md</code>)</p>
+</header>
+
+<section>
+  <p class="sub" style="font-size: 14px; color: var(--text); margin: 0 0 24px; max-width: 920px;">
+    Two competing artifact schemas. <strong>DIES</strong> is what Knowledge OS, Memento OS v2.3.0, and every adapter ship today.
+    <strong>DICE</strong> is a forward-looking schema from the AIYO OS grill session (2026-04-19) — proposed for the paid team-collaboration product, not yet adopted in the live Knowledge OS ontology.
+  </p>
+</section>
+
+<!-- ===== SIDE BY SIDE ARCHITECTURES ===== -->
+
+<div class="grid-2">
+
+  <!-- DIES PANEL -->
+  <div class="panel">
+    <div class="panel-title">
+      <h2>DIES — current schema</h2>
+      <span class="tag now">live</span>
+    </div>
+
+    <h3>4 artifact types, all in one table</h3>
+    <div class="flow">
+      <div class="artifact">
+        <span class="marker m-d">[D]</span>
+        <div class="text"><strong>Decision</strong> — conclusion <em class="em">— invalidates if</em> trigger</div>
+        <span class="meta">priority<br>date</span>
+      </div>
+      <div class="artifact">
+        <span class="marker m-i">[I]</span>
+        <div class="text"><strong>Insight</strong> — learning <em class="em">— invalidates if</em> condition</div>
+        <span class="meta">priority<br>date</span>
+      </div>
+      <div class="artifact">
+        <span class="marker m-e">[E]</span>
+        <div class="text"><strong>Error</strong> — what broke <em class="em">— root cause:</em> why <em class="em">— fix:</em> what unblocked it</div>
+        <span class="meta">settled<br>date</span>
+      </div>
+      <div class="artifact">
+        <span class="marker m-s">[S]</span>
+        <div class="text"><strong>Seed</strong> — deferred idea <em class="em">— activates when</em> condition</div>
+        <span class="meta">priority<br>date</span>
+      </div>
+    </div>
+
+    <h3>Storage architecture</h3>
+    <div class="flow">
+      <div class="node">
+        <div class="nh">📁 <span><code>_context.md</code> — Active Reasoning Artifacts</span></div>
+        <div class="nb">Single table holds all four types. Kobe cap = <strong>24 entries</strong> per project (Memento OS) / <strong>5K-token</strong> at area level (Knowledge OS, post-funnel).</div>
+      </div>
+      <div class="arrow">↓ over cap</div>
+      <div class="node">
+        <div class="nh">🗄 <span><code>Decisions/</code> + eviction</span></div>
+        <div class="nb">Eviction order: noise → settled → volatile. <strong>Never auto-evict <span class="marker m-d">[D]</span></strong>. Full-file artifacts in <code>Decisions/</code> for critical/volatile.</div>
+      </div>
+    </div>
+
+    <h3>Seed lifecycle (the [S] story)</h3>
+    <div class="flow">
+      <div class="node">
+        <div class="nh">🌱 <span>Seed planted in <code>_context.md</code></span></div>
+        <div class="nb"><code>[S] idea — activates when X</code> sits in the artifact table.</div>
+      </div>
+      <div class="arrow">↓ /session-start checks activation</div>
+      <div class="node">
+        <div class="nh">⚡ <span>Activation condition fires</span></div>
+        <div class="nb">Session-start surfaces in "Seeds Ready". User decides.</div>
+      </div>
+      <div class="arrow">↓ /decide --commit</div>
+      <div class="node">
+        <div class="nh"><span class="marker m-d">[D]</span> <span>Promoted to decision</span></div>
+        <div class="nb">Seed becomes a committed [D] with an invalidation trigger.</div>
+      </div>
+    </div>
+
+    <h3>Cardinal property</h3>
+    <ul class="feature-list">
+      <li><strong>Single-pane visibility</strong> — every reasoning artifact lives in one table, loaded on every session.</li>
+      <li><strong>Solo-optimized</strong> — no owner/reviewer/scope metadata.</li>
+      <li><strong>Linear lifecycle</strong> — Seed → Decision → (maybe Archived).</li>
+    </ul>
+  </div>
+
+  <!-- DICE PANEL -->
+  <div class="panel">
+    <div class="panel-title">
+      <h2>DICE — proposed schema</h2>
+      <span class="tag spec">spec — AIYO OS</span>
+    </div>
+
+    <h3>4 artifact types, S removed, C added</h3>
+    <div class="flow">
+      <div class="artifact">
+        <span class="marker m-d">[D]</span>
+        <div class="text"><strong>Decision</strong> — same as DIES</div>
+        <span class="meta">priority<br>date</span>
+      </div>
+      <div class="artifact">
+        <span class="marker m-i">[I]</span>
+        <div class="text"><strong>Insight</strong> — same as DIES</div>
+        <span class="meta">priority<br>date</span>
+      </div>
+      <div class="artifact">
+        <span class="marker m-c">[C]</span>
+        <div class="text"><strong>Consequence</strong> <em class="em">— paired to</em> <span class="marker m-d" style="font-size:11px;padding:0 6px;">[D]#N</span> <em class="em">— manifests when</em> X <em class="em">— mitigation:</em> Y</div>
+        <span class="meta">priority<br>date</span>
+      </div>
+      <div class="artifact">
+        <span class="marker m-e">[E]</span>
+        <div class="text"><strong>Error</strong> — same as DIES</div>
+        <span class="meta">settled<br>date</span>
+      </div>
+    </div>
+
+    <h3>Storage architecture</h3>
+    <div class="flow">
+      <div class="node">
+        <div class="nh">📁 <span><code>_context.md</code> — DICE log</span></div>
+        <div class="nb">Holds <span class="marker m-d">[D]</span> + <span class="marker m-i">[I]</span> + <span class="marker m-c">[C]</span> + <span class="marker m-e">[E]</span> only. <strong>Rolling token cap</strong>, not entry cap. Auto-archive older sessions.</div>
+      </div>
+      <div class="node">
+        <div class="nh">🌱 <span><code>_ideas/</code> — seeds live here</span></div>
+        <div class="nb">All <span class="marker m-s">[S]</span>-style "deferred ideas" move OUT of the artifact table into a dedicated <code>_ideas/</code> folder. Lightweight stubs with <code>depends_on</code> field.</div>
+      </div>
+      <div class="node">
+        <div class="nh">👥 <span>Team metadata on every artifact</span></div>
+        <div class="nb">New fields: <code>owner</code>, <code>reviewers</code>, <code>scope</code>, <code>status</code> (proposed→accepted→revoked), <code>thread</code> for dissent. Solo users would carry these empty.</div>
+      </div>
+    </div>
+
+    <h3>Consequence pairing — the new ritual</h3>
+    <div class="flow">
+      <div class="node">
+        <div class="nh"><span class="marker m-d">[D]</span> <span>Decision recorded with invalidator</span></div>
+        <div class="nb"><code>[D]#3 vendor lock-in — invalidates if pricing doubles</code></div>
+      </div>
+      <div class="arrow">↓ pair the downstream effect</div>
+      <div class="node">
+        <div class="nh"><span class="marker m-c">[C]</span> <span>Consequence + mitigation</span></div>
+        <div class="nb"><code>[C] paired to [D]#3 — manifests when pricing doubles — mitigation: migrate to OSS alternative within Q2</code></div>
+      </div>
+      <div class="arrow">↓ /decay detects trigger fired</div>
+      <div class="node">
+        <div class="nh">⚠️ <span>Mitigation activated</span></div>
+        <div class="nb">User isn't just told "the decision invalidated" — they see the pre-committed mitigation, ready to execute.</div>
+      </div>
+    </div>
+
+    <h3>Cardinal property</h3>
+    <ul class="feature-list">
+      <li><strong>Pre-committed responses</strong> — every load-bearing decision carries its mitigation plan.</li>
+      <li><strong>Team-optimized</strong> — decisions become contracts between people (owner, reviewers, dissent thread).</li>
+      <li><strong>Branching lifecycle</strong> — Idea (in <code>_ideas/</code>) → Decision → either Insight or Consequence.</li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- ===== DIFFERENCES TABLE ===== -->
+
+<h2>Side-by-side differences</h2>
+<div class="panel" style="margin-top: 0;">
+  <table>
+    <thead>
+      <tr>
+        <th>Dimension</th>
+        <th>DIES</th>
+        <th>DICE</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Artifact prefixes</td>
+        <td class="dies-cell"><span class="marker m-d">D</span> <span class="marker m-i">I</span> <span class="marker m-e">E</span> <span class="marker m-s">S</span></td>
+        <td class="dice-cell"><span class="marker m-d">D</span> <span class="marker m-i">I</span> <span class="marker m-c">C</span> <span class="marker m-e">E</span></td>
+      </tr>
+      <tr>
+        <td>Seeds</td>
+        <td class="dies-cell">Inline in <code>_context.md</code> artifact table. Surface at session-start when activation fires.</td>
+        <td class="dice-cell">Removed from artifact table. Move to <code>_ideas/</code> folder as lightweight stubs.</td>
+      </tr>
+      <tr>
+        <td>Mitigation / downstream effect</td>
+        <td class="dies-cell">Implicit — buried in the invalidates clause or post-hoc.</td>
+        <td class="dice-cell">Explicit <span class="marker m-c">[C]</span> artifact paired to a <span class="marker m-d">[D]</span>. Pre-commits the response.</td>
+      </tr>
+      <tr>
+        <td>Cap shape</td>
+        <td class="dies-cell">Kobe cap = <strong>24 entries</strong> per project (Memento OS) / 5K-token at area level (KOS funnel).</td>
+        <td class="dice-cell">Rolling <strong>token cap</strong>, no entry cap. Auto-archive older sessions.</td>
+      </tr>
+      <tr>
+        <td>Team metadata</td>
+        <td class="dies-cell">None. Solo-author by design.</td>
+        <td class="dice-cell">owner, reviewers, scope, status (proposed→accepted→revoked), thread.</td>
+      </tr>
+      <tr>
+        <td>Lint enforcement</td>
+        <td class="dies-cell">R1 (invalidates), R2 (activation), R3 (fix:), R4–R6 (number/priority/date), R7 (malformed). Ships in Memento OS v2.3.0.</td>
+        <td class="dice-cell">Same R1/R3/R4–R7. R2 (activation) gone. New R8: every <span class="marker m-c">[C]</span> must name a paired <span class="marker m-d">[D]</span># and a mitigation.</td>
+      </tr>
+      <tr>
+        <td>Decay scoring</td>
+        <td class="dies-cell">Git+vault+age signals on aged <span class="marker m-d">[D]</span>s. Output: candidates to supersede.</td>
+        <td class="dice-cell">Same signals — plus when a <span class="marker m-d">[D]</span> decays, automatically surface its paired <span class="marker m-c">[C]</span> for mitigation execution.</td>
+      </tr>
+      <tr>
+        <td>Backward compatibility</td>
+        <td class="dies-cell">N/A — current state.</td>
+        <td class="dice-cell">Every existing vault has <span class="marker m-s">[S]</span> artifacts. Requires migration tooling: rename file structure + move seeds → <code>_ideas/</code>.</td>
+      </tr>
+      <tr>
+        <td>Maturity</td>
+        <td class="dies-cell">Live in Knowledge OS + Memento OS v2.3.0 + 8 adapters. Battle-tested.</td>
+        <td class="dice-cell">Spec only. Defined in <code>AIYO-OS-Grill-Session-2026-04-19.md D1</code>. Not adopted in any live system.</td>
+      </tr>
+      <tr>
+        <td>Target audience</td>
+        <td class="dies-cell">Solo developers, OSS reputation lane (Path B).</td>
+        <td class="dice-cell">Team-collaboration product (AIYO OS, paid SaaS).</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ===== KNOWLEDGE OS LIVE FEATURES NOT IN MEMENTO ===== -->
+
+<h2>Already-live Knowledge OS features <span style="color: var(--muted); font-weight: 400; font-size: 14px;">— not yet in Memento OS</span></h2>
+<p class="sub">These exist today in your active <code>~/Documents/Developer/knowledge-os/</code> ontology (updated 2026-05-20) but haven't been ported to Memento OS. They're independent of the DIES/DICE choice.</p>
+
+<div class="panel" style="margin-top: 12px;">
+  <table>
+    <thead>
+      <tr>
+        <th>Feature</th>
+        <th>What it does</th>
+        <th>Port effort</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Funnel Architecture</strong></td>
+        <td><code>_context.md</code> carries <span class="marker m-d">[D]</span>/<span class="marker m-s">[S]</span>/<span class="marker m-e">[E]</span> only. <span class="marker m-i">[I]</span> splits to companion <code>_insights.md</code>. 5K-token cap at area level instead of 24-entry. (<code>[D]#431</code>, 2026-05-20)</td>
+        <td>Medium — touches session-complete, lint, decay, vault-audit</td>
+      </tr>
+      <tr>
+        <td><strong>Project-Class taxonomy</strong></td>
+        <td>Orthogonal <code>class: oss|saas|ios|api-business|vault-only|business</code> field. Class-level <code>_context.md</code> at <code>Projects/_types/{class}/_context.md</code> auto-loaded at session-start.</td>
+        <td>Medium — needs class registry, session-start L1.5 load</td>
+      </tr>
+      <tr>
+        <td><strong>HEAD/Archive Split</strong></td>
+        <td>When <code>_context.md</code> exceeds cap, split into live <code>_context.md</code> + append-only <code>_archive.md</code>. Archive grep-on-demand, not auto-loaded.</td>
+        <td>Low — file convention + vault-audit routing rule</td>
+      </tr>
+      <tr>
+        <td><strong>Emission Discipline</strong></td>
+        <td>Only deliberation skills (<code>/decide</code>, <code>/grill-me</code>) may emit <span class="marker m-d">[D]</span>. Research/maintenance skills downgrade to <span class="marker m-s">[S]</span> automatically. Solves Gresham's-Law-of-context: speculative [D]s crowd out committed ones.</td>
+        <td>Low — declarative rule, enforced in SKILL.md prose + lint warning</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ===== RECOMMENDATION ===== -->
+
+<div class="rec">
+  <h2>Recommendation</h2>
+  <p class="lead">
+    <strong>Don't adopt DICE in Memento OS yet.</strong> Port the four already-live Knowledge OS features instead.
+    Revisit DICE when AIYO OS adopts it in production and survives 2–3 months of real team usage.
+  </p>
+
+  <div class="pros-cons">
+    <div class="pc bad">
+      <h4>Why DICE-first is the wrong move for Memento OS</h4>
+      <ul>
+        <li><strong>DICE is unproven.</strong> Not even live in your own Knowledge OS ontology (last updated 2026-05-20, still uses <span class="marker m-s">[S]</span>).</li>
+        <li><strong>Team metadata is dead weight for solo OSS users.</strong> Memento OS is Path B (solo developer reputation lane). owner/reviewers/scope/thread don't apply.</li>
+        <li><strong>Migration cost falls on existing users.</strong> Every vault with <span class="marker m-s">[S]</span> artifacts needs tooling to move seeds to <code>_ideas/</code>. Breaking-change tax.</li>
+        <li><strong>It dilutes the v2.2 enforcement story.</strong> Memento OS just shipped lint+decay as the differentiator vs. Jeff Su's commodity templates. Adding a schema rename right after fragments the marketing message.</li>
+        <li><strong>DICE serves the wrong product.</strong> It's optimized for AIYO OS (paid team product). Putting it in OSS Memento OS gives AIYO OS no commercial moat.</li>
+      </ul>
+    </div>
+    <div class="pc good">
+      <h4>Why the Knowledge OS feature port is the right move</h4>
+      <ul>
+        <li><strong>Already proven.</strong> All four features are live in your active vault. Battle-tested by you for months.</li>
+        <li><strong>Continuous with v2.2.</strong> Funnel Architecture and Emission Discipline are <em>more enforcement</em>, not a schema rewrite. Same positioning, sharper edge.</li>
+        <li><strong>No breaking change.</strong> Existing vaults work as-is. New features opt-in.</li>
+        <li><strong>Differentiator stacking.</strong> v2.2 = "lint+decay" → v2.3 = "+ Funnel + Class + Archive + Emission Discipline." Each release deepens the moat against prose-template competitors.</li>
+        <li><strong>Keeps DICE as a commercial moat for AIYO OS.</strong> When AIYO OS launches, "DICE + team collab" is the paid-tier feature gate. If DICE ships in OSS, AIYO OS loses that wedge.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ===== OPTIONS ===== -->
+
+<h2>The three paths</h2>
+<div class="options">
+  <div class="opt">
+    <h4>Option A — DICE-first</h4>
+    <p class="blurb">Rename <span class="marker m-s">[S]</span> → <span class="marker m-c">[C]</span> + move seeds to <code>_ideas/</code> + add team metadata. Memento OS leads, AIYO OS follows.</p>
+    <p class="when"><strong>When right:</strong> You decide Memento OS is the proving ground for AIYO OS. You're willing to break existing user vaults. The "lead the schema" narrative outweighs the commercial-moat-erosion risk.</p>
+  </div>
+  <div class="opt recommended">
+    <h4>Option B — Port the live KOS features</h4>
+    <p class="blurb">Funnel Architecture + Project-Class + HEAD/Archive Split + Emission Discipline. Stay on DIES. Each is independently proven in your daily vault use.</p>
+    <p class="when"><strong>When right:</strong> You want v2.4/v3.0 to deepen the enforcement moat, not pivot schema. No breaking change. Keeps DICE as AIYO OS's paid-tier wedge.</p>
+  </div>
+  <div class="opt">
+    <h4>Option C — Both</h4>
+    <p class="blurb">DICE rename AND port the four KOS features in one bundle. Single big release, single big risk.</p>
+    <p class="when"><strong>When right:</strong> You've already validated DICE in your own KOS for 4+ weeks. You're ready to ship one large breaking-change release and absorb the support load.</p>
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+
+<footer>
+  Sources: <code>~/Documents/Developer/knowledge-os/ontology.md</code> (live DIES schema, updated 2026-05-20)
+  · <code>~/Documents/Developer/knowledge-os/Projects/aiyo-os/Research/AIYO-OS-Grill-Session-2026-04-19.md</code> (DICE spec, D1)
+  · <code>docs/specs/2026-05-20-lint-and-decay-verbs.md</code> + <code>docs/specs/2026-05-20-adapter-ports-and-followups.md</code> (Memento OS v2.2 + v2.3 specs)
+</footer>
+
+</div>
+</body>
+</html>
