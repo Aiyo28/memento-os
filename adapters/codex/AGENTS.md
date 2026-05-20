@@ -50,6 +50,8 @@ The vault is a retrieval source, not just a write destination. Search first, the
 | `decide` | OODA decision loop with retrieval gate and priority matrix |
 | `grill-me` | Relentless structured interviewing to stress-test a plan |
 | `vault-audit` | Vault health check — staleness, structure, inbox processing |
+| `lint` | Schema validator for reasoning artifacts — exit non-zero on violation (runnable as hook/CI) |
+| `decay` | Find aged [D] artifacts whose invalidation triggers may have fired |
 
 ## Auto-Log
 

@@ -1,5 +1,36 @@
 # Changelog
 
+## [2.3.0] — 2026-05-20
+
+### Added — adapter ports (full 8-tool parity for v2.2 verbs)
+- **Codex (Tier 1)** — `adapters/codex/skills/memento-lint/` and `memento-decay/` with synced Python scripts. AGENTS.md skill table extended. (Block A)
+- **Cursor + Windsurf (Tier 2 rules)** — appended Memento Lint Workflow + Memento Decay Workflow sections to `adapters/{cursor,windsurf}/rules/memento-workflows.{mdc,md}`. (Block B)
+- **Cline (Tier 2 rules)** — appended workflow sections to `adapters/cline/.clinerules/memento-workflows.md`. (Block B)
+- **Gemini (Tier 2 single-file)** — appended Memento Lint + Memento Decay sections to `adapters/gemini/GEMINI.md`. (Block C)
+- **Aider (Tier 3 manual)** — appended schema validation + decay audit sections to `adapters/aider/CONVENTIONS.md`; README documents `.aider.conf.yml` `/lint` and `/decay` commands. (Block D)
+- **Continue (Tier 3 manual)** — appended two rules entries to `config-snippet.yaml`; new `prompts/memento-lint.prompt` and `prompts/memento-decay.prompt`. (Block D)
+
+### Added — heuristic refinements
+- **Lint R7** — malformed table rows (unbalanced backticks, <4 cells) now surface as warnings by default; promoted to violations under `--strict`. Closes the silent-skip bug observed on `.vault-cache/_context.md` rows #26/#27.
+- **Lint `--ci` flag** — sugar for `--strict --quiet`. Recommended for hooks/CI.
+- **Decay multi-keyword AND in git grep** — commits are now grouped by hash; commits matching multiple invalidator keywords score +3 (2kw) / +5 (3+kw) per commit instead of +2 per individual keyword. Reduces false positives from common single-word matches.
+- **Decay per-vault stopwords** — `<vault_root>/.memento-stopwords` is loaded automatically (one word per line, `#` comments). `--stopwords <file>` overrides the default lookup. Default stopword set extended with `invalidates`, `activates`, `dies`, `trigger`, `condition` (schema markers, not domain content).
+
+### Added — hook + CI scaffolding
+- `examples/pre-commit/.pre-commit-config.yaml` — copy-paste pre-commit hook config.
+- `examples/github-actions/memento-lint.yml` — GitHub Actions workflow.
+- `examples/README.md` — flag reference and install walkthrough.
+- `scripts/sync-adapters.sh` — copies `lint.py` / `decay.py` into adapter directories. Run before tagging a release.
+- `RELEASE.md` — formal release process docs.
+
+### Changed
+- `adapters/README.md` — Claude Code / Codex rows updated to "7 skills" (was 5).
+- `tests/run.sh` — 12 new assertions covering R7, `--ci`, stopwords (with/without), JSON paths. Total assertions: 37.
+
+### Deferred (post-2.3.0)
+- Lint R7 enrichment — detect specific malformation subtypes (e.g., unclosed cell-spanning escape sequences) beyond the current heuristics.
+- Decay corroboration mode — `--require-signals 2` to only surface candidates with both git AND vault evidence.
+
 ## [2.2.0] — 2026-05-20
 
 ### Added

@@ -160,3 +160,53 @@ Triggers: "decide", "should we", "which option", "evaluate", "compare", "let's t
 4. Write inline format: `[D] conclusion — invalidates if trigger [priority] [YYYY-MM-DD]`
 5. If decision is "not now, but when X": plant `[S]` seed instead
 6. Write to `_context.md` (all priorities) + `Decisions/` file (critical/volatile only)
+
+---
+
+## Memento Lint Workflow
+
+Triggers: "lint vault", "validate artifacts", "check artifact schema", "memento lint"
+
+### What it does
+Walks every `_context.md` under the vault root and validates each reasoning artifact against the schema. Exit non-zero on any violation — runnable as a pre-commit hook or in CI.
+
+### Schema rules (case-insensitive)
+- `[D]` / `[I]` must contain `invalidates if` / `invalidates when` / `dies if`
+- `[S]` must contain `Activation:` (or `activates when` without `--strict`)
+- `[E]` must contain `fix:`
+- Every artifact must have a `#` number, a priority, and a `YYYY-MM-DD` date
+- R7 (warning): malformed table rows surface as warnings; promoted to violations under `--strict`
+
+### How to invoke
+```bash
+python3 <path-to-memento-os>/skills/memento-lint/lint.py [vault_root] [--strict] [--ci] [--format json] [--quiet]
+```
+
+Vault root resolution: argument → `$MEMENTO_VAULT_ROOT` → CWD.
+
+`--ci` is sugar for `--strict --quiet`. Exit codes: 0 clean, 1 violations, 2 usage error.
+
+### After lint surfaces violations
+For each violation, ask the user the missing field, then edit the artifact row in place. Re-run lint to confirm clean. Do not auto-fix without confirmation.
+
+---
+
+## Memento Decay Workflow
+
+Triggers: "decay check", "what's stale", "memento decay", "audit aged decisions"
+
+### What it does
+Finds aged `[D]` artifacts (default >30 days) whose invalidation triggers may have fired. Scores decay from three signals: git-log keyword grep (commits grouped by hash, multi-keyword AND weighted higher), vault-state contradiction (newer artifact with ≥2 overlapping terms), and age past 90 days.
+
+### How to invoke
+```bash
+python3 <path-to-memento-os>/skills/memento-decay/decay.py [vault_root] [--age 30] [--format json] [--no-git] [--all] [--stopwords <file>]
+```
+
+A per-vault stopword list at `<vault_root>/.memento-stopwords` is loaded automatically. Use it to suppress project-specific noise words.
+
+### Agent flow
+1. Run with `--format json`.
+2. For each LIKELY STALE candidate, prompt user: "Mark `[D]#N` as superseded? (y/n/skip)".
+3. On `y`: change the priority cell in `_context.md` to `superseded`. Update `Decisions/` file frontmatter if it exists.
+4. On `n` / `skip`: leave artifact, optionally capture an `[I]` insight explaining why the trigger hasn't fired.

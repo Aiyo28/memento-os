@@ -6,8 +6,8 @@ Adapters bring Memento OS to AI tools beyond Claude Code. All tiers use the same
 
 | Tool | Tier | What You Get | Install |
 |------|------|-------------|---------|
-| Claude Code | 1 — Full Plugin | 5 skills, 2 hooks, 2 commands | `claude plugin install memento-os` |
-| Codex | 1 — Full Skills | AGENTS.md + 5 skills | Copy `adapters/codex/` files |
+| Claude Code | 1 — Full Plugin | 7 skills, 2 hooks, 2 commands | `claude plugin install memento-os` |
+| Codex | 1 — Full Skills | AGENTS.md + 7 skills | Copy `adapters/codex/` files |
 | Cursor | 2 — Rules | Convention + workflow rules | Copy to `.cursor/rules/` |
 | Windsurf | 2 — Rules | Convention + workflow rules | Copy to `.windsurf/rules/` |
 | Cline | 2 — Rules | Convention + workflow rules | Copy to project root |

@@ -195,3 +195,48 @@ Triggers: "vault audit", "check vault", "what's stale", "clean up vault"
 - Auto-evict critical artifacts
 - Add expiry to foundational architecture decisions
 - Duplicate content — if a doc exists in a repo, the vault has a pointer, not a copy
+
+---
+
+## Memento Lint
+
+Triggers: "lint vault", "validate artifacts", "check artifact schema", "memento lint"
+
+Walks every `_context.md` under the vault root and validates each reasoning artifact against the schema. Exit non-zero on any violation — runnable as a pre-commit hook or in CI.
+
+**Schema rules** (case-insensitive):
+- `[D]` / `[I]` must contain `invalidates if` / `invalidates when` / `dies if`
+- `[S]` must contain `Activation:` (or `activates when` without `--strict`)
+- `[E]` must contain `fix:`
+- Every artifact must have a `#` number, a priority, and a `YYYY-MM-DD` date
+- R7 (warning): malformed table rows; promoted to violations under `--strict`
+
+**Invoke:**
+```bash
+python3 <path-to-memento-os>/skills/memento-lint/lint.py [vault_root] [--strict] [--ci] [--format json] [--quiet]
+```
+
+Vault root resolution: argument → `$MEMENTO_VAULT_ROOT` → CWD. `--ci` is sugar for `--strict --quiet`. Exit: 0 clean, 1 violations, 2 usage error.
+
+**After violations surface:** ask the user the missing field for each, edit the artifact row in place, re-run lint to confirm clean. Do not auto-fix.
+
+---
+
+## Memento Decay
+
+Triggers: "decay check", "what's stale", "memento decay", "audit aged decisions"
+
+Finds aged `[D]` artifacts (default >30 days) whose invalidation triggers may have fired. Scores from three signals: git-log keyword grep (commits grouped by hash, multi-keyword AND weighted higher), vault-state contradiction (newer artifact with ≥2 overlapping terms), and age past 90 days.
+
+**Invoke:**
+```bash
+python3 <path-to-memento-os>/skills/memento-decay/decay.py [vault_root] [--age 30] [--format json] [--no-git] [--all] [--stopwords <file>]
+```
+
+A per-vault stopword list at `<vault_root>/.memento-stopwords` is loaded automatically.
+
+**Agent flow:**
+1. Run with `--format json`.
+2. For each LIKELY STALE candidate, prompt: "Mark `[D]#N` as superseded? (y/n/skip)".
+3. On `y`: change priority cell in `_context.md` to `superseded`. Update `Decisions/` file frontmatter if present.
+4. On `n` / `skip`: optionally capture an `[I]` insight explaining why the trigger hasn't fired.

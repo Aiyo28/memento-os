@@ -1,0 +1,17 @@
+# Example pre-commit config — wires memento:lint as a local hook.
+# Copy to the root of your project, adjust the entry path, then:
+#   pre-commit install
+#
+# Lint runs on every commit that touches a _context.md file and fails the
+# commit if any artifact violates the schema.
+
+repos:
+  - repo: local
+    hooks:
+      - id: memento-lint
+        name: memento:lint
+        entry: python3 .claude/plugins/memento-os/skills/memento-lint/lint.py
+        language: system
+        pass_filenames: false
+        files: '_context\.md$'
+        args: [--ci]
