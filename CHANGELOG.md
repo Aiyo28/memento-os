@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.3.2] — 2026-09-05
+
+### Fixed
+- **Install failed for everyone with `Permission denied (publickey)`.** The marketplace listed
+  the plugin with a `github` source, so Claude Code cloned this repository a *second* time —
+  over SSH — to fetch a plugin that was already sitting in the copy it had just cloned to read
+  the marketplace. Anyone without an SSH key for `Aiyo28/memento-os` hit a hard failure, which
+  is every potential user. The source is now the relative path `./`: the plugin is the
+  marketplace root, so there is no second clone, no SSH, and no network call.
+
 ## [2.3.1] — 2026-09-05
 
 Install integrity. No skill behaviour changed; this release exists because the plugin could

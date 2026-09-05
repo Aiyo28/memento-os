@@ -10,11 +10,8 @@
   "plugins": [
     {
       "name": "memento-os",
-      "source": {
-        "source": "github",
-        "repo": "Aiyo28/memento-os"
-      },
-      "version": "2.3.1",
+      "source": "./",
+      "version": "2.3.2",
       "description": "Decision-centric memory for AI coding agents. Store conclusions, not notes. OODA reasoning artifacts with a priority matrix, invalidation triggers and seed activation.",
       "category": "knowledge-management"
     }

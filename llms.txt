@@ -1,6 +1,6 @@
 # Memento OS
 
-> Persistent AI memory using reasoning artifacts. Works with Claude Code, Codex, Cursor, Windsurf, Cline, Gemini, Aider, and Continue. Plugin version 2.3.1, MIT.
+> Persistent AI memory using reasoning artifacts. Works with Claude Code, Codex, Cursor, Windsurf, Cline, Gemini, Aider, and Continue. Plugin version 2.3.2, MIT.
 
 This file is written for AI coding assistants. It is enough to write correct Memento OS
 artifacts and invoke the right skill without reading the source. Copy the formats; do not
