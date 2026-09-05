@@ -28,7 +28,8 @@ AI agents are stateless. Every session starts from zero.
 ## Install
 
 ```bash
-/plugin install memento-os
+/plugin marketplace add Aiyo28/memento-os
+/plugin install memento-os@aiyo
 ```
 
 Then:
@@ -91,8 +92,9 @@ Same vault, same artifacts, different integration depth.
 
 | Tool | Tier | Install |
 |------|------|---------|
-| **Claude Code** | Full Plugin — 5 skills, 2 hooks, 2 commands | `/plugin install memento-os` |
-| **Codex** (OpenAI) | Full Skills — AGENTS.md + 5 skills | [adapters/codex/](adapters/codex/) |
+| **Claude Code** | Full Plugin — 7 skills, 2 hooks, 2 commands | `/plugin marketplace add Aiyo28/memento-os` → `/plugin install memento-os@aiyo` |
+| **Agent Skills** (50+ hosts) | Skills — auto-discovers all `skills/**` | `npx skills add Aiyo28/memento-os -g` (manual `npx skills update`) |
+| **Codex** (OpenAI) | Full Skills — AGENTS.md + 7 skills | [adapters/codex/](adapters/codex/) |
 | **Cursor** | Rules — conventions + workflow | [adapters/cursor/](adapters/cursor/) |
 | **Windsurf** | Rules | [adapters/windsurf/](adapters/windsurf/) |
 | **Cline** | Rules | [adapters/cline/](adapters/cline/) |
@@ -187,9 +189,9 @@ Not accepted: vendor plugins, paid integrations, AI-generated filler.
 
 If Memento OS saved you time:
 
-[![PayPal](https://img.shields.io/badge/PayPal-Buy%20me%20a%20coffee-00457C?logo=paypal&logoColor=white)](https://paypal.me/aiyo28)
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-Buy%20me%20a%20coffee-FF5E5B?logo=ko-fi&logoColor=white)](https://ko-fi.com/aiyo1939)
 
-[paypal.me/aiyo28](https://paypal.me/aiyo28) — any amount, any currency.
+[ko-fi.com/aiyo1939](https://ko-fi.com/aiyo1939) — any amount, any currency.
 
 ## License
 

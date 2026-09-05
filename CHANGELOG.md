@@ -1,5 +1,38 @@
 # Changelog
 
+## [2.3.1] — 2026-09-05
+
+Install integrity. No skill behaviour changed; this release exists because the plugin could
+not be installed at all.
+
+### Fixed
+- **`.claude-plugin/marketplace.json` was never committed.** It returned 404 on GitHub, so
+  `/plugin marketplace add Aiyo28/memento-os` failed and `/plugin install memento-os` had no
+  marketplace to install from. Both documented paths dead-ended. `plugin.json` was always
+  tracked; the marketplace manifest never was.
+- **The install instructions omitted the marketplace step.** A marketplace must be added
+  before a plugin can be installed.
+- **README advertised 5 skills.** v2.3.0 shipped 7 — `memento:decay` and `memento:lint` were
+  invisible to anyone reading it.
+- **The test suite was red and nobody knew.** `tests/fixtures/decay/_context.md` hardcoded
+  `2026-05-15` and `run.sh` asserted that row was "5 days old"; it had been 113. Red since
+  roughly 2026-06-14. The fixture is now generated relative to today, and a companion
+  assertion regenerates it at `today − 400` to prove the age filter discriminates rather than
+  passing vacuously.
+- **Donation channel disagreed with itself** — `FUNDING.yml` said Ko-fi, the README body said
+  PayPal.
+
+### Changed
+- The marketplace is named **`aiyo`**, not `memento-os`. Claude Code registers one marketplace
+  per name per user and expects multiple plugins to share a single `marketplace.json`; naming
+  it after one plugin would have stranded every future one. Install is now
+  `/plugin install memento-os@aiyo`.
+
+### Added
+- CI — runs the suite on every push and **weekly on a cron**, because a date-scored suite can
+  go red with no commit at all. Plus a manifest job that fails if `marketplace.json` goes
+  missing or drifts from `plugin.json`'s version.
+
 ## [2.3.0] — 2026-05-20
 
 ### Added — adapter ports (full 8-tool parity for v2.2 verbs)

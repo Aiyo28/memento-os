@@ -10,6 +10,42 @@ LINT="${ROOT}/skills/memento-lint/lint.py"
 DECAY="${ROOT}/skills/memento-decay/decay.py"
 FIX="${ROOT}/tests/fixtures"
 
+# The decay fixture is GENERATED, never checked in. decay.py scores against
+# today's date, so any absolute date in a fixture silently rots into a false
+# result — this suite went red on 2026-06-14 for exactly that reason and nobody
+# noticed for three months because nothing ran it. Row 4 is the discriminator:
+# it must be recent enough for `--age 30` to exclude it.
+DECAY_FIX="$(mktemp -d)"
+trap 'rm -rf "$DECAY_FIX"' EXIT
+
+days_ago() {
+    python3 -c "import datetime,sys;print((datetime.date.today()-datetime.timedelta(days=int(sys.argv[1]))).isoformat())" "$1"
+}
+
+make_decay_fixture() {
+    local dir="$1" row4_days_ago="$2"
+    mkdir -p "$dir"
+    cat > "$dir/_context.md" <<EOF
+---
+title: "Decay Fixture"
+type: project-context
+---
+
+# Decay Fixture
+
+## Active Reasoning Artifacts
+
+| # | Artifact | Priority | Date |
+|---|----------|----------|------|
+| 1 | \`[D] Ship the auth refactor before Q3 — invalidates if scope creeps past two epics\` | critical | $(days_ago 400) |
+| 2 | \`[D] Use SendGrid for transactional email — invalidates if pricing changes\` | settled | $(days_ago 250) |
+| 3 | \`[D] Auth refactor scope expanded to four epics — invalidates if engineering capacity drops\` | critical | $(days_ago 200) |
+| 4 | \`[D] Recently picked TanStack Query — invalidates if SWR adds suspense first\` | volatile | $(days_ago "$row4_days_ago") |
+EOF
+}
+
+make_decay_fixture "$DECAY_FIX" 5
+
 PASS=0
 FAIL=0
 
@@ -81,7 +117,7 @@ assert_contains "JSON has violations key" '"violations"' "$OUT"
 assert_contains "JSON rule R1 surfaced" '"rule": "R1"' "$OUT"
 
 echo "=== memento:decay — fixture (no-git) ==="
-OUT="$(python3 "$DECAY" --no-git --age 30 "$FIX/decay" 2>&1)"
+OUT="$(python3 "$DECAY" --no-git --age 30 "$DECAY_FIX" 2>&1)"
 RC=$?
 assert_eq "exit code is 0" 0 $RC
 assert_contains "[D]#1 surfaced as LIKELY STALE (vault overlap signal)" "[LIKELY STALE]" "$OUT"
@@ -89,15 +125,23 @@ assert_contains "[D]#1 invalidator parsed" "scope creeps past two epics" "$OUT"
 assert_contains "vault overlap evidence cites #3" "[D]#3" "$OUT"
 assert_not_contains "recent [D]#4 (5 days old) excluded" "[D]#4" "$OUT"
 
+echo "=== memento:decay — the age filter actually discriminates ==="
+# Same fixture, row 4 aged past the threshold. If [D]#4 is still absent here the
+# assertion above is passing vacuously and proves nothing.
+make_decay_fixture "$DECAY_FIX" 400
+OUT="$(python3 "$DECAY" --no-git --age 30 "$DECAY_FIX" 2>&1)"
+assert_contains "aged [D]#4 (400 days old) now surfaces" "[D]#4" "$OUT"
+make_decay_fixture "$DECAY_FIX" 5
+
 echo "=== memento:decay — JSON output ==="
-OUT="$(python3 "$DECAY" --no-git --age 30 --format json "$FIX/decay" 2>&1)"
+OUT="$(python3 "$DECAY" --no-git --age 30 --format json "$DECAY_FIX" 2>&1)"
 RC=$?
 assert_eq "exit code is 0" 0 $RC
 assert_contains "JSON has candidates key" '"candidates"' "$OUT"
 assert_contains "JSON signal type vault" '"type": "vault"' "$OUT"
 
 echo "=== memento:decay — age threshold respected ==="
-OUT="$(python3 "$DECAY" --no-git --age 99999 "$FIX/decay" 2>&1)"
+OUT="$(python3 "$DECAY" --no-git --age 99999 "$DECAY_FIX" 2>&1)"
 RC=$?
 assert_eq "exit code is 0" 0 $RC
 assert_contains "no candidates when age threshold absurdly high" "No aged" "$OUT"

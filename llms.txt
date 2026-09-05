@@ -1,6 +1,10 @@
 # Memento OS
 
-> Persistent AI memory using reasoning artifacts. Works with Claude Code, Codex, Cursor, Windsurf, Cline, Gemini, Aider, and Continue.
+> Persistent AI memory using reasoning artifacts. Works with Claude Code, Codex, Cursor, Windsurf, Cline, Gemini, Aider, and Continue. Plugin version 2.3.1, MIT.
+
+This file is written for AI coding assistants. It is enough to write correct Memento OS
+artifacts and invoke the right skill without reading the source. Copy the formats; do not
+invent artifact types, priorities, or skill names that are not listed here.
 
 ## What This Is
 
@@ -13,26 +17,72 @@ Four types of artifacts, each with an expiration condition:
 - [D] Decision — a choice between alternatives. Format: `[D] conclusion — invalidates if trigger [priority] [date]`
 - [I] Insight — a reusable conclusion from research/experience
 - [E] Error — a mistake with root cause + fix
-- [S] Seed — a forward-looking idea with activation trigger (surfaces when conditions are met)
+- [S] Seed — a forward-looking idea with activation trigger. Format: `[S] idea — activates when condition [priority] [date]`
 
-Priority matrix: confidence (high/medium/low) x impact (high/low) → critical/volatile/settled/noise
+Priority matrix: confidence (high/medium/low) x impact (high/low) → critical/volatile/settled/noise.
+Claude proposes confidence, the user confirms impact.
+
+## Artifact schema (what `memento:lint` enforces)
+
+Every artifact, every type:
+
+- a `#` number
+- a priority — one of `critical` / `volatile` / `settled` / `noise`
+- a date in `YYYY-MM-DD`
+
+Per type, additionally:
+
+| Type | Required clause |
+|------|-----------------|
+| `[D]` | an `invalidates if ...` clause |
+| `[I]` | an `invalidates if ...` clause |
+| `[S]` | an activation clause (`activates when ...`) |
+| `[E]` | a `fix:` line |
+
+`memento:lint` exits non-zero on any violation, so it runs as a hook or in CI.
 
 ## Plugin Components
 
-Skills (5): memento:decide, memento:grill-me, memento:session-start, memento:session-complete, memento:vault-audit
+Skills (7): memento:decide, memento:grill-me, memento:session-start, memento:session-complete, memento:vault-audit, memento:decay, memento:lint
 Commands (2): memento:init, memento:stats
 Hooks (2): Stop (auto-capture), PreCompact (save before compression)
 
+Directory names do not always match skill names: `skills/memento-decay/` is invoked as
+`/memento:decay`, `skills/memento-lint/` as `/memento:lint`.
+
 ## Install
 
+Two steps. The marketplace must be added before the plugin can be installed:
+
 ```
+/plugin marketplace add Aiyo28/memento-os
 /plugin install memento-os
 /memento:init
 ```
 
+## Behaviour contract (important for correct code)
+
+- **Cap is 24 artifacts per `_context.md`** ("Kobe" cap). Over the cap, evict by priority:
+  noise → settled → volatile. **Never evict critical.** Evicted artifacts are archived to
+  `Decisions/`, not deleted.
+- **Hooks write silently.** Both the Stop and PreCompact hooks are instructed not to ask for
+  confirmation — PreCompact fires while context is already under pressure. Do not add a
+  confirmation prompt to either path.
+- **The Stop hook promotes only critical and volatile artifacts** to the `_context.md` Active
+  Reasoning Artifacts table; everything it captures lands in the session log first. PreCompact
+  does not filter — under context pressure it writes every unsaved artifact to the table, then
+  evicts to the cap.
+- **`[E]` decays.** An error drops to `noise` once its learning has been extracted; it is not
+  meant to sit at `settled` forever.
+- **An artifact without an expiration condition is a note, not an artifact.** The invalidation
+  or activation clause is the thing that makes it storable.
+- **Priority defaults to `settled`** when impact is unknown. `critical` is reserved for clearly
+  architectural or strategic artifacts.
+
 ## Multi-Tool Support
 
 - Claude Code: Full plugin (skills, hooks, commands)
+- Agent Skills (50+ hosts): `npx skills add Aiyo28/memento-os -g` — auto-discovers all `skills/**`, update is manual (`npx skills update`)
 - Codex (OpenAI): Full skills via adapters/codex/
 - Cursor, Windsurf, Cline, Gemini: Rules-based adapters
 - Aider, Continue: Manual integration via config
@@ -46,7 +96,23 @@ Hooks (2): Stop (auto-capture), PreCompact (save before compression)
 - adapters/*/README.md — per-tool install guides
 - evolution/*.md — case studies of problems solved
 
+## Common mistakes to avoid
+
+- Do not call `/plugin install memento-os` without `/plugin marketplace add Aiyo28/memento-os`
+  first. The install has no other source.
+- Do not guess a skill name from its folder — `memento-decay` and `memento-lint` on disk are
+  `/memento:decay` and `/memento:lint` when invoked.
+- Do not write a `[D]` or `[I]` without an `invalidates if` clause, an `[S]` without an
+  activation clause, or an `[E]` without a `fix:` line. Each is a lint failure, not a warning.
+- Do not omit the `#` number, the priority, or the `YYYY-MM-DD` date. All three are required on
+  every artifact regardless of type.
+- Do not evict a `critical` artifact to get under the 24 cap. Evict noise, then settled, then
+  volatile — and if that is not enough, the cap is the wrong problem to solve.
+- Do not store a conclusion with no expiration condition. That is a note; it belongs in the
+  vault body, not the artifact table.
+- Do not add confirmation prompts to the Stop or PreCompact hooks.
+
 ## Links
 
-- Repository: https://github.com/ayalnogovitsyn/memento-os
+- Repository: https://github.com/Aiyo28/memento-os
 - License: MIT

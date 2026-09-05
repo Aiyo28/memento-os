@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Weekly. The decay tests score against today's date, so this suite can go red
+    # from the passage of time alone with no commit — as it did on 2026-06-14,
+    # unnoticed for three months. A cron is the only thing that catches that class.
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run the suite
+        run: bash tests/run.sh
+
+  manifests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Plugin and marketplace manifests are valid and tracked
+        run: |
+          python3 -c "
+          import json, pathlib, sys
+          for f in ['.claude-plugin/plugin.json', '.claude-plugin/marketplace.json']:
+              p = pathlib.Path(f)
+              if not p.exists():
+                  sys.exit(f'MISSING: {f} — the plugin is uninstallable without it')
+              json.loads(p.read_text())
+          pj = json.loads(pathlib.Path('.claude-plugin/plugin.json').read_text())
+          mk = json.loads(pathlib.Path('.claude-plugin/marketplace.json').read_text())
+          entry = next((p for p in mk['plugins'] if p['name'] == pj['name']), None)
+          if entry is None:
+              sys.exit('marketplace.json does not list this plugin')
+          if entry.get('version') != pj['version']:
+              sys.exit(f\"version drift: plugin.json {pj['version']} vs marketplace {entry.get('version')}\")
+          skills = len([d for d in pathlib.Path('skills').iterdir() if d.is_dir()])
+          print(f'ok — {pj[\"name\"]} v{pj[\"version\"]}, {skills} skills')
+          "

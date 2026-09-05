@@ -1,69 +1,101 @@
-# Agent Instructions — Memento OS
+# Memento OS — Operator Letter
 
-## What This Repo Is
+You are working on Memento OS with me. Read this before doing anything.
 
-A Claude Code plugin for persistent AI memory. Core unit: reasoning artifacts (`[D]`, `[I]`, `[E]`, `[S]`) with invalidation/activation triggers.
+## What this is
 
-## If You're Working On This Repo
+Memento OS is a Claude Code plugin for persistent AI memory. The unit is
+not "notes" — it's reasoning artifacts: `[D]` decisions, `[I]` insights,
+`[E]` evidence/errors, `[S]` seeds. Each one carries an invalidation or
+activation trigger. The vault is a retrieval source, not just a write
+destination.
 
-- Skills are in `skills/*/SKILL.md` — each namespaced as `memento:*`
-- Commands are in `commands/memento/*.md`
-- Hooks are in `hooks/hooks.json` (prompt-type hooks for Stop and PreCompact)
-- Plugin manifest is `.claude-plugin/plugin.json` (v2.0.0)
-- Adapters for non-Claude-Code tools are in `adapters/` — each subdirectory maps to one AI tool
-- Starter vault templates are in `starter/obsidian-vault/` — these define the vault structure users get
+This is the OSS reputation lane. No paid tier. No closed cloud. There's a
+donation CTA in the README — that's the whole monetization surface, and
+it's not the point. The point is to publish the artifact-discipline
+approach as a working plugin that people can adopt.
 
-## Conventions
+## Who I am here
 
-- Artifact format: `[D] conclusion — invalidates if trigger [priority] [date]`
-- Seed format: `[S] idea — activates when condition [priority] [date]`
-- Priority: confidence x impact → critical/volatile/settled/noise
-- Cap: 24 artifacts per project (Kobe rule). Evict noise first.
-- Skills produce artifacts as byproduct — grill-me surfaces `[D]`/`[I]`, decide captures `[D]` or plants `[S]`
+Solo founder. The plugin ships to other Claude Code users; they install
+it via `/memento:init` and get a starter vault. Their vault paths are
+configured at install time. I do not know their paths. You do not know
+their paths. Don't hardcode any vault path anywhere.
 
-## Retrieval-First Protocol
+## What this is NOT
 
-Skills that make decisions MUST search the vault before acting:
-- `memento:decide` → search for prior `[D]` artifacts before presenting options
-- `memento:grill-me` → load domain-relevant vault notes as context
-- Future decision-making skills → follow the same pattern
+- Not "Knowledge OS" and not "Agentic Total Recall" — those are different
+  projects. This is Memento OS. Don't conflate them in code, docs, or
+  commit messages.
+- Not a dev-workflow plugin. Not a project-management plugin. The mission
+  is memory; if you find yourself adding a skill that lives outside the
+  memory mission, stop and ask me.
+- Not a notes app — store conclusions, not conversation fragments.
 
-The vault is a retrieval source, not just a write destination. Search first, then fill gaps.
+## How we work together
 
-### Confidence Gate
+- Skills that make decisions retrieve before acting. Vault search comes
+  first; fresh analysis fills gaps after.
+- When you're about to make an architectural choice on a protected domain
+  (auth, schema, API contracts, deployment, pricing logic, tag taxonomy),
+  pause. Search the vault for prior `[D]` artifacts. Surface what you
+  find. Then proceed.
+- When you draft a new artifact, follow the format. Format drift across
+  artifacts kills the whole retrieval premise.
 
-Before any implementation decision: self-assess "Do I have full context?" If < 96% → pause and retrieve before acting.
+## Glossary
 
-**Protected domains (always retrieve, regardless of confidence):**
-- Authentication / authorization patterns
-- Database schema / migration decisions
-- API contract decisions
-- Deployment / infrastructure choices
-- Pricing tiers / subscription logic
-- Tag architecture / taxonomy
+- **Artifact** — `[D]` / `[I]` / `[E]` / `[S]` row in `_context.md`.
+  Carries an invalidation or activation trigger.
+- **Decision (`[D]`)** — committed conclusion. `[D] statement — invalidates if X`.
+- **Insight (`[I]`)** — observation worth remembering. Same format.
+- **Evidence (`[E]`)** — error or falsifiable claim being tracked.
+- **Seed (`[S]`)** — future decision pending an explicit trigger.
+  `[S] idea — activates when condition`.
+- **Lifecycle** — `active → embedded → archived` (success), `active →
+  superseded → archived` (replaced), `active → resolved → archived`
+  (errors only).
+- **Kobe cap** — 24 active artifacts per project `_context.md`. Evict
+  noise first when over.
+- **You** — the agent doing the work.
+- **I / me / we** — the human running Memento OS.
+- **Users** — installers of the plugin, with their own vaults.
 
-**Retrieval sequence:**
-1. `_context.md` Active Reasoning Artifacts table — `[D]` entries matching domain
-2. `Decisions/*{topic}*` — full artifact files
-3. If found → surface: "Existing decision: `[D] {statement}` — {date}". Ask: reaffirm, revise, or override?
-4. If not found → fresh analysis
+## Doc index
 
-## Artifact Tiers
+- `README.md` — user-facing intro + install.
+- `NEXT.md` — what to continue this session, what's blocked.
+- `CHANGELOG.md` — versioned changes.
+- Skills: `skills/*/SKILL.md` (namespaced `memento:*`).
+- Commands: `commands/memento/*.md`.
+- Hooks: `hooks/hooks.json` (Stop, PreCompact).
+- Manifest: `.claude-plugin/plugin.json`.
+- Adapters: `adapters/<tool>/` (one subdir per non-Claude-Code AI tool).
+- Starter vault template: `starter/obsidian-vault/`.
 
-| Tier | Location | Cap | Loaded |
-|------|----------|-----|--------|
-| L0 | CLAUDE.md "Critical Gotchas" | ~20 | Always (auto) |
-| L0.5 | `context/` directory | ~800 tok | session-start if present |
-| L1 | `_context.md` artifacts table | 24 (Kobe) | Every session |
-| L2 | `Decisions/` folder | Unlimited | On demand |
+---
 
-Promotion L1→L0: "Would violating this waste >1hr?" → copy to Critical Gotchas.
+# Critical Gotchas
 
-Lifecycle states: `active → embedded → archived`, `active → superseded → archived`, `active → resolved → archived` (errors only).
-
-## Do Not
-
-- Hardcode vault paths — users configure via `/memento:init`
-- Reference "Knowledge OS" or "Agentic Total Recall" — this is "Memento OS"
-- Add skills outside the memory mission (no dev workflow, no project management)
-- Store raw notes or conversation fragments — store conclusions only
+1. **Never hardcode a vault path.** Users configure via `/memento:init`.
+   A hardcoded path breaks every installation that isn't yours.
+2. **The name is Memento OS.** Not Knowledge OS, not Agentic Total Recall.
+   Cross-naming in code or docs confuses users between three separate
+   products.
+3. **Mission boundary is memory.** No dev workflow skills, no project
+   management skills. Scope-creep here is how the plugin loses focus and
+   stops getting adopted.
+4. **Store conclusions, not notes.** Every artifact has an invalidation
+   or activation trigger. If a draft artifact has neither, it's a note,
+   not a memory.
+5. **Protected domains always retrieve before deciding** — auth, schema,
+   migrations, API contracts, deployment, pricing logic, tag taxonomy.
+   Confidence gate: <96% → pause and retrieve, regardless of how obvious
+   the decision feels.
+6. **Artifact tiers are load-bearing.** L0 = CLAUDE.md "Critical Gotchas"
+   (~20, always loaded). L0.5 = `context/` (~800 tok, session-start if
+   present). L1 = `_context.md` artifacts table (Kobe-24, every session).
+   L2 = `Decisions/` folder (unlimited, on demand). Promotion L1→L0 test:
+   "Would violating this waste >1hr?"
+7. **Artifact format is `[D|I|E|S] conclusion — invalidates/activates if
+   trigger [priority] [date]`.** Drift kills retrieval.

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "aiyo",
+  "description": "Ayal Nogovitsyn's Claude Code plugins.",
+  "version": "1.0.0",
+  "owner": {
+    "name": "Ayal Nogovitsyn",
+    "url": "https://github.com/Aiyo28"
+  },
+  "plugins": [
+    {
+      "name": "memento-os",
+      "source": {
+        "source": "github",
+        "repo": "Aiyo28/memento-os"
+      },
+      "version": "2.3.1",
+      "description": "Decision-centric memory for AI coding agents. Store conclusions, not notes. OODA reasoning artifacts with a priority matrix, invalidation triggers and seed activation.",
+      "category": "knowledge-management"
+    }
+  ]
+}
