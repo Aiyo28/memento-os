@@ -52,7 +52,7 @@ Five skills. One loop.
 | `/memento:session-start` | **Recall** | Load context, surface decisions, check seeds |
 | `/memento:vault-audit` | **Maintain** | Health check, staleness scan, inbox processing |
 
-**Hooks** run automatically — Stop captures artifacts on session end, PreCompact saves before compression.
+**Hooks** run automatically — Stop captures artifacts on session end, PreCompact saves before compression. **Both stay silent until you run `/memento:init`** in a project; an uninitialized project is never written to. SessionStart prints one line reminding you to initialize — `touch .memento-skip` in any project where you never want Memento.
 
 **Commands:** `/memento:init` (setup) · `/memento:stats` (memory score + streaks)
 

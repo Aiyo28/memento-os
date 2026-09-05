@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.3.3] — 2026-09-05
+
+### Fixed
+- **The hooks wrote into projects that were never initialized.** `Stop` and `PreCompact` both
+  instructed the model to append a session log and update `_context.md` — a file that does not
+  exist until `/memento:init` runs. On a fresh install the model improvised a location, which
+  is the scattered-capture failure `evolution/005-scattered-captures.md` exists to prevent,
+  shipped as the default experience. Both hooks now gate on an initialization check and do
+  nothing at all when the project has no `_context.md`.
+
+### Added
+- **`SessionStart` hook.** Installing the plugin previously did nothing visible: no greeting,
+  no pointer to `/memento:init`, which is mentioned only in the README. A fresh user installed
+  and then had no idea what to do next. SessionStart now prints one line when Memento is
+  installed but not initialized here, and stays completely silent otherwise.
+- **`.memento-skip`.** Create this file in any project where you never want Memento, and the
+  SessionStart notice stops. Nothing else reads it.
+
 ## [2.3.2] — 2026-09-05
 
 ### Fixed

@@ -11,7 +11,7 @@
     {
       "name": "memento-os",
       "source": "./",
-      "version": "2.3.2",
+      "version": "2.3.3",
       "description": "Decision-centric memory for AI coding agents. Store conclusions, not notes. OODA reasoning artifacts with a priority matrix, invalidation triggers and seed activation.",
       "category": "knowledge-management"
     }
