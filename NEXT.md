@@ -4,47 +4,49 @@ Path B (OSS + reputation). No kill rule. Ship when there's substance.
 
 ## Continue
 
-### ✅ v2.3.1 — install integrity. SHIPPED 2026-09-05.
+### ✅ Install integrity — SHIPPED and VERIFIED 2026-09-05
 
-> Committed and pushed: `marketplace.json` (marketplace named `aiyo`), the README/`llms.txt`/
-> `AGENTS.md` release content, skill count 5 → 7, Ko-fi alignment, the fixture fix and CI.
-> **One task remains and it is yours:** run both documented commands on a clean machine and
-> confirm the plugin installs. Nothing below this line has been verified against a real install.
+**State, verified end-to-end:** `2.3.3` on `main`, CI green, `marketplace.json` returns 200 on
+GitHub, `claude plugin marketplace add Aiyo28/memento-os` succeeds, and
+`/plugin install memento-os@aiyo` completed on a real client. `bash tests/run.sh` → **38/38**.
 
-<details><summary>Original diagnosis, kept for the record</summary>
+It took three releases because each one was verified by a different check than a user performs:
 
-**The plugin cannot be installed by any documented path.** Verified 2026-09-05:
-`.claude-plugin/marketplace.json` is **untracked** and returns **404** on GitHub, so
-`/plugin marketplace add Aiyo28/memento-os` fails and `/plugin install memento-os` never gets a
-marketplace to install from. `plugin.json` is committed and fine; the marketplace manifest never
-was.
+- **2.3.1** — `.claude-plugin/marketplace.json` had never been `git add`ed. It 404'd, so
+  `/plugin marketplace add` failed and `/plugin install` had no marketplace to resolve against.
+  Shipped together with the README/`llms.txt`/`AGENTS.md` release content, skill count 5 → 7
+  (the repo ships 7), Ko-fi alignment with `FUNDING.yml`, the fixture fix and CI. Marketplace
+  named **`aiyo`**, not `memento-os`: Claude Code registers one marketplace per name per user
+  and expects multiple plugins to share one manifest, so naming it after a single plugin would
+  have stranded every future one. Install is `/plugin install memento-os@aiyo`.
+- **2.3.2** — install still failed with `Permission denied (publickey)`. The marketplace listed
+  the plugin with a `github` source, so Claude Code cloned this repo a *second* time over SSH to
+  fetch a plugin already present in the copy it had just cloned. Nobody has an SSH key for a repo
+  they do not own. Source is now the relative path `./`. ⚠ **Never give a plugin in this repo a
+  `github` source.** `claude plugin validate` passes on the broken version — it checks manifest
+  shape, not source reachability.
+- **2.3.3** — the `Stop` and `PreCompact` hooks wrote into projects that were never initialized.
+  Both told the model to append a session log and update `_context.md`, a file that does not
+  exist until `/memento:init` runs, so on a fresh install it improvised a location — the exact
+  failure `evolution/005-scattered-captures.md` is named after, shipped as the default. Both now
+  gate on an initialization check. Added a `SessionStart` hook, because installing previously
+  produced no greeting and no pointer to `/memento:init`; and `.memento-skip` to silence it.
 
-Spec: `docs/specs/2026-09-05-v2.3.1-install-integrity.md` · Plan:
-`docs/plans/2026-09-05-update-plan.md`
+⚠ **`claude plugin update memento-os@aiyo`** if your installed copy predates 2.3.3 — the
+marketplace cache updating does not update an installed plugin.
 
-</details>
+**Tagged 2026-09-05:** `v2.3.1` `v2.3.2` `v2.3.3` at their commits, matching this repo's
+convention of tagging every version. **GitHub Release still to cut** — one covering all
+three; three notifications for same-day fixes would be noise.
 
-1. **One atomic commit** — `git add .claude-plugin/marketplace.json` **together with** the
-   uncommitted `README.md` / `llms.txt` / `AGENTS.md`. Shipping the README's new
-   `/plugin marketplace add` line without the manifest documents a 404, which is worse than today.
-2. **README still says "5 skills"** (lines 95 and 97). The repo ships **7**. The uncommitted edit
-   fixed the install step but not the count; `llms.txt` already says 7, so the two now disagree.
-3. Bump `plugin.json` **and** `marketplace.json` to `2.3.1`, CHANGELOG entry, tag, release.
-4. **Verify by hand on a clean machine** — run both documented commands. The chain is only
-   provably fixed by executing it end to end. Record the result here.
+### Test suite — GREEN, 38/38
 
-### 🔴 Test suite is RED — 36 passed, 1 failed
-
-`./tests/run.sh` exits 1. The "37/37 assertions pass" claim below was true on 2026-05-20 and is
-not now.
-
-Root cause is a **rotting fixture, not a code bug**: `tests/fixtures/decay/_context.md` row 4 is
-hardcoded `2026-05-15`, and `tests/run.sh:90` asserts `[D]#4` is absent from `--age 30` output,
-labelled "5 days old". It is now 113 days old, so decay correctly surfaces it. The suite has been
-red since roughly 2026-06-14 and nothing noticed, because there is no CI.
-
-Fix: generate the fixture from `today - N days` inside `run.sh`, then add a CI workflow so it
-cannot rot silently again.
+Was red from 2026-06-14 to 2026-09-05 and nothing noticed, because there was no CI. Root cause
+was a rotting fixture, not a code bug: `tests/fixtures/decay/_context.md` hardcoded `2026-05-15`
+and `run.sh` asserted that row was "5 days old"; it had become 113. The fixture is now generated
+relative to today inside `run.sh`, and a companion assertion regenerates it at `today − 400` to
+prove the age filter discriminates rather than passing vacuously. CI runs on push **and weekly
+on cron**, because a date-scored suite goes red with no commit at all.
 
 ### Outstanding from the v2.3.0 punch list
 
@@ -52,8 +54,8 @@ Items 1–6 (commit, retro-tag v2.1.0, tag v2.2.0, tag v2.3.0, push tags, three 
 are **DONE** — tags exist and all three releases are dated 2026-05-23. Do not re-do them. What
 remains:
 
-- **Launch post for v2.3.0** — X post + portfolio blog. Never written; no post on ayal.tech names
-  the project. Sequence it *after* v2.3.1, so it does not point at a broken install.
+- **Launch post** — X post + portfolio blog. Never written; no post on ayal.tech names the
+  project. The install now works, so the reason to hold it is gone.
 - **Update vault** — `Projects/memento-os/_context.md` Status field, with release URLs.
 
 ## Decide
@@ -69,8 +71,11 @@ remains:
 
 ## Blocked
 
-- Nothing blocked. v2.4 is *gated*, not blocked: build it after v2.3.1 and the test fix, because
-  features shipped into an uninstallable plugin reach nobody.
+- Nothing blocked. v2.4 was gated on install integrity and a green suite; **both cleared
+  2026-09-05**. Remaining gate is your Q3 answer.
+- **Q3 answered 2026-09-05: pre-created class folders.** Owner notes this is free to change —
+  it is a first-run presentation choice, not a data-model one, so switching to on-demand later
+  touches the init command and nothing else.
 
 ## Next release (v2.4.0) — Option B locked
 
