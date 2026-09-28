@@ -52,7 +52,18 @@ Five skills. One loop.
 | `/memento:session-start` | **Recall** | Load context, surface decisions, check seeds |
 | `/memento:vault-audit` | **Maintain** | Health check, staleness scan, inbox processing |
 
-**Hooks** run automatically — Stop captures artifacts on session end, PreCompact saves before compression. **Both stay silent until you run `/memento:init`** in a project; an uninitialized project is never written to. SessionStart prints one line reminding you to initialize — `touch .memento-skip` in any project where you never want Memento.
+**Hooks** run automatically. **Stop and PreCompact stay silent until you run `/memento:init`** in a project; an uninitialized project is never written to. `touch .memento-skip` in any project where you never want Memento.
+
+<a id="what-the-hooks-do"></a>
+**What the hooks do.** All three are `type: prompt` hooks (`hooks/hooks.json`): instructions to Claude, with no scripts, no network calls and no telemetry.
+
+| Hook | When | Reads | Writes |
+|------|------|-------|--------|
+| SessionStart | Session opens | Whether `_context.md` exists (project root, `./memento/`, or the path in `.memento/config.yaml`) and whether `.memento-skip` exists | Nothing. Prints one line if the project isn't initialized |
+| Stop | Claude finishes a turn | The conversation; the project context (cwd / `CLAUDE.md`) | Appends a session log entry to the project's journal. For critical or volatile artifacts, also updates the Active Reasoning Artifacts table in `_context.md` |
+| PreCompact | Before context compaction | The conversation | Updates the Active Reasoning Artifacts table in `_context.md` (cap 24; evicted rows are archived to `Decisions/`) and updates `NEXT.md` |
+
+Stop and PreCompact write without asking, by design: capture should not interrupt the session. Nothing is written outside an initialized project.
 
 **Commands:** `/memento:init` (setup) · `/memento:stats` (memory score + streaks)
 
@@ -92,7 +103,7 @@ Same vault, same artifacts, different integration depth.
 
 | Tool | Tier | Install |
 |------|------|---------|
-| **Claude Code** | Full Plugin — 7 skills, 2 hooks, 2 commands | `/plugin marketplace add Aiyo28/memento-os` → `/plugin install memento-os@aiyo` |
+| **Claude Code** | Full Plugin — 7 skills, 3 hooks, 2 commands | `/plugin marketplace add Aiyo28/memento-os` → `/plugin install memento-os@aiyo` |
 | **Agent Skills** (50+ hosts) | Skills — auto-discovers all `skills/**` | `npx skills add Aiyo28/memento-os -g` (manual `npx skills update`) |
 | **Codex** (OpenAI) | Full Skills — AGENTS.md + 7 skills | [adapters/codex/](adapters/codex/) |
 | **Cursor** | Rules — conventions + workflow | [adapters/cursor/](adapters/cursor/) |
