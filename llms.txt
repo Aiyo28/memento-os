@@ -94,7 +94,8 @@ Two steps. The marketplace must be added before the plugin can be installed:
 - commands/memento/*.md — command implementations
 - hooks/hooks.json — hook definitions
 - adapters/*/README.md — per-tool install guides
-- evolution/*.md — case studies of problems solved
+- docs/adr/*.md — architecture decision records
+- docs/GLOSSARY.md — domain terms
 
 ## Common mistakes to avoid
 

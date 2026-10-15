@@ -10,11 +10,6 @@ not "notes" — it's reasoning artifacts: `[D]` decisions, `[I]` insights,
 activation trigger. The vault is a retrieval source, not just a write
 destination.
 
-This is the OSS reputation lane. No paid tier. No closed cloud. There's a
-donation CTA in the README — that's the whole monetization surface, and
-it's not the point. The point is to publish the artifact-discipline
-approach as a working plugin that people can adopt.
-
 ## Who I am here
 
 Solo founder. The plugin ships to other Claude Code users; they install
@@ -43,20 +38,11 @@ their paths. Don't hardcode any vault path anywhere.
 - When you draft a new artifact, follow the format. Format drift across
   artifacts kills the whole retrieval premise.
 
-## Glossary
+## Terms
 
-- **Artifact** — `[D]` / `[I]` / `[E]` / `[S]` row in `_context.md`.
-  Carries an invalidation or activation trigger.
-- **Decision (`[D]`)** — committed conclusion. `[D] statement — invalidates if X`.
-- **Insight (`[I]`)** — observation worth remembering. Same format.
-- **Evidence (`[E]`)** — error or falsifiable claim being tracked.
-- **Seed (`[S]`)** — future decision pending an explicit trigger.
-  `[S] idea — activates when condition`.
-- **Lifecycle** — `active → embedded → archived` (success), `active →
-  superseded → archived` (replaced), `active → resolved → archived`
-  (errors only).
-- **Kobe cap** — 24 active artifacts per project `_context.md`. Evict
-  noise first when over.
+Domain terms (artifact, `[D]`/`[I]`/`[E]`/`[S]`, lifecycle, Kobe cap, tiers)
+live in `docs/GLOSSARY.md`. In this file:
+
 - **You** — the agent doing the work.
 - **I / me / we** — the human running Memento OS.
 - **Users** — installers of the plugin, with their own vaults.
@@ -66,12 +52,20 @@ their paths. Don't hardcode any vault path anywhere.
 - `README.md` — user-facing intro + install.
 - `NEXT.md` — what to continue this session, what's blocked.
 - `CHANGELOG.md` — versioned changes.
+- `docs/GLOSSARY.md` — domain terms.
+- `docs/adr/` — architecture decision records (0001–0008).
+- `docs/specs/` — specs for unbuilt or in-flight work.
+- `system/scorecard.md` — memory-system self-evaluation rubric.
 - Skills: `skills/*/SKILL.md` (namespaced `memento:*`).
 - Commands: `commands/memento/*.md`.
-- Hooks: `hooks/hooks.json` (Stop, PreCompact).
+- Hooks: `hooks/hooks.json` (SessionStart, Stop, PreCompact).
 - Manifest: `.claude-plugin/plugin.json`.
 - Adapters: `adapters/<tool>/` (one subdir per non-Claude-Code AI tool).
 - Starter vault template: `starter/obsidian-vault/`.
+
+## Commands
+
+- Tests: `bash tests/run.sh`
 
 ---
 

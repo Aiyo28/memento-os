@@ -42,7 +42,7 @@ Three questions. Thirty seconds. Your first decision captured.
 
 ## How It Works
 
-Five skills. One loop.
+7 skills. One loop.
 
 | Skill | Phase | What it does |
 |-------|-------|-------------|
@@ -51,6 +51,8 @@ Five skills. One loop.
 | `/memento:session-complete` | **Capture** | Extract all artifacts from the conversation |
 | `/memento:session-start` | **Recall** | Load context, surface decisions, check seeds |
 | `/memento:vault-audit` | **Maintain** | Health check, staleness scan, inbox processing |
+| `/memento:lint` | **Validate** | Check every artifact against the schema rules; non-zero exit for hooks and CI |
+| `/memento:decay` | **Re-evaluate** | Find aged `[D]` artifacts whose invalidation triggers may have fired |
 
 **Hooks** run automatically. **Stop and PreCompact stay silent until you run `/memento:init`** in a project; an uninitialized project is never written to. `touch .memento-skip` in any project where you never want Memento.
 
@@ -171,18 +173,20 @@ So I flipped it: capture *only* conclusions. Each one with a condition that make
 That shift — from "save everything" to "save only conclusions" — turned out to be the entire product.
 
 <details>
-<summary><strong>Evolution Log</strong> — how we got here, failure by failure</summary>
+<summary><strong>Design decisions</strong> — how we got here, failure by failure</summary>
 
-| # | Problem | Status |
-|---|---------|--------|
-| [001](evolution/001-tiered-context.md) | Tiered Context Loading | Solved |
-| [002](evolution/002-safety-hooks.md) | Safety Hooks | Solved |
-| [003](evolution/003-vault-bridge.md) | Vault Bridge | Solved |
-| [004](evolution/004-cross-project-linking.md) | Cross-Project Linking | Solved |
-| [005](evolution/005-scattered-captures.md) | Scattered Captures | In Progress |
-| [006](evolution/006-decision-rot.md) | Decision Rot | Upcoming |
-| [007](evolution/007-compaction-loss.md) | Compaction Loss | Upcoming |
-| [008](evolution/008-write-discipline.md) | Write Discipline | Upcoming |
+| ADR | Decision |
+|-----|----------|
+| [0001](docs/adr/0001-tiered-context.md) | Tiered context loading |
+| [0002](docs/adr/0002-safety-hooks.md) | Safety hooks |
+| [0003](docs/adr/0003-vault-bridge.md) | Vault bridge |
+| [0004](docs/adr/0004-cross-project-linking.md) | Cross-project linking |
+| [0005](docs/adr/0005-scattered-captures.md) | Scattered captures |
+| [0006](docs/adr/0006-decision-rot.md) | Decision rot |
+| [0007](docs/adr/0007-compaction-loss.md) | Compaction loss |
+| [0008](docs/adr/0008-write-discipline.md) | Write discipline |
+
+Terms are defined in [docs/GLOSSARY.md](docs/GLOSSARY.md).
 
 </details>
 
@@ -192,7 +196,7 @@ The `/memento:grill-me` skill is based on [Matt Pocock](https://github.com/mattp
 
 ## Contributing
 
-Welcome: evolution entries, adapter improvements, scorecard improvements, translations.
+Welcome: ADRs, adapter improvements, scorecard improvements, translations.
 
 Not accepted: vendor plugins, paid integrations, AI-generated filler.
 

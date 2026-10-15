@@ -12,7 +12,21 @@ Terms used throughout this project, defined for clarity.
 
 **Decision rot** — Decisions made during a session that are never recorded durably. They exist in conversation context, maybe in a session log, but never reach a structured, retrievable location. Over time, they're forgotten and re-made (often differently).
 
-**Evolution entry** — A documented case study in this repo. Each entry describes a problem encountered, approaches tried, what actually worked, and how it was verified. The core content format of Agentic Total Recall.
+**ADR** — Architecture decision record in `docs/adr/`: a short note on the context, the decision and why. Replaces the former `evolution/` case studies.
+
+**Artifact** — A `[D]` / `[I]` / `[E]` / `[S]` row in `_context.md`. Carries an invalidation or activation trigger. Format: `[D|I|E|S] conclusion — invalidates/activates if trigger [priority] [date]`.
+
+**Decision (`[D]`)** — Committed conclusion. `[D] statement — invalidates if X`.
+
+**Insight (`[I]`)** — Observation worth remembering. Same format as a decision.
+
+**Evidence (`[E]`)** — Error or falsifiable claim being tracked, with root cause and a `fix:` line.
+
+**Seed (`[S]`)** — Future decision pending an explicit trigger. `[S] idea — activates when condition`.
+
+**Artifact lifecycle** — `active → embedded → archived` (success), `active → superseded → archived` (replaced), `active → resolved → archived` (errors only).
+
+**Kobe cap** — 24 active artifacts per project `_context.md`. Evict noise first when over.
 
 **Knowledge vault** — An external knowledge base (Obsidian, Notion, or any Markdown-based system) connected to the AI agent. Stores cross-project knowledge, research, patterns, and context that persists beyond any single conversation.
 

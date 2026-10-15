@@ -1,7 +1,5 @@
 # NEXT — Memento OS
 
-Path B (OSS + reputation). No kill rule. Ship when there's substance.
-
 ## Continue
 
 ### ✅ Install integrity — SHIPPED and VERIFIED 2026-09-05
@@ -28,7 +26,7 @@ It took three releases because each one was verified by a different check than a
 - **2.3.3** — the `Stop` and `PreCompact` hooks wrote into projects that were never initialized.
   Both told the model to append a session log and update `_context.md`, a file that does not
   exist until `/memento:init` runs, so on a fresh install it improvised a location — the exact
-  failure `evolution/005-scattered-captures.md` is named after, shipped as the default. Both now
+  failure `docs/adr/0005-scattered-captures.md` is named after, shipped as the default. Both now
   gate on an initialization check. Added a `SessionStart` hook, because installing previously
   produced no greeting and no pointer to `/memento:init`; and `.memento-skip` to silence it.
 
@@ -54,8 +52,6 @@ Items 1–6 (commit, retro-tag v2.1.0, tag v2.2.0, tag v2.3.0, push tags, three 
 are **DONE** — tags exist and all three releases are dated 2026-05-23. Do not re-do them. What
 remains:
 
-- **Launch post** — X post + portfolio blog. Never written; no post on ayal.tech names the
-  project. The install now works, so the reason to hold it is gone.
 - **Update vault** — `Projects/memento-os/_context.md` Status field, with release URLs.
 
 ## Decide
@@ -88,12 +84,4 @@ Port 4 Knowledge OS features (DIES stays, no DICE rename). Spec: `docs/specs/202
 | C | HEAD/Archive Split (append-only `_archive.md`) | spec'd |
 | D | Emission Discipline (only deliberation skills emit `[D]`) | spec'd |
 
-Decision context: `docs/specs/2026-05-20-dies-vs-dice-architecture.html` (side-by-side analysis, Option B recommended and confirmed).
-
-## Anti-pattern reminders
-
-- **No scheduled releases.** Path B is reputation, not cadence. Ship when there's substance.
-- **No "Memento Academy" / paid course.** Operator-claim-density disqualifier (vault `Knowledge/_context.md [S]#415`). Sell software, not curriculum.
-- **No DICE in OSS Memento OS** — DICE belongs to AIYO OS (paid team product) as a commercial moat. (Decided 2026-05-20.)
-
-Updated: 2026-09-05 (was 2026-05-20 — punch list items 1–6 were already done and are removed)
+Updated: 2026-10-15

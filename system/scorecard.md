@@ -133,17 +133,17 @@ A self-evaluation methodology for grading any AI agent memory system. Score each
 
 ## Current Scores (Agentic Total Recall System)
 
-| # | Dimension | Score | Justification | Evolution Entry |
-|---|-----------|-------|---------------|-----------------|
+| # | Dimension | Score | Justification | ADR |
+|---|-----------|-------|---------------|-----|
 | 1 | Persistence durability | 9/10 | Git-backed Markdown on disk. Survives everything. | — |
 | 2 | Semantic retrieval | 4/10 | Grep/glob only. No vector search in agent loop. | — |
 | 3 | Recency awareness | 6/10 | NEXT.md is manual. File timestamps exist but no ranking. | — |
-| 4 | Compaction handling | 3/10 | Manual strategic-compact skill. Often forgotten. | [007](../evolution/007-compaction-loss.md) |
-| 5 | Auto-capture reliability | 5.5/10 | session-complete exists but is manual. Criteria framework helps track quality. | [008](../evolution/008-write-discipline.md) |
-| 6 | Cross-file linking | 7/10 | 4 MOC hubs, pattern extraction, wikilinks. | [004](../evolution/004-cross-project-linking.md) |
-| 7 | Storage scalability | 6/10 | L0/L1/L2 tiered loading. 200-line session log cap. No auto-archival. | [001](../evolution/001-tiered-context.md) |
-| 8 | Knowledge OS fit | 9/10 | Deep vault integration. Sync hook, conventions, MOCs. | [003](../evolution/003-vault-bridge.md) |
+| 4 | Compaction handling | 3/10 | Manual strategic-compact skill. Often forgotten. | [0007](../docs/adr/0007-compaction-loss.md) |
+| 5 | Auto-capture reliability | 5.5/10 | session-complete exists but is manual. Criteria framework helps track quality. | [0008](../docs/adr/0008-write-discipline.md) |
+| 6 | Cross-file linking | 7/10 | 4 MOC hubs, pattern extraction, wikilinks. | [0004](../docs/adr/0004-cross-project-linking.md) |
+| 7 | Storage scalability | 6/10 | L0/L1/L2 tiered loading. 200-line session log cap. No auto-archival. | [0001](../docs/adr/0001-tiered-context.md) |
+| 8 | Knowledge OS fit | 9/10 | Deep vault integration. Sync hook, conventions, MOCs. | [0003](../docs/adr/0003-vault-bridge.md) |
 | 9 | Portability / ownership | 9/10 | Plain Markdown, git-backed. Slight skill/plugin coupling. | — |
-| 10 | Setup complexity | 3/10 | Extensive: 4 hooks, 4 skills, vault setup, CLAUDE.md routing. | — |
+| 10 | Setup complexity | 3/10 | Extensive: 3 hooks, 7 skills, vault setup, CLAUDE.md routing. | — |
 
 **Overall: 6.15 / 10** (rounded to 6.5 for communication)
