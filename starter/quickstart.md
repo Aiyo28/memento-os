@@ -3,9 +3,12 @@
 ## Plugin Install (Recommended)
 
 ```bash
-/plugin install memento-os
+/plugin marketplace add Aiyo28/memento-os
+/plugin install memento-os@aiyo
 /memento:init
 ```
+
+The marketplace must be added first; the install has no other source.
 
 That's it. The init command asks 3 questions and sets up your memory folder.
 

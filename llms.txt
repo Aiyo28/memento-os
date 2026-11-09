@@ -45,7 +45,7 @@ Per type, additionally:
 
 Skills (7): memento:decide, memento:grill-me, memento:session-start, memento:session-complete, memento:vault-audit, memento:decay, memento:lint
 Commands (2): memento:init, memento:stats
-Hooks (2): Stop (auto-capture), PreCompact (save before compression)
+Hooks (3): SessionStart (one-line reminder in an uninitialized project), Stop (auto-capture), PreCompact (save before compression)
 
 Directory names do not always match skill names: `skills/memento-decay/` is invoked as
 `/memento:decay`, `skills/memento-lint/` as `/memento:lint`.
@@ -56,7 +56,7 @@ Two steps. The marketplace must be added before the plugin can be installed:
 
 ```
 /plugin marketplace add Aiyo28/memento-os
-/plugin install memento-os
+/plugin install memento-os@aiyo
 /memento:init
 ```
 
@@ -99,7 +99,7 @@ Two steps. The marketplace must be added before the plugin can be installed:
 
 ## Common mistakes to avoid
 
-- Do not call `/plugin install memento-os` without `/plugin marketplace add Aiyo28/memento-os`
+- Do not call `/plugin install memento-os@aiyo` without `/plugin marketplace add Aiyo28/memento-os`
   first. The install has no other source.
 - Do not guess a skill name from its folder — `memento-decay` and `memento-lint` on disk are
   `/memento:decay` and `/memento:lint` when invoked.

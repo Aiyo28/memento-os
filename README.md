@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="assets/decisions.gif" alt="Memento OS — your AI's tattoo memory" width="480">
-</p>
-
 <h3 align="center">Store conclusions, not notes.</h3>
 
 <p align="center">
@@ -9,12 +5,19 @@
 </p>
 
 <p align="center">
-  <a href="#install">Install</a> · <a href="#how-it-works">How It Works</a> · <a href="#reasoning-artifacts">Artifacts</a> · <a href="#works-with">Multi-AI</a> · <a href="#obsidian">Obsidian</a>
+  <a href="https://github.com/Aiyo28/memento-os/actions/workflows/ci.yml"><img src="https://github.com/Aiyo28/memento-os/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"></a>
+</p>
+
+<p align="center">
+  <a href="#install">Install</a> · <a href="#how-it-works">How It Works</a> · <a href="#reasoning-artifacts">Artifacts</a> · <a href="#works-with">Multi-AI</a> · <a href="#known-limitations">Limitations</a>
 </p>
 
 ---
 
-**Memento OS** is a persistent memory plugin for AI coding tools. Every conclusion is stored as a reasoning artifact with an invalidation trigger — your agent remembers what matters and knows when to re-evaluate.
+Memento OS gives Claude Code, Codex and Cursor a memory between sessions: it saves your decisions, each with the condition that makes it wrong.
+
+Every conclusion is stored as a reasoning artifact with an invalidation trigger, so your agent remembers what matters and knows when to re-evaluate. `/memento:lint` fails any decision saved without its condition, and `/memento:decay` finds decisions whose condition may have fired. It's plain markdown, in your project or your Obsidian vault.
 
 ## The Problem
 
@@ -27,18 +30,30 @@ AI agents are stateless. Every session starts from zero.
 
 ## Install
 
+One command in your terminal:
+
+```bash
+claude plugin marketplace add Aiyo28/memento-os && claude plugin install memento-os@aiyo
+```
+
+It takes about 4 seconds. Or inside Claude Code:
+
 ```bash
 /plugin marketplace add Aiyo28/memento-os
 /plugin install memento-os@aiyo
 ```
 
-Then:
+Then, in each project where you want memory:
 
 ```bash
 /memento:init
 ```
 
-Three questions. Thirty seconds. Your first decision captured.
+It asks where to keep memory, what you're building, and the hardest decision you've made so far. That decision becomes your first `[D]` artifact.
+
+Already installed? `claude plugin update memento-os@aiyo`. Updating the marketplace on its own doesn't update an installed plugin.
+
+Codex, Cursor and the other tools: see [Works With](#works-with).
 
 ## How It Works
 
@@ -143,7 +158,7 @@ knowledge-vault/
 
 Every area has its own `_context.md` with an artifacts table. Artifacts route automatically to the right context based on domain. Tags: `tech/`, `business/`, `product/`, `ai/`, `personal/` — nested as `domain/subtopic`. Folders created on demand.
 
-## Before / After
+## Before / After (example)
 
 **Without** (session 5):
 ```
@@ -164,13 +179,23 @@ Memory: 6.8/10 | 14 artifacts | 2 seeds | streak: 5
 [S] Consider Redis caching — activates when: API p95 > 200ms ← CONDITION MET
 ```
 
-## Why I Built This
+## Known Limitations
+
+- **The hooks are prompts, not code.** Stop and PreCompact ask Claude to write the log and update `_context.md`. Whether a capture happens depends on the model following the prompt. `/memento:lint` can check the result afterwards.
+- **PreCompact saves artifacts and `NEXT.md`, not working state.** Open files, task lists and half-finished reasoning are still lost to compaction.
+- **Tests cover `lint` and `decay` only.** `tests/run.sh` runs 38 assertions against fixture vaults. The skills and hooks are prompts and have no automated tests.
+- **`decay` is a heuristic.** It matches words from each invalidation trigger against git history and newer artifacts. It suggests candidates; you confirm each one.
+- **Automatic capture is Claude Code only.** The hooks exist only there. In Codex the skills run when you ask for them. Cursor, Windsurf, Cline and Gemini get rules the model reads on every run. With Aider and Continue you run the workflows yourself, and vault sync is manual.
+- **Updates are manual.** Run `claude plugin update memento-os@aiyo` (or `npx skills update`). Two installed versions can both fire their hooks in one session; it happened here with 2.3.2 and 2.3.3.
+- **It costs context.** About 620 tokens are added to every session, plus 600 to 1,400 each time a skill runs (estimates from `claude plugin details memento-os@aiyo`).
+
+## How It Started
 
 I kept reaching the same conclusions across sessions — same reasoning, same answer, different day. The vault was full of notes, but the actual decisions were buried in noise.
 
 So I flipped it: capture *only* conclusions. Each one with a condition that makes it invalid — so the system knows when to question itself instead of blindly trusting old decisions.
 
-That shift — from "save everything" to "save only conclusions" — turned out to be the entire product.
+That shift, from saving everything to saving only conclusions, turned out to be the entire product. I still keep my own projects' decisions in this format. Memento OS packages it as a plugin anyone can install.
 
 <details>
 <summary><strong>Design decisions</strong> — how we got here, failure by failure</summary>
@@ -200,14 +225,15 @@ Welcome: ADRs, adapter improvements, scorecard improvements, translations.
 
 Not accepted: vendor plugins, paid integrations, AI-generated filler.
 
-## Support
+## License and Support
 
-If Memento OS saved you time:
+[MIT](LICENSE), all of it.
 
+If Memento OS saved you time, you can buy me a coffee.
+
+[![PayPal](https://img.shields.io/badge/PayPal-Buy%20me%20a%20coffee-00457C?logo=paypal&logoColor=white)](https://paypal.me/aiyo28)
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-Buy%20me%20a%20coffee-FF5E5B?logo=ko-fi&logoColor=white)](https://ko-fi.com/aiyo1939)
 
-[ko-fi.com/aiyo1939](https://ko-fi.com/aiyo1939) — any amount, any currency.
+Any amount, any currency.
 
-## License
-
-[MIT](LICENSE)
+Author: [Ayal Nogovitsyn](https://github.com/Aiyo28), based in Kazakhstan.

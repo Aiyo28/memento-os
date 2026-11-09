@@ -1,5 +1,22 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+- **README rewritten for first-time visitors.** One-line description, a one-command terminal
+  install (`claude plugin marketplace add Aiyo28/memento-os && claude plugin install memento-os@aiyo`),
+  a Known Limitations section, and license and donation links in one place. The film-clip banner
+  is no longer shown.
+- `plugin.json` and `marketplace.json` descriptions now open with the same sentence as the README
+  and the GitHub description.
+- Donation links: PayPal and Ko-fi, in the README and the Sponsor button (`FUNDING.yml`).
+
+### Fixed
+- **Install instructions that skipped the marketplace step** in `starter/quickstart.md`,
+  `llms.txt` and `adapters/README.md`. Each now adds the marketplace first and installs
+  `memento-os@aiyo`.
+- **Hook count** in `llms.txt` and `adapters/README.md`: 3 (SessionStart, Stop, PreCompact), not 2.
+
 ## [2.3.3] — 2026-09-05
 
 ### Fixed

@@ -1,6 +1,6 @@
 {
   "name": "memento-os",
-  "description": "Decision-centric memory system for AI coding agents. Store conclusions, not notes. OODA-driven reasoning artifacts with priority matrix, invalidation triggers, and seed activation. Hooks write session logs, _context.md, NEXT.md and archived decisions, only in projects you initialize with /memento:init.",
+  "description": "Memento OS gives Claude Code, Codex and Cursor a memory between sessions: it saves your decisions, each with the condition that makes it wrong. Hooks write session logs, _context.md, NEXT.md and archived decisions, only in projects you initialize with /memento:init.",
   "version": "2.3.3",
   "author": {
     "name": "Ayal Nogovitsyn"
