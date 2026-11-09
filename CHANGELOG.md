@@ -31,7 +31,9 @@
     longer claims to update `_context.md` or `NEXT.md`.
   - **Stop** blocks at most once per turn (it checks `stop_hook_active`), and only when
     Claude's last reply states an artifact that is not in `_context.md` or `Decisions/`. It is
-    silent in projects that are not initialized.
+    silent in projects that are not initialized. It reports only how many artifacts of each
+    type are unsaved, never their text, and tells Claude not to save text quoted from files,
+    web pages or tool output.
   - `.memento-skip` now silences all three hooks, not just SessionStart.
 - **Install instructions that skipped the marketplace step** in `starter/quickstart.md`,
   `llms.txt` and `adapters/README.md`. Each now adds the marketplace first and installs
