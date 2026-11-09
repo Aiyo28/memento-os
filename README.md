@@ -194,7 +194,7 @@ Memory: 6.8/10 | 14 artifacts | 2 seeds | streak: 5
 
 - **Stop reads only Claude's last reply.** It catches artifacts that carry their trigger clause (`invalidates if`, `activates when`, `fix:`) and are missing from `_context.md`. An artifact stated earlier in the turn is not seen, and one saved in other words is flagged once. Claude does the writing, so `/memento:lint` is still the check on the result.
 - **PreCompact writes nothing.** It asks the compaction summary to carry unsaved artifacts word for word; they reach `_context.md` only when Claude saves them after compaction. It does not update `NEXT.md`, and open files, task lists and half-finished reasoning are still lost to compaction.
-- **Tests cover `lint`, `decay` and the hook script.** `tests/run.sh` runs 59 assertions against fixture vaults and hook inputs. The skills are prompts and have no automated tests.
+- **Tests cover `lint`, `decay` and the hook script.** `tests/run.sh` runs 65 assertions against fixture vaults and hook inputs. The skills are prompts and have no automated tests.
 - **`decay` is a heuristic.** It matches words from each invalidation trigger against git history and newer artifacts. It suggests candidates; you confirm each one.
 - **The hooks are Claude Code only, and need `python3`.** In Codex the skills run when you ask for them. Cursor, Windsurf, Cline and Gemini get rules the model reads on every run. With Aider and Continue you run the workflows yourself, and vault sync is manual.
 - **Updates are manual.** Run `claude plugin update memento-os@aiyo` (or `npx skills update`). Two installed versions can both fire their hooks in one session; it happened here with 2.3.2 and 2.3.3.

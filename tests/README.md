@@ -23,6 +23,7 @@ Exit 0 = all pass. Exit 1 = at least one assertion failed.
 | `memento:decay` age | High `--age` produces empty candidate list |
 | hooks Stop | Hook input JSON in, decision out: blocks once on unsaved artifacts; silent when `stop_hook_active`, when saved in `_context.md` or `Decisions/`, when uninitialized or skipped |
 | hooks lookup | `memory_path` from `.memento/config.yaml`; input `cwd` when `CLAUDE_PROJECT_DIR` is unset |
+| hooks escape | A config path or symlink to a file not named `_context.md` is ignored; a vault `_context.md` outside the project works; a path with spaces is not printed |
 | hooks SessionStart / PreCompact | One-line notice only when uninitialized; PreCompact instructions only when initialized |
 
 ## Why property-based assertions, not golden files

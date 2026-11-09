@@ -5,7 +5,10 @@
 
 Every subcommand is silent (exit 0, no output) unless the project is initialized:
 an `_context.md` exists at the `memory_path` in `.memento/config.yaml`, at the project
-root, or under `./memento/`, and there is no `.memento-skip` file at the root.
+root, or under `./memento/`, and there is no `.memento-skip` file at the root. The
+file must really be named `_context.md`, after following symlinks: a cloned repo
+controls its own config, and may point it outside the project, but it cannot aim the
+hooks (and Claude's writes) at CLAUDE.md or any other file.
 
 The hooks never write files. SessionStart prints one line when the project is not
 initialized. PreCompact tells the compaction summary to keep unsaved artifacts.
@@ -37,6 +40,10 @@ TRIGGER_RE = {
     "E": re.compile(r"\bfix:", re.IGNORECASE),
 }
 CONCLUSION_END_RE = re.compile(r"\s+(?:—|–|--?)\s+")
+# A path is printed in hook messages only if it is made of these characters. Anything
+# else (spaces, quotes, newlines) could carry instructions in a folder name.
+SAFE_PATH_RE = re.compile(r"[A-Za-z0-9._/~-]{1,200}")
+CONTEXT_LABEL = "this project's Memento _context.md"
 
 
 def project_dir(event: dict) -> Path:
@@ -64,9 +71,14 @@ def find_context(root: Path) -> Path | None:
     candidates = []
     configured = memory_path_from_config(root)
     if configured is not None:
-        candidates.append(configured if configured.suffix == ".md" else configured / "_context.md")
+        candidates.append(configured if configured.name == "_context.md" else configured / "_context.md")
     candidates += [root / "_context.md", root / "memento" / "_context.md"]
-    return next((c for c in candidates if c.is_file()), None)
+    for candidate in candidates:
+        if candidate.is_file():
+            real = candidate.resolve()
+            if real.name == "_context.md":
+                return real
+    return None
 
 
 def normalize(text: str) -> str:
@@ -102,10 +114,12 @@ def saved_text(context: Path) -> str:
 
 
 def display(path: Path, root: Path) -> str:
+    """How hook messages name the context file: its path, or a fixed label if unsafe."""
     try:
-        return str(path.relative_to(root))
+        shown = str(path.relative_to(root.resolve()))
     except ValueError:
-        return str(path)
+        shown = str(path)
+    return shown if SAFE_PATH_RE.fullmatch(shown) else CONTEXT_LABEL
 
 
 def session_start(event: dict) -> str | None:

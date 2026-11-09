@@ -1,5 +1,18 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+- **A cloned repo could aim the hooks at any `.md` file.** The hooks trusted `memory_path` in
+  the repo's own `.memento/config.yaml`. An absolute path, a `../` path or a symlinked
+  `_context.md` could point them at a file such as `~/.claude/CLAUDE.md`, and the Stop hook
+  would then ask Claude to write artifacts into it. The path was also printed in the hook
+  messages, so a folder name could carry instructions. The file the hooks use must now be
+  named `_context.md` after following symlinks. A vault folder outside the project still
+  works. Hook messages print the path only when it has no spaces or unusual characters, and
+  otherwise say "this project's Memento _context.md".
+- **Tests:** 6 assertions for these cases (65 in total).
+
 ## [2.3.4] — 2026-11-09
 
 ### Changed
