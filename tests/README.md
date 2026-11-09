@@ -1,6 +1,6 @@
 # memento-os tests
 
-Bash-driven assertions against `lint.py` + `decay.py`. No external test framework — matches the repo's existing pattern (bash hooks, markdown skills, no node/pip deps).
+Bash-driven assertions against `lint.py`, `decay.py` and `hooks/memento_hook.py`. No external test framework — matches the repo's existing pattern (bash hooks, markdown skills, no node/pip deps).
 
 ## Run
 
@@ -21,6 +21,9 @@ Exit 0 = all pass. Exit 1 = at least one assertion failed.
 | `memento:decay` text | Vault-overlap signal flags [D]#1 LIKELY STALE; recent [D] excluded |
 | `memento:decay` JSON | `--format json` produces candidates with signal types |
 | `memento:decay` age | High `--age` produces empty candidate list |
+| hooks Stop | Hook input JSON in, decision out: blocks once on unsaved artifacts; silent when `stop_hook_active`, when saved in `_context.md` or `Decisions/`, when uninitialized or skipped |
+| hooks lookup | `memory_path` from `.memento/config.yaml`; input `cwd` when `CLAUDE_PROJECT_DIR` is unset |
+| hooks SessionStart / PreCompact | One-line notice only when uninitialized; PreCompact instructions only when initialized |
 
 ## Why property-based assertions, not golden files
 
@@ -35,4 +38,6 @@ fixtures/
   clean/_context.md       — passes lint, no decay candidates
   violations/_context.md  — one row per failing rule
   decay/_context.md       — aged [D] artifacts, one with a vault-overlap supersession
+  hooks/                  — projects (initialized, configured, uninitialized, skipped)
+                            and Stop hook inputs (stop-*.json)
 ```

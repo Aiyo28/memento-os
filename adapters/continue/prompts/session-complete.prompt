@@ -49,11 +49,4 @@ Review `NEXT.md` and apply changes from this session:
 - Add any new blockers identified during the session
 - Add any new next actions that emerged
 
-## Step 7 — Session Log
-Append a one-line entry to the session log section of `_context.md` (or a `logs/` file if the project uses one):
-
-```
-YYYY-MM-DD — [brief description of what changed this session]
-```
-
-Output a confirmation: "Session complete. N artifacts written. NEXT.md updated."
+Do not write a session log. Output a confirmation: "Session complete. N artifacts written. NEXT.md updated."

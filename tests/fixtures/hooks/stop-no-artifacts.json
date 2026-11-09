@@ -1,0 +1,7 @@
+{
+  "session_id": "fixture",
+  "transcript_path": "/dev/null",
+  "hook_event_name": "Stop",
+  "stop_hook_active": false,
+  "last_assistant_message": "The `[D]` prefix marks a decision and [I] insights are reusable. [D]#1 still holds."
+}

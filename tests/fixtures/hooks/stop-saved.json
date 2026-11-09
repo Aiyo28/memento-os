@@ -1,0 +1,7 @@
+{
+  "session_id": "fixture",
+  "transcript_path": "/dev/null",
+  "hook_event_name": "Stop",
+  "stop_hook_active": false,
+  "last_assistant_message": "Both still hold: `[D] Use Postgres for primary store — invalidates if write volume exceeds 10k/sec` and [D] Ship the v1 API without GraphQL — invalidates if two clients ask for it."
+}

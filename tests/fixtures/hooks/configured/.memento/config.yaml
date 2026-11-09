@@ -1,0 +1,2 @@
+memory_path: "docs/memory"  # set by /memento:init
+auto_log: true

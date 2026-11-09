@@ -130,23 +130,15 @@ Memory score: artifact count (0–2) + critical decisions (0–2) + recency (0�
 
 Triggers: "done", "wrap up", "session complete", "end of session", "about to compact"
 
-Modes: **default** (full extraction + log) or **compact** (quick extraction + NEXT.md only).
+Modes: **default** (full extraction) or **compact** (quick extraction). Both update NEXT.md; neither writes a session log.
 
 1. **Scan** conversation for `[D]`, `[I]`, `[E]`, `[S]` artifacts. Compact mode: skip impact prompt, default to `settled`.
 2. **Contradiction check:** New supersedes existing → evict old to `Decisions/` with `status: superseded`. Conflict (both may be valid) → flag for user. Compact: auto-supersede, flag conflicts only.
 3. **Confirm:** "I found these artifacts: [list]. Anything to add or correct?" Then: "High or low impact?" for each (skip in compact).
 4. **Write:** inline entries to `_context.md`; full files to `Decisions/` for critical/volatile.
 5. **Update NEXT.md:** move completed items, add new ones, update date, keep under 15 lines.
-6. **Session log (default only):** Add to TOP of `Sessions/SESSION_LOG.md`:
-   ```
-   ### {YYYY-MM-DD} — {most important outcome}
-   **Artifacts produced:** {count} ([D]: n, [I]: n, [E]: n, [S]: n)
-   **Changed:** {1-2 sentences}
-   **Next:** {next session focus}
-   ```
-   Archive entries beyond 200 lines to `SESSION_LOG_ARCHIVE.md`.
-7. **Enforce cap:** If table > 24 entries, evict noise → settled → volatile. Never evict critical.
-8. **Show delta:** `Memory: {old} → {new}/10 ({delta})`
+6. **Enforce cap:** If table > 24 entries, evict noise → settled → volatile. Never evict critical.
+7. **Show delta:** `Memory: {old} → {new}/10 ({delta})`
 
 ---
 

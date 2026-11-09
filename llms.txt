@@ -45,7 +45,7 @@ Per type, additionally:
 
 Skills (7): memento:decide, memento:grill-me, memento:session-start, memento:session-complete, memento:vault-audit, memento:decay, memento:lint
 Commands (2): memento:init, memento:stats
-Hooks (3): SessionStart (one-line reminder in an uninitialized project), Stop (auto-capture), PreCompact (save before compression)
+Hooks (3), all `type: command` running `hooks/memento_hook.py`: SessionStart (one-line reminder in an uninitialized project), Stop (asks Claude, once per turn, to save artifacts its last reply stated), PreCompact (tells the compaction summary to keep unsaved artifacts)
 
 Directory names do not always match skill names: `skills/memento-decay/` is invoked as
 `/memento:decay`, `skills/memento-lint/` as `/memento:lint`.
@@ -65,13 +65,14 @@ Two steps. The marketplace must be added before the plugin can be installed:
 - **Cap is 24 artifacts per `_context.md`** ("Kobe" cap). Over the cap, evict by priority:
   noise → settled → volatile. **Never evict critical.** Evicted artifacts are archived to
   `Decisions/`, not deleted.
-- **Hooks write silently.** Both the Stop and PreCompact hooks are instructed not to ask for
-  confirmation — PreCompact fires while context is already under pressure. Do not add a
-  confirmation prompt to either path.
-- **The Stop hook promotes only critical and volatile artifacts** to the `_context.md` Active
-  Reasoning Artifacts table; everything it captures lands in the session log first. PreCompact
-  does not filter — under context pressure it writes every unsaved artifact to the table, then
-  evicts to the cap.
+- **Hooks write no files.** Claude writes artifacts to the `_context.md` Active Reasoning
+  Artifacts table; the hooks only check and remind. All three stay silent in a project with no
+  `_context.md` or with a `.memento-skip` file.
+- **Stop blocks at most once per turn** (it checks `stop_hook_active`), and only when Claude's
+  last reply states an artifact, with its trigger clause, that is not in `_context.md` or the
+  `Decisions/` folder beside it. It never asks for a session log or a confirmation.
+- **PreCompact tells the compaction summary** to keep every unsaved artifact word for word. It
+  does not write `_context.md` or `NEXT.md`.
 - **`[E]` decays.** An error drops to `noise` once its learning has been extracted; it is not
   meant to sit at `settled` forever.
 - **An artifact without an expiration condition is a note, not an artifact.** The invalidation
@@ -92,7 +93,7 @@ Two steps. The marketplace must be added before the plugin can be installed:
 - README.md — full documentation
 - skills/*/SKILL.md — skill implementations (Claude Code)
 - commands/memento/*.md — command implementations
-- hooks/hooks.json — hook definitions
+- hooks/hooks.json — hook definitions; hooks/memento_hook.py — the script they run
 - adapters/*/README.md — per-tool install guides
 - docs/adr/*.md — architecture decision records
 - docs/GLOSSARY.md — domain terms
@@ -111,7 +112,7 @@ Two steps. The marketplace must be added before the plugin can be installed:
   volatile — and if that is not enough, the cap is the wrong problem to solve.
 - Do not store a conclusion with no expiration condition. That is a note; it belongs in the
   vault body, not the artifact table.
-- Do not add confirmation prompts to the Stop or PreCompact hooks.
+- Do not add confirmation prompts or a session log to the Stop or PreCompact hooks.
 
 ## Links
 

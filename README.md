@@ -84,15 +84,15 @@ Codex, Cursor and the other tools: see [Works With](#works-with).
 **Hooks** run automatically. **Stop and PreCompact stay silent until you run `/memento:init`** in a project; an uninitialized project is never written to. `touch .memento-skip` in any project where you never want Memento.
 
 <a id="what-the-hooks-do"></a>
-**What the hooks do.** All three are `type: prompt` hooks (`hooks/hooks.json`): instructions to Claude, with no scripts, no network calls and no telemetry.
+**What the hooks do.** All three are `type: command` hooks: `hooks/hooks.json` runs `hooks/memento_hook.py` with `python3`. The script reads local files only. It writes no files, makes no network calls and sends no telemetry.
 
 | Hook | When | Reads | Writes |
 |------|------|-------|--------|
-| SessionStart | Session opens | Whether `_context.md` exists (project root, `./memento/`, or the path in `.memento/config.yaml`) and whether `.memento-skip` exists | Nothing. Prints one line if the project isn't initialized |
-| Stop | Claude finishes a turn | The conversation; the project context (cwd / `CLAUDE.md`) | Appends a session log entry to the project's journal. For critical or volatile artifacts, also updates the Active Reasoning Artifacts table in `_context.md` |
-| PreCompact | Before context compaction | The conversation | Updates the Active Reasoning Artifacts table in `_context.md` (cap 24; evicted rows are archived to `Decisions/`) and updates `NEXT.md` |
+| SessionStart | A new session starts | Whether `_context.md` exists (project root, `./memento/`, or the path in `.memento/config.yaml`) and whether `.memento-skip` exists | Nothing. Prints one line if the project isn't initialized |
+| Stop | Claude finishes a turn | Claude's last reply; `_context.md` and the `Decisions/` folder beside it | Nothing. If the reply states a `[D]`/`[I]`/`[E]`/`[S]` artifact that isn't saved there, Claude is asked once to add it to `_context.md` or say why not |
+| PreCompact | Before context compaction | Where `_context.md` is | Nothing. Tells the compaction summary to keep unsaved artifacts word for word |
 
-Stop and PreCompact write without asking, by design: capture should not interrupt the session. Nothing is written outside an initialized project.
+The hooks never write files. When Stop finds an unsaved artifact, Claude adds it to `_context.md` or says why not before the turn ends, without asking you; Stop asks at most once per turn and never asks for a session log. Nothing is written outside an initialized project.
 
 **Commands:** `/memento:init` (setup) · `/memento:stats` (memory score + streaks)
 
@@ -193,11 +193,11 @@ Memory: 6.8/10 | 14 artifacts | 2 seeds | streak: 5
 
 ## Known Limitations
 
-- **The hooks are prompts, not code.** Stop and PreCompact ask Claude to write the log and update `_context.md`. Whether a capture happens depends on the model following the prompt. `/memento:lint` can check the result afterwards.
-- **PreCompact saves artifacts and `NEXT.md`, not working state.** Open files, task lists and half-finished reasoning are still lost to compaction.
-- **Tests cover `lint` and `decay` only.** `tests/run.sh` runs 38 assertions against fixture vaults. The skills and hooks are prompts and have no automated tests.
+- **Stop reads only Claude's last reply.** It catches artifacts that carry their trigger clause (`invalidates if`, `activates when`, `fix:`) and are missing from `_context.md`. An artifact stated earlier in the turn is not seen, and one saved in other words is flagged once. Claude does the writing, so `/memento:lint` is still the check on the result.
+- **PreCompact writes nothing.** It asks the compaction summary to carry unsaved artifacts word for word; they reach `_context.md` only when Claude saves them after compaction. It does not update `NEXT.md`, and open files, task lists and half-finished reasoning are still lost to compaction.
+- **Tests cover `lint`, `decay` and the hook script.** `tests/run.sh` runs 59 assertions against fixture vaults and hook inputs. The skills are prompts and have no automated tests.
 - **`decay` is a heuristic.** It matches words from each invalidation trigger against git history and newer artifacts. It suggests candidates; you confirm each one.
-- **Automatic capture is Claude Code only.** The hooks exist only there. In Codex the skills run when you ask for them. Cursor, Windsurf, Cline and Gemini get rules the model reads on every run. With Aider and Continue you run the workflows yourself, and vault sync is manual.
+- **The hooks are Claude Code only, and need `python3`.** In Codex the skills run when you ask for them. Cursor, Windsurf, Cline and Gemini get rules the model reads on every run. With Aider and Continue you run the workflows yourself, and vault sync is manual.
 - **Updates are manual.** Run `claude plugin update memento-os@aiyo` (or `npx skills update`). Two installed versions can both fire their hooks in one session; it happened here with 2.3.2 and 2.3.3.
 - **It costs context.** About 620 tokens are added to every session, plus 600 to 1,400 each time a skill runs (estimates from `claude plugin details memento-os@aiyo`).
 

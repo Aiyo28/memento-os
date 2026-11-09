@@ -1,0 +1,7 @@
+{
+  "session_id": "fixture",
+  "transcript_path": "/dev/null",
+  "hook_event_name": "Stop",
+  "stop_hook_active": true,
+  "last_assistant_message": "Done. Two things worth keeping:\n\n`[D] Cache sessions in Redis — invalidates if p95 session reads stay under 5ms without it [volatile] [2026-11-09]`\n\n[S] Add a read replica — activates when p95 read latency exceeds 200ms [settled] [2026-11-09]\n\nStill true: [D] Use Postgres for primary store — invalidates if write volume exceeds 10k/sec."
+}

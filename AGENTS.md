@@ -58,7 +58,7 @@ live in `docs/GLOSSARY.md`. In this file:
 - `system/scorecard.md` — memory-system self-evaluation rubric.
 - Skills: `skills/*/SKILL.md` (namespaced `memento:*`).
 - Commands: `commands/memento/*.md`.
-- Hooks: `hooks/hooks.json` (SessionStart, Stop, PreCompact).
+- Hooks: `hooks/hooks.json` (SessionStart, Stop, PreCompact), all running `hooks/memento_hook.py`.
 - Manifest: `.claude-plugin/plugin.json`.
 - Adapters: `adapters/<tool>/` (one subdir per non-Claude-Code AI tool).
 - Starter vault template: `starter/obsidian-vault/`.

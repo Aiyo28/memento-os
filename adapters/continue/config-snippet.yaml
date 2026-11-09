@@ -47,7 +47,7 @@ rules:
     check [S] seeds for activated conditions, flag stale [D]/[I] artifacts,
     display briefing.
     At session end: extract artifacts, confirm with user, write to
-    _context.md, update NEXT.md, append session log entry.
+    _context.md, update NEXT.md.
 
   - >
     Memento OS — Schema Lint (memento:lint):

@@ -3,7 +3,7 @@ name: session-complete
 version: 4.2.0
 description: >
   Run at end of session OR before compaction. Extracts reasoning artifacts
-  with priority matrix, updates NEXT.md, appends to session log.
+  with priority matrix, writes them to `_context.md`, updates NEXT.md.
   Two modes: end-of-session (default) and pre-compaction (--compact).
   Triggers: "done", "wrap up", "session complete", "end of session",
   "about to compact", "context getting long".
@@ -18,8 +18,10 @@ Extract what matters. Discard the rest. Update continuity docs.
 
 | Signal | Mode | Behavior |
 |--------|------|----------|
-| End of session | `default` | Full extraction + NEXT.md + session log |
-| Before compaction | `--compact` | Quick extraction + NEXT.md only (speed matters) |
+| End of session | `default` | Full extraction + NEXT.md |
+| Before compaction | `--compact` | Quick extraction + NEXT.md (speed matters) |
+
+No session log. The artifacts in `_context.md` and `NEXT.md` are the record of the session.
 
 ## Steps
 
@@ -89,27 +91,12 @@ In `--compact` mode: skip impact confirmation, present briefly.
 - Update date
 - Keep under 15 lines
 
-### 6. Append Session Log (default mode only)
+### 6. Enforce Limits
 
-Skip in `--compact` mode.
-
-Add at the TOP of `Sessions/SESSION_LOG.md`:
-
-```markdown
-### {YYYY-MM-DD} — {most important decision or outcome}
-
-**Artifacts produced:** {count} ([D]: {count}, [I]: {count}, [E]: {count}, [S]: {count})
-**Changed:** {1-2 sentences on what changed}
-**Next:** {what should happen next session}
-```
-
-### 7. Enforce Limits
-
-- SESSION_LOG.md: move entries beyond 200 lines to SESSION_LOG_ARCHIVE.md
 - _context.md Active Reasoning Artifacts table: cap at 24 entries (Kobe). When over cap, evict by priority: noise first → settled → volatile. **Never auto-evict critical artifacts.** Archive evicted artifacts to `Decisions/` folder with appropriate status: `superseded` (replaced by newer decision), `archived` (no longer relevant), or keep `active` if the full file is for reference depth only.
 - Eviction also triggers for: `embedded` artifacts (decision is in code, not referenced in 30+ days), `resolved` errors (learning extracted into a `[D]`), dormant `[S]` seeds (not activated after 90 days).
 
-### 8. Peer Card Update (optional, default mode only)
+### 7. Peer Card Update (optional, default mode only)
 
 If this session revealed a new communication preference, decision pattern, or context-dependent trait that isn't already in the Peer Card (`People/Self.md`):
 - Propose the update: `"Peer Card update: add <trait> to <section>?"`
@@ -118,7 +105,7 @@ If this session revealed a new communication preference, decision pattern, or co
 
 Skip if: no new behavioral patterns observed, or in `--compact` mode.
 
-### 9. Show Progress
+### 8. Show Progress
 
 After writing artifacts, display the delta:
 

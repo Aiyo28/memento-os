@@ -3,6 +3,13 @@
 ## [Unreleased]
 
 ### Changed
+- **No more session log.** The Stop hook, `/memento:session-complete` and the adapter
+  workflows (Codex, Cursor, Windsurf, Cline, Gemini, Aider, Continue) no longer write
+  `Sessions/SESSION_LOG.md`. The artifacts in `_context.md` and `NEXT.md` are the record.
+- README hook table, Known Limitations, `llms.txt` and the `plugin.json` / `marketplace.json`
+  descriptions now describe the command hooks.
+- **Tests:** `tests/run.sh` covers the hook script: Stop hook inputs in, decisions out, plus
+  SessionStart, PreCompact and project lookup (59 assertions, up from 38).
 - **README rewritten for first-time visitors.** One-line description, a one-command terminal
   install (`claude plugin marketplace add Aiyo28/memento-os && claude plugin install memento-os@aiyo`),
   a Known Limitations section, and license and donation links in one place. New banner, a
@@ -13,6 +20,19 @@
 - Donation links: PayPal and Ko-fi, in the README and the Sponsor button (`FUNDING.yml`).
 
 ### Fixed
+- **The hooks did not work.** All three were `type: prompt` hooks. Claude Code runs only
+  `command` and `mcp_tool` hooks on `SessionStart`, and no prompt hooks on `PreCompact`, so
+  the not-initialized notice and the pre-compaction save never ran. The `Stop` prompt hook
+  cannot write files: in a live test it blocked stopping 10 times in a row and saved nothing.
+  All three are now `type: command` hooks running `hooks/memento_hook.py` (needs `python3`).
+  - **SessionStart** prints the not-initialized line only when the project has no
+    `_context.md` and no `.memento-skip`, and only for a new session.
+  - **PreCompact** tells the compaction summary to keep unsaved artifacts word for word. It no
+    longer claims to update `_context.md` or `NEXT.md`.
+  - **Stop** blocks at most once per turn (it checks `stop_hook_active`), and only when
+    Claude's last reply states an artifact that is not in `_context.md` or `Decisions/`. It is
+    silent in projects that are not initialized.
+  - `.memento-skip` now silences all three hooks, not just SessionStart.
 - **Install instructions that skipped the marketplace step** in `starter/quickstart.md`,
   `llms.txt` and `adapters/README.md`. Each now adds the marketplace first and installs
   `memento-os@aiyo`.

@@ -68,7 +68,7 @@ Memory score: artifact count (0–2pts) + critical decisions (0–2pts) + recenc
 
 Triggers: "done", "wrap up", "session complete", "end of session", "about to compact", "context getting long"
 
-Two modes: default (end of session) and compact (before context compression — faster, skips log).
+Two modes: default (end of session) and compact (before context compression — faster). Neither mode writes a session log.
 
 ### Step 1 — Scan Conversation for Artifacts
 Extract:
@@ -101,25 +101,12 @@ For each artifact, confirm impact: "High or low impact?" (skip in compact mode).
 - Update "Blocked" with new blockers
 - Update date. Keep under 15 lines.
 
-### Step 6 — Append Session Log (default mode only)
-Add at the TOP of `Sessions/SESSION_LOG.md`:
-
-```
-### {YYYY-MM-DD} — {most important decision or outcome}
-
-**Artifacts produced:** {count} ([D]: n, [I]: n, [E]: n, [S]: n)
-**Changed:** {1-2 sentences on what changed}
-**Next:** {what should happen next session}
-```
-
-Move entries beyond 200 lines to `SESSION_LOG_ARCHIVE.md`.
-
-### Step 7 — Enforce Kobe Cap
+### Step 6 — Enforce Kobe Cap
 If Active Reasoning Artifacts table exceeds 24 entries:
 Evict by priority: noise → settled → volatile. Never auto-evict critical.
 Archive to `Decisions/` with status: `superseded`, `archived`, or keep `active`.
 
-### Step 8 — Show Progress
+### Step 7 — Show Progress
 ```
 Session captured: {n} artifacts ([D]: d, [I]: i, [E]: e, [S]: s)
 Memory: {old_score} → {new_score}/10 ({delta})

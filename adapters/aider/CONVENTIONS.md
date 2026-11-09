@@ -87,7 +87,6 @@ status: active | archived | draft
 4. Confirm the artifact list with the user before writing
 5. Write confirmed artifacts to the project's `_context.md` Active Artifacts table
 6. Update `NEXT.md` — remove completed items, add new blockers or next actions
-7. Append a one-line entry to the session log: `YYYY-MM-DD — what changed`
 
 ---
 

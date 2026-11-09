@@ -176,6 +176,65 @@ OUT="$(python3 "$DECAY" --no-git --age 30 --stopwords /dev/null "$FIX/stopwords"
 assert_contains "LIKELY STALE without project stopwords" "LIKELY STALE" "$OUT"
 assert_contains "vault overlap evidence shown" "overlap: breaking,engine,update,vendor" "$OUT"
 
+# Hooks: hook input JSON in, hook output out. CLAUDE_PROJECT_DIR is always set
+# explicitly, because a run inside Claude Code inherits the caller's project.
+HOOK="${ROOT}/hooks/memento_hook.py"
+HFIX="${FIX}/hooks"
+
+run_hook() {  # run_hook <event> <project dir> <input file>
+    CLAUDE_PROJECT_DIR="$2" python3 "$HOOK" "$1" < "$3" 2>&1
+}
+
+decision_of() {
+    printf '%s' "$1" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("decision", "none"))' 2>/dev/null \
+        || echo "not-json"
+}
+
+echo "=== hooks — Stop blocks once on unsaved artifacts ==="
+OUT="$(run_hook stop "$HFIX/initialized" "$HFIX/stop-unsaved.json")"
+assert_eq "decision is block" block "$(decision_of "$OUT")"
+assert_contains "lists the unsaved [D]" "Cache sessions in Redis" "$OUT"
+assert_contains "lists the unsaved [S]" "Add a read replica" "$OUT"
+assert_contains "counts only unsaved artifacts" "states 2 reasoning artifact(s)" "$OUT"
+assert_not_contains "skips the artifact already in _context.md" "Use Postgres" "$OUT"
+assert_contains "names the target file" "memento/_context.md" "$OUT"
+assert_contains "forbids a session log" "Do not write a session log" "$OUT"
+
+echo "=== hooks — Stop stays silent ==="
+OUT="$(run_hook stop "$HFIX/initialized" "$HFIX/stop-unsaved-active.json")"
+assert_eq "when stop_hook_active (second stop in a turn)" "" "$OUT"
+OUT="$(run_hook stop "$HFIX/initialized" "$HFIX/stop-saved.json")"
+assert_eq "when artifacts are in _context.md or Decisions/" "" "$OUT"
+OUT="$(run_hook stop "$HFIX/initialized" "$HFIX/stop-no-artifacts.json")"
+assert_eq "when the reply has no artifact with a trigger" "" "$OUT"
+OUT="$(run_hook stop "$HFIX/uninitialized" "$HFIX/stop-unsaved.json")"
+assert_eq "in an uninitialized project" "" "$OUT"
+OUT="$(run_hook stop "$HFIX/skipped" "$HFIX/stop-unsaved.json")"
+assert_eq "when .memento-skip exists" "" "$OUT"
+OUT="$(printf 'not json' | CLAUDE_PROJECT_DIR="$HFIX/initialized" python3 "$HOOK" stop 2>&1)"
+RC=$?
+assert_eq "on unreadable input (exit 0, no output)" "0:" "$RC:$OUT"
+
+echo "=== hooks — project lookup ==="
+OUT="$(run_hook stop "$HFIX/configured" "$HFIX/stop-unsaved.json")"
+assert_contains "memory_path from .memento/config.yaml" "docs/memory/_context.md" "$OUT"
+OUT="$(printf '{"cwd": "%s", "stop_hook_active": false, "last_assistant_message": "[D] Cache sessions in Redis — invalidates if reads stay fast"}' "$HFIX/initialized" \
+    | env -u CLAUDE_PROJECT_DIR python3 "$HOOK" stop 2>&1)"
+assert_eq "falls back to the input cwd" block "$(decision_of "$OUT")"
+
+echo "=== hooks — SessionStart and PreCompact ==="
+OUT="$(run_hook session-start "$HFIX/uninitialized" /dev/null)"
+assert_contains "SessionStart points to /memento:init" '"systemMessage": "Memento OS is installed but not initialized here' "$OUT"
+OUT="$(run_hook session-start "$HFIX/initialized" /dev/null)"
+assert_eq "SessionStart silent when initialized" "" "$OUT"
+OUT="$(run_hook session-start "$HFIX/skipped" /dev/null)"
+assert_eq "SessionStart silent with .memento-skip" "" "$OUT"
+OUT="$(run_hook pre-compact "$HFIX/initialized" /dev/null)"
+assert_contains "PreCompact keeps artifacts word for word" "word for word" "$OUT"
+assert_contains "PreCompact names the target file" "memento/_context.md" "$OUT"
+OUT="$(run_hook pre-compact "$HFIX/uninitialized" /dev/null)"
+assert_eq "PreCompact silent when uninitialized" "" "$OUT"
+
 echo ""
 echo "=========================================="
 if [ $FAIL -eq 0 ]; then
