@@ -66,7 +66,7 @@ Codex, Cursor and the other tools: see [Works With](#works-with).
 ## How It Works
 
 <p align="center">
-  <img src="assets/how-it-works.png" alt="Capture: /memento:decide, /memento:grill-me, /memento:session-complete and the hooks write [D] [I] [E] [S] artifacts into memento/ (_context.md, NEXT.md, Decisions/). Recall: /memento:session-start, /memento:lint, /memento:decay and /memento:vault-audit read them back." width="800">
+  <img src="assets/how-it-works.png" alt="Capture: /memento:decide, /memento:grill-me, /memento:session-complete and the hooks save new [D] [I] [E] [S] artifacts as you work into memento/ (_context.md, NEXT.md, Decisions/). Recall: /memento:session-start, /memento:lint, /memento:decay and /memento:vault-audit read them back." width="800">
 </p>
 
 7 skills. One loop.
