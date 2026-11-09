@@ -1,6 +1,6 @@
 # Memento OS
 
-> Persistent AI memory using reasoning artifacts. Works with Claude Code, Codex, Cursor, Windsurf, Cline, Gemini, Aider, and Continue. Plugin version 2.3.3, MIT.
+> Persistent AI memory using reasoning artifacts. Works with Claude Code, Codex, Cursor, Windsurf, Cline, Gemini, Aider, and Continue. Plugin version 2.3.4, MIT.
 
 This file is written for AI coding assistants. It is enough to write correct Memento OS
 artifacts and invoke the right skill without reading the source. Copy the formats; do not
@@ -66,8 +66,9 @@ Two steps. The marketplace must be added before the plugin can be installed:
   noise → settled → volatile. **Never evict critical.** Evicted artifacts are archived to
   `Decisions/`, not deleted.
 - **Hooks write no files.** Claude writes artifacts to the `_context.md` Active Reasoning
-  Artifacts table; the hooks only check and remind. All three stay silent in a project with no
-  `_context.md` or with a `.memento-skip` file.
+  Artifacts table; the hooks only check and remind. Stop and PreCompact stay silent in a project
+  with no `_context.md`, where SessionStart prints one line. All three stay silent with a
+  `.memento-skip` file.
 - **Stop blocks at most once per turn** (it checks `stop_hook_active`), and only when Claude's
   last reply states an artifact, with its trigger clause, that is not in `_context.md` or the
   `Decisions/` folder beside it. It never asks for a session log or a confirmation.

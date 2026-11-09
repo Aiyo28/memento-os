@@ -11,7 +11,7 @@
     {
       "name": "memento-os",
       "source": "./",
-      "version": "2.3.3",
+      "version": "2.3.4",
       "description": "Memento OS gives Claude Code, Codex and Cursor a memory between sessions: it saves your decisions, each with the condition that makes it wrong. Its hooks run a local script that writes no files and asks Claude to save unsaved decisions to _context.md, only in projects you initialize with /memento:init.",
       "category": "knowledge-management"
     }

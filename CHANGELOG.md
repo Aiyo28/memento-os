@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [2.3.4] — 2026-11-09
 
 ### Changed
 - **No more session log.** The Stop hook, `/memento:session-complete` and the adapter

@@ -1,5 +1,5 @@
 {
-  "description": "Memento OS hooks. All three run hooks/memento_hook.py, write no files and stay silent in projects without /memento:init.",
+  "description": "Memento OS hooks. All three run hooks/memento_hook.py, write no files. Stop and PreCompact stay silent in projects without /memento:init.",
   "hooks": {
     "SessionStart": [
       {
