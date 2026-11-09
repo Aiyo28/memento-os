@@ -2,6 +2,19 @@
 
 ## Continue
 
+### Relabel the two README images (after 3.0.0)
+
+3.0.0 shipped with the old `assets/how-it-works.png`, which still shows the 2.x command names.
+Ayal supplies two relabelled images, then one docs commit adds them:
+
+- `assets/how-it-works.png`: `/memento:session-complete` → `/memento:end`, `session-start` →
+  `recall`, `decay` → `forget`, `lint` → `check`, `vault-audit` → `audit`.
+- `assets/dies.png` (new, next to How It Works): the "Every conclusion carries the condition that
+  makes it wrong" card diagram, with `lint` → `check`, `decay` → `forget`, `session-start` →
+  `recall`.
+
+Check every label in the files before committing. The README alt text already uses the new names.
+
 ### ✅ Install integrity — SHIPPED and VERIFIED 2026-09-05
 
 **State, verified end-to-end:** `2.3.3` on `main`, CI green, `marketplace.json` returns 200 on
