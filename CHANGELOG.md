@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [2.3.5] — 2026-11-09
 
 ### Fixed
 - **A cloned repo could aim the hooks at any `.md` file.** The hooks trusted `memory_path` in
