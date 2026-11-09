@@ -8,8 +8,8 @@ status: active
 confidence: medium
 language: en
 summary: >
-  Personal peer card. Loaded partially by /session-start (Communication Style
-  and Decision Patterns tables only). Updated by /session-complete when new
+  Personal peer card. Loaded partially by /memento:recall (Communication Style
+  and Decision Patterns tables only). Updated by /memento:end when new
   behavioral patterns are observed. The AI uses this to calibrate its
   communication and decision support.
 ---

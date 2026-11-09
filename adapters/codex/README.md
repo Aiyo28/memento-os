@@ -15,14 +15,14 @@ Port of the Memento OS Claude Code plugin for OpenAI Codex (AGENTS.md + `.agents
 
 | Skill | Trigger phrases |
 |-------|----------------|
-| `session-start` | "start session", "what's the context", "catch me up" |
-| `session-complete` | "done", "wrap up", "session complete", "about to compact" |
+| `recall` | "start session", "what's the context", "catch me up" |
+| `end` | "done", "wrap up", "session complete", "about to compact" |
 | `decide` | "decide", "should we", "which option", "evaluate", "compare" |
 | `grill-me` | "grill me", "stress test", "poke holes", "what am I missing" |
-| `vault-audit` | "vault audit", "check vault", "what's stale", "vault health" |
+| `audit` | "vault audit", "check vault", "what's stale", "vault health" |
 
 ## Differences from Claude Code version
 
-- Skills use no namespace prefix (`session-start` not `memento:session-start`)
+- Skills use no namespace prefix (`recall` not `memento:recall`)
 - Auto-log path is `~/.memento/auto-log` instead of `~/.claude/memento-auto-log`
 - Project instructions file is `AGENTS.md` instead of `CLAUDE.md`

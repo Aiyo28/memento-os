@@ -4,7 +4,7 @@ Memento OS is a content-first repo — no build, no dependencies. Releases are g
 
 ## Before tagging
 
-1. **Sync adapter scripts** — copies `skills/memento-{lint,decay}/*.py` into every adapter directory that ships its own copy:
+1. **Sync adapter scripts** — copies `skills/{check,forget}/*.py` into every adapter directory that ships its own copy:
    ```bash
    ./scripts/sync-adapters.sh
    ```
@@ -18,7 +18,7 @@ Memento OS is a content-first repo — no build, no dependencies. Releases are g
 
 3. **Lint the repo's own vault cache** (informational — does not block release):
    ```bash
-   python3 skills/memento-lint/lint.py .vault-cache
+   python3 skills/check/lint.py .vault-cache
    ```
 
 4. **Bump version** in `.claude-plugin/plugin.json` and add a `[N.N.N] — YYYY-MM-DD` section to `CHANGELOG.md`.

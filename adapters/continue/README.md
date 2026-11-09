@@ -1,6 +1,6 @@
 # Memento OS — Continue Adapter
 
-Tier 3 (Manual) integration. Encodes Memento OS conventions as Continue config rules and provides `/session-start` and `/session-complete` as Continue slash commands.
+Tier 3 (Manual) integration. Encodes Memento OS conventions as Continue config rules and provides `/recall`, `/end`, `/check` and `/forget` as Continue slash commands.
 
 ## Install
 
@@ -9,13 +9,13 @@ Tier 3 (Manual) integration. Encodes Memento OS conventions as Continue config r
    ```
    cp -r prompts/ ~/.continue/prompts/
    ```
-3. Restart Continue — slash commands appear as `/session-start` and `/session-complete`
+3. Restart Continue — slash commands appear as `/recall`, `/end`, `/check` and `/forget`
 
 ## What You Get
 
 - Artifact format and priority matrix enforced via config rules
-- `/session-start` slash command runs the session-opening briefing workflow
-- `/session-complete` slash command runs the artifact-extraction and NEXT.md update workflow
+- `/recall` slash command runs the session-opening briefing workflow
+- `/end` slash command runs the artifact-extraction and NEXT.md update workflow
 
 ## Differences from Tier 1/2
 

@@ -19,25 +19,25 @@ Tier 3 (Manual) integration. Loads Memento OS conventions as read-only context s
 - Artifact format (`[D]/[I]/[E]/[S]`) enforced in all session output
 - Priority matrix applied when the AI stores conclusions
 - Kobe 24-artifact cap respected on writes
-- Session-start and session-complete workflows encoded as explicit instructions
-- `memento:lint` and `memento:decay` Python scripts callable from `/run` commands
+- Recall and end workflows encoded as explicit instructions
+- `memento:check` and `memento:forget` Python scripts callable from `/run` commands
 
-## Optional: schema validation + decay audit
+## Optional: check and forget
 
 Add these `commands:` entries to your `.aider.conf.yml` (export `MEMENTO_PLUGIN_ROOT` to wherever you cloned memento-os):
 
 ```yaml
 commands:
-  - name: lint
-    run: python3 ${MEMENTO_PLUGIN_ROOT}/skills/memento-lint/lint.py
-  - name: decay
-    run: python3 ${MEMENTO_PLUGIN_ROOT}/skills/memento-decay/decay.py --format json
+  - name: check
+    run: python3 ${MEMENTO_PLUGIN_ROOT}/skills/check/lint.py
+  - name: forget
+    run: python3 ${MEMENTO_PLUGIN_ROOT}/skills/forget/decay.py --format json
 ```
 
-Then `/lint` and `/decay` inside the Aider session invoke the scripts. See `CONVENTIONS.md` for the full schema rules and agent flow.
+Then `/check` and `/forget` inside the Aider session invoke the scripts. See `CONVENTIONS.md` for the full schema rules and agent flow.
 
 ## Differences from Tier 1/2
 
 - No slash commands — workflows run by prompting the AI directly ("start session", "wrap up")
-- No auto-hooks — you must prompt session-complete manually before ending a session
+- No auto-hooks — you must prompt the end workflow manually before ending a session
 - Vault sync is manual (`git pull` / `git push` in your vault repo)

@@ -57,7 +57,7 @@ live in `docs/GLOSSARY.md`. In this file:
 - `docs/specs/` — specs for unbuilt or in-flight work.
 - `system/scorecard.md` — memory-system self-evaluation rubric.
 - Skills: `skills/*/SKILL.md` (namespaced `memento:*`).
-- Commands: `commands/memento/*.md`.
+- Commands: `commands/*.md`.
 - Hooks: `hooks/hooks.json` (SessionStart, Stop, PreCompact), all running `hooks/memento_hook.py`.
 - Manifest: `.claude-plugin/plugin.json`.
 - Adapters: `adapters/<tool>/` (one subdir per non-Claude-Code AI tool).
@@ -87,7 +87,7 @@ live in `docs/GLOSSARY.md`. In this file:
    Confidence gate: <96% → pause and retrieve, regardless of how obvious
    the decision feels.
 6. **Artifact tiers are load-bearing.** L0 = CLAUDE.md "Critical Gotchas"
-   (~20, always loaded). L0.5 = `context/` (~800 tok, session-start if
+   (~20, always loaded). L0.5 = `context/` (~800 tok, recall if
    present). L1 = `_context.md` artifacts table (Kobe-24, every session).
    L2 = `Decisions/` folder (unlimited, on demand). Promotion L1→L0 test:
    "Would violating this waste >1hr?"

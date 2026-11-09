@@ -24,4 +24,4 @@ Cursor auto-applies rules with `alwaysApply: true`. Workflow rules are triggered
 - No slash commands — Cursor uses natural language triggers instead
 - Rules replace CLAUDE.md system prompts
 - Auto-log path is `~/.memento/auto-log` instead of `~/.claude/memento-auto-log`
-- No hooks — session-start/complete must be invoked manually
+- No hooks — recall and end must be invoked manually

@@ -24,4 +24,4 @@ Windsurf reads `.md` files in `.windsurf/rules/` as project-level instructions.
 - No slash commands — invoke workflows by describing what you want
 - Rules replace CLAUDE.md system prompts
 - Auto-log path is `~/.memento/auto-log` instead of `~/.claude/memento-auto-log`
-- No hooks — session-start/complete must be invoked manually
+- No hooks — recall and end must be invoked manually

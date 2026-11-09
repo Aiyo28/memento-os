@@ -17,4 +17,4 @@ Gemini CLI reads `GEMINI.md` as project-level instructions, equivalent to Claude
 - No slash commands — invoke workflows by describing what you want
 - Single file combines conventions + all workflows
 - Auto-log path is `~/.memento/auto-log` instead of `~/.claude/memento-auto-log`
-- No hooks — session-start/complete must be invoked manually
+- No hooks — recall and end must be invoked manually

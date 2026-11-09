@@ -46,4 +46,4 @@ Terms used throughout this project, defined for clarity.
 
 **Write discipline** — The practice of proactively writing memory to disk at critical moments: before compaction, after decisions, at session end. The core insight of this project: architecture without write discipline is a well-organized graveyard of stale docs.
 
-**Write trigger** — An event that causes memory to be saved. Can be manual (user says "remember this"), hook-based (PreToolUse/PostToolUse), skill-based (session-complete, strategic-compact), or automatic (pre-compaction flush). The progression from manual to automatic write triggers is the maturity curve of a memory system.
+**Write trigger** — An event that causes memory to be saved. Can be manual (user says "remember this"), hook-based (PreToolUse/PostToolUse), skill-based (end, strategic-compact), or automatic (pre-compaction flush). The progression from manual to automatic write triggers is the maturity curve of a memory system.

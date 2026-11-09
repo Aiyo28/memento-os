@@ -4,8 +4,8 @@ Copy-paste configs for wiring Memento OS into automated workflows.
 
 | File | Purpose |
 |------|---------|
-| `pre-commit/.pre-commit-config.yaml` | Run `memento:lint` as a pre-commit hook. Fails the commit if any artifact violates the schema. |
-| `github-actions/memento-lint.yml` | Run `memento:lint` in CI on every push/PR that touches a `_context.md`. |
+| `pre-commit/.pre-commit-config.yaml` | Run `memento:check` as a pre-commit hook. Fails the commit if any artifact violates the schema. |
+| `github-actions/memento-check.yml` | Run `memento:check` in CI on every push/PR that touches a `_context.md`. |
 
 ## Pre-commit
 
@@ -22,10 +22,10 @@ Adjust the `entry:` path if your Memento OS plugin lives somewhere other than `.
 
 ```bash
 mkdir -p /path/to/your/project/.github/workflows
-cp examples/github-actions/memento-lint.yml /path/to/your/project/.github/workflows/
+cp examples/github-actions/memento-check.yml /path/to/your/project/.github/workflows/
 ```
 
-Adjust the vault path in the `Run memento:lint` step (defaults to `${GITHUB_WORKSPACE}/vault`).
+Adjust the vault path in the `Run memento:check` step (defaults to `${GITHUB_WORKSPACE}/vault`).
 
 ## Flag reference
 

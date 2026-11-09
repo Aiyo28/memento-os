@@ -25,7 +25,7 @@
 
 Memento OS gives Claude Code, Codex and Cursor a memory between sessions: it saves your decisions, each with the condition that makes it wrong.
 
-Every conclusion is stored as a reasoning artifact with an invalidation trigger, so your agent remembers what matters and knows when to re-evaluate. `/memento:lint` fails any decision saved without its condition, and `/memento:decay` finds decisions whose condition may have fired. It's plain markdown, in your project or your Obsidian vault.
+Every conclusion is stored as a reasoning artifact with an invalidation trigger, so your agent remembers what matters and knows when to re-evaluate. `/memento:check` fails any decision saved without its condition, and `/memento:forget` finds decisions whose condition may have fired. It's plain markdown, in your project or your Obsidian vault.
 
 ## The Problem
 
@@ -41,14 +41,14 @@ AI agents are stateless. Every session starts from zero.
 One command in your terminal:
 
 ```bash
-claude plugin marketplace add Aiyo28/memento-os && claude plugin install memento-os@aiyo
+claude plugin marketplace add Aiyo28/memento-os && claude plugin install memento@aiyo
 ```
 
 It takes about 4 seconds. Or inside Claude Code:
 
 ```bash
 /plugin marketplace add Aiyo28/memento-os
-/plugin install memento-os@aiyo
+/plugin install memento@aiyo
 ```
 
 Then, in each project where you want memory:
@@ -59,27 +59,29 @@ Then, in each project where you want memory:
 
 It asks where to keep memory, what you're building, and the hardest decision you've made so far. That decision becomes your first `[D]` artifact.
 
-Already installed? `claude plugin update memento-os@aiyo`. Updating the marketplace on its own doesn't update an installed plugin.
+Already installed? `claude plugin update memento@aiyo`. Updating the marketplace on its own doesn't update an installed plugin.
+
+Coming from 2.x? The plugin was renamed from `memento-os` to `memento`, so `update` can't find it: run `claude plugin uninstall memento-os@aiyo`, then the install command above. Five commands were renamed too: `session-complete` is now `end`, `session-start` is `recall`, `decay` is `forget`, `lint` is `check` and `vault-audit` is `audit`. The old names no longer work.
 
 Codex, Cursor and the other tools: see [Works With](#works-with).
 
 ## How It Works
 
 <p align="center">
-  <img src="assets/how-it-works.png" alt="Capture: /memento:decide, /memento:grill-me, /memento:session-complete and the hooks remind Claude each turn to save new [D] [I] [E] [S] artifacts into memento/ (_context.md, NEXT.md, Decisions/). Recall: /memento:session-start, /memento:lint, /memento:decay and /memento:vault-audit read them back." width="800">
+  <img src="assets/how-it-works.png" alt="Capture: /memento:decide, /memento:grill-me, /memento:end and the hooks remind Claude each turn to save new [D] [I] [E] [S] artifacts into memento/ (_context.md, NEXT.md, Decisions/). Recall: /memento:recall, /memento:check, /memento:forget and /memento:audit read them back." width="800">
 </p>
 
-7 skills. One loop.
+7 skills. One loop: decide, remember, forget.
 
-| Skill | Phase | What it does |
-|-------|-------|-------------|
-| `/memento:grill-me` | **Think** | Stress-test your plan across 6 dimensions |
-| `/memento:decide` | **Decide** | OODA loop → `[D]` artifacts or `[S]` seeds |
-| `/memento:session-complete` | **Capture** | Extract all artifacts from the conversation |
-| `/memento:session-start` | **Recall** | Load context, surface decisions, check seeds |
-| `/memento:vault-audit` | **Maintain** | Health check, staleness scan, inbox processing |
-| `/memento:lint` | **Validate** | Check every artifact against the schema rules; non-zero exit for hooks and CI |
-| `/memento:decay` | **Re-evaluate** | Find aged `[D]` artifacts whose invalidation triggers may have fired |
+| Loop | Skill | What it does |
+|------|-------|-------------|
+| **Decide** | `/memento:grill-me` | Stress-test your plan across 6 dimensions |
+| | `/memento:decide` | OODA loop → `[D]` artifacts or `[S]` seeds |
+| **Remember** | `/memento:end` | Save the session's artifacts to `_context.md`, update `NEXT.md`, then run check on what it wrote |
+| | `/memento:recall` | Load context, surface decisions, check seeds |
+| | `/memento:check` | Check every artifact against the schema rules; non-zero exit for hooks and CI |
+| **Forget** | `/memento:forget` | Find aged `[D]` artifacts whose invalidation triggers may have fired |
+| | `/memento:audit` | Health check, staleness scan, inbox processing; runs forget |
 
 **Hooks** run automatically. **Stop and PreCompact stay silent until you run `/memento:init`** in a project; an uninitialized project is never written to. `touch .memento-skip` in any project where you never want Memento.
 
@@ -132,7 +134,7 @@ Same vault, same artifacts, different integration depth.
 
 | Tool | Tier | Install |
 |------|------|---------|
-| **Claude Code** | Full Plugin — 7 skills, 3 hooks, 2 commands | `/plugin marketplace add Aiyo28/memento-os` → `/plugin install memento-os@aiyo` |
+| **Claude Code** | Full Plugin — 7 skills, 3 hooks, 2 commands | `/plugin marketplace add Aiyo28/memento-os` → `/plugin install memento@aiyo` |
 | **Agent Skills** (50+ hosts) | Skills — auto-discovers all `skills/**` | `npx skills add Aiyo28/memento-os -g` (manual `npx skills update`) |
 | **Codex** (OpenAI) | Full Skills — AGENTS.md + 7 skills | [adapters/codex/](adapters/codex/) |
 | **Cursor** | Rules — conventions + workflow | [adapters/cursor/](adapters/cursor/) |
@@ -192,13 +194,13 @@ Memory: 6.8/10 | 14 artifacts | 2 seeds | streak: 5
 
 ## Known Limitations
 
-- **Stop reads only Claude's last reply.** It catches artifacts that carry their trigger clause (`invalidates if`, `activates when`, `fix:`) and are missing from `_context.md`. An artifact stated earlier in the turn is not seen, and one saved in other words is flagged once. Claude does the writing, so `/memento:lint` is still the check on the result.
+- **Stop reads only Claude's last reply.** It catches artifacts that carry their trigger clause (`invalidates if`, `activates when`, `fix:`) and are missing from `_context.md`. An artifact stated earlier in the turn is not seen, and one saved in other words is flagged once. Claude does the writing, so `/memento:check` is still the check on the result.
 - **PreCompact writes nothing.** It asks the compaction summary to carry unsaved artifacts word for word; they reach `_context.md` only when Claude saves them after compaction. It does not update `NEXT.md`, and open files, task lists and half-finished reasoning are still lost to compaction.
-- **Tests cover `lint`, `decay` and the hook script.** `tests/run.sh` runs 65 assertions against fixture vaults and hook inputs. The skills are prompts and have no automated tests.
-- **`decay` is a heuristic.** It matches words from each invalidation trigger against git history and newer artifacts. It suggests candidates; you confirm each one.
+- **Tests cover `check`, `forget` and the hook script.** `tests/run.sh` runs 65 assertions against fixture vaults and hook inputs. The skills are prompts and have no automated tests.
+- **`forget` is a heuristic.** It matches words from each invalidation trigger against git history and newer artifacts. It suggests candidates; you confirm each one.
 - **The hooks are Claude Code only, and need `python3`.** In Codex the skills run when you ask for them. Cursor, Windsurf, Cline and Gemini get rules the model reads on every run. With Aider and Continue you run the workflows yourself, and vault sync is manual.
-- **Updates are manual.** Run `claude plugin update memento-os@aiyo` (or `npx skills update`). Two installed versions can both fire their hooks in one session; it happened here with 2.3.2 and 2.3.3.
-- **It costs context.** About 620 tokens are added to every session, plus 600 to 1,400 each time a skill runs (estimates from `claude plugin details memento-os@aiyo`).
+- **Updates are manual.** Run `claude plugin update memento@aiyo` (or `npx skills update`). Two installed versions can both fire their hooks in one session; it happened here with 2.3.2 and 2.3.3.
+- **It costs context.** About 620 tokens are added to every session, plus 600 to 1,400 each time a skill runs (estimates from `claude plugin details memento@aiyo`).
 
 ## How It Started
 

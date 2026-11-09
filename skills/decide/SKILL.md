@@ -110,7 +110,7 @@ If priority is **noise**: ask "Store it anyway or discard?" Default: discard.
 ```
 `[S] <idea> — activates when <condition> [priority] [YYYY-MM-DD]`
 ```
-Seeds are checked at session-start. When the activation condition is met, the seed surfaces and becomes a `/decide` candidate.
+Seeds are checked at recall. When the activation condition is met, the seed surfaces and becomes a `/decide` candidate.
 
 **Inline only** (settled or noise): Add to `_context.md` Active Reasoning Artifacts table.
 **Full artifact file** (critical or volatile): Create in `Decisions/` folder + inline entry.

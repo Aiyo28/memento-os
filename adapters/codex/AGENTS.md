@@ -45,17 +45,17 @@ The vault is a retrieval source, not just a write destination. Search first, the
 
 | Skill | Description |
 |-------|-------------|
-| `session-start` | Session opening ritual — loads L0/L1 context, displays briefing |
-| `session-complete` | End-of-session artifact extraction and NEXT.md update |
+| `recall` | Session opening ritual — loads L0/L1 context, displays briefing |
+| `end` | End-of-session artifact extraction and NEXT.md update |
 | `decide` | OODA decision loop with retrieval gate and priority matrix |
 | `grill-me` | Relentless structured interviewing to stress-test a plan |
-| `vault-audit` | Vault health check — staleness, structure, inbox processing |
-| `lint` | Schema validator for reasoning artifacts — exit non-zero on violation (runnable as hook/CI) |
-| `decay` | Find aged [D] artifacts whose invalidation triggers may have fired |
+| `audit` | Vault health check — staleness, structure, inbox processing |
+| `check` | Schema validator for reasoning artifacts — exit non-zero on violation (runnable as hook/CI) |
+| `forget` | Find aged [D] artifacts whose invalidation triggers may have fired |
 
 ## Auto-Log
 
-Auto-logging state is stored at `~/.memento/auto-log`. Write `on` to enable, `off` to disable. Session-start enables it automatically.
+Auto-logging state is stored at `~/.memento/auto-log`. Write `on` to enable, `off` to disable. Recall enables it automatically.
 
 ## Do Not
 

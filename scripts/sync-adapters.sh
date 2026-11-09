@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Sync the v2.2+ verbs (lint.py / decay.py) from the root skills/
-# directory into every adapter that hosts its own copy of the script.
+# Sync the scripts behind check (lint.py) and forget (decay.py) from the root
+# skills/ directory into every adapter that hosts its own copy of the script.
 #
 # Run before tagging a release.
 
@@ -9,16 +9,17 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
 TIER1_ADAPTERS=(codex)
-VERBS=(memento-lint memento-decay)
+VERBS=(check:lint.py forget:decay.py)
 
 copied=0
 skipped=0
 
 for tool in "${TIER1_ADAPTERS[@]}"; do
-    for verb in "${VERBS[@]}"; do
+    for entry in "${VERBS[@]}"; do
+        verb="${entry%%:*}"
+        script_name="${entry#*:}"
         SRC_DIR="$ROOT/skills/$verb"
         DST_DIR="$ROOT/adapters/$tool/skills/$verb"
-        script_name="${verb#memento-}.py"
         if [ ! -d "$DST_DIR" ]; then
             echo "skip: $tool/$verb (target directory missing — run after Block A scaffold)"
             skipped=$((skipped + 1))

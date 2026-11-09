@@ -32,7 +32,7 @@ NOT_INITIALIZED = (
 # An artifact in prose: `[D] conclusion — invalidates if ...`. The span stops at a
 # backtick, a table pipe or a line end, so inline code and table cells match too.
 ARTIFACT_RE = re.compile(r"\[([DIES])\]\s+([^\n`|]+)")
-# The clause each type must carry (same words as skills/memento-lint/lint.py).
+# The clause each type must carry (same words as skills/check/lint.py).
 TRIGGER_RE = {
     "D": re.compile(r"invalidates (?:if|when)|dies if", re.IGNORECASE),
     "I": re.compile(r"invalidates (?:if|when)|dies if", re.IGNORECASE),

@@ -1,6 +1,6 @@
 # Memento OS
 
-> Persistent AI memory using reasoning artifacts. Works with Claude Code, Codex, Cursor, Windsurf, Cline, Gemini, Aider, and Continue. Plugin version 2.3.5, MIT.
+> Persistent AI memory using reasoning artifacts. Works with Claude Code, Codex, Cursor, Windsurf, Cline, Gemini, Aider, and Continue. Plugin version 3.0.0, MIT.
 
 This file is written for AI coding assistants. It is enough to write correct Memento OS
 artifacts and invoke the right skill without reading the source. Copy the formats; do not
@@ -22,7 +22,7 @@ Four types of artifacts, each with an expiration condition:
 Priority matrix: confidence (high/medium/low) x impact (high/low) → critical/volatile/settled/noise.
 Claude proposes confidence, the user confirms impact.
 
-## Artifact schema (what `memento:lint` enforces)
+## Artifact schema (what `memento:check` enforces)
 
 Every artifact, every type:
 
@@ -39,16 +39,20 @@ Per type, additionally:
 | `[S]` | an activation clause (`activates when ...`) |
 | `[E]` | a `fix:` line |
 
-`memento:lint` exits non-zero on any violation, so it runs as a hook or in CI.
+`memento:check` exits non-zero on any violation, so it runs as a hook or in CI.
 
 ## Plugin Components
 
-Skills (7): memento:decide, memento:grill-me, memento:session-start, memento:session-complete, memento:vault-audit, memento:decay, memento:lint
+Skills (7), in the order of the loop Decide · Remember · Forget:
+- Decide: memento:grill-me (stress-test a plan), memento:decide (write a [D] or [S])
+- Remember: memento:end (save the session's artifacts, then run check on them), memento:recall (load them at the start of a session), memento:check (schema check, exits non-zero)
+- Forget: memento:forget (find [D] artifacts whose trigger may have fired), memento:audit (vault health check, runs forget)
 Commands (2): memento:init, memento:stats
 Hooks (3), all `type: command` running `hooks/memento_hook.py`: SessionStart (one-line reminder in an uninitialized project), Stop (asks Claude, once per turn, to save artifacts its last reply stated), PreCompact (tells the compaction summary to keep unsaved artifacts)
 
-Directory names do not always match skill names: `skills/memento-decay/` is invoked as
-`/memento:decay`, `skills/memento-lint/` as `/memento:lint`.
+Each skill lives in `skills/<name>/` and is invoked as `/memento:<name>`. Version 3.0.0 renamed
+the plugin from `memento-os` to `memento` and five skills; the old names no longer work:
+session-complete → end, session-start → recall, decay → forget, lint → check, vault-audit → audit.
 
 ## Install
 
@@ -56,7 +60,7 @@ Two steps. The marketplace must be added before the plugin can be installed:
 
 ```
 /plugin marketplace add Aiyo28/memento-os
-/plugin install memento-os@aiyo
+/plugin install memento@aiyo
 /memento:init
 ```
 
@@ -93,7 +97,7 @@ Two steps. The marketplace must be added before the plugin can be installed:
 
 - README.md — full documentation
 - skills/*/SKILL.md — skill implementations (Claude Code)
-- commands/memento/*.md — command implementations
+- commands/*.md — command implementations
 - hooks/hooks.json — hook definitions; hooks/memento_hook.py — the script they run
 - adapters/*/README.md — per-tool install guides
 - docs/adr/*.md — architecture decision records
@@ -101,12 +105,13 @@ Two steps. The marketplace must be added before the plugin can be installed:
 
 ## Common mistakes to avoid
 
-- Do not call `/plugin install memento-os@aiyo` without `/plugin marketplace add Aiyo28/memento-os`
+- Do not call `/plugin install memento@aiyo` without `/plugin marketplace add Aiyo28/memento-os`
   first. The install has no other source.
-- Do not guess a skill name from its folder — `memento-decay` and `memento-lint` on disk are
-  `/memento:decay` and `/memento:lint` when invoked.
+- Do not use the names from before 3.0.0 (`memento-os@aiyo`, `session-complete`, `session-start`,
+  `decay`, `lint`, `vault-audit`). They are `memento@aiyo`, `end`, `recall`, `forget`, `check` and
+  `audit` now.
 - Do not write a `[D]` or `[I]` without an `invalidates if` clause, an `[S]` without an
-  activation clause, or an `[E]` without a `fix:` line. Each is a lint failure, not a warning.
+  activation clause, or an `[E]` without a `fix:` line. Each is a check failure, not a warning.
 - Do not omit the `#` number, the priority, or the `YYYY-MM-DD` date. All three are required on
   every artifact regardless of type.
 - Do not evict a `critical` artifact to get under the 24 cap. Evict noise, then settled, then

@@ -77,11 +77,11 @@ success_criteria: ""       # How you'll know it worked
 | `Projects/{name}/Research/` | Source extracts and research | Output of `/knowledge --deep` |
 | `Projects/{name}/Decisions/` | Full artifact files | L2 archive for critical/volatile artifacts |
 | `Projects/{name}/Notes/` | Working notes, scratch | Can be messy, not indexed |
-| `Projects/{name}/Sessions/` | SESSION_LOG.md, archive | Managed by `/session-complete` |
+| `Projects/{name}/Sessions/` | SESSION_LOG.md, archive | Managed by `/memento:end` |
 | `Projects/{name}/Experiments/` | Time-boxed explorations | `experiment-context` type, has teardown date |
 | `Knowledge/` | Cross-project insights | Must be transferable, not project-specific |
 | `Knowledge/patterns/` | Reusable patterns | Must have context / pattern / why structure |
-| `People/` | Peer cards for collaborators and self | Loaded partially by `/session-start` |
+| `People/` | Peer cards for collaborators and self | Loaded partially by `/memento:recall` |
 | `_inbox/` | Raw captures only | Never write final docs here |
 | `_meta/` | Vault infrastructure | Conventions, indexes, this file |
 
@@ -145,7 +145,7 @@ Reasoning artifacts live at three tiers based on access frequency and authority:
 | Tier | Location | Cap | Purpose |
 |------|----------|-----|---------|
 | L0 — Constraints | CLAUDE.md "Critical Gotchas" section | ~20 items | Hard rules. Violating one wastes >1 hour of work. |
-| L1 — Active | `_context.md` Active Reasoning Artifacts table | 24 (Kobe cap) | Active reasoning, loaded every session via `/session-start`. |
+| L1 — Active | `_context.md` Active Reasoning Artifacts table | 24 (Kobe cap) | Active reasoning, loaded every session via `/memento:recall`. |
 | L2 — Archive | `Decisions/` folder (per-project) | Unlimited | Full artifact files with context, rationale, evidence. |
 
 ### Promotion Rules
@@ -266,7 +266,7 @@ Projects/{name}/Experiments/{experiment-name}/
 Frontmatter includes `hypothesis` and `success_criteria` fields.
 
 Lifecycle: experiments graduate to projects when proven viable, get archived
-when hypothesis fails. Target duration: weeks, not months. `vault-audit` flags
+when hypothesis fails. Target duration: weeks, not months. `audit` flags
 experiments past their teardown date.
 
 ---
@@ -283,7 +283,7 @@ context/
 └── constraints.md       # Non-negotiable requirements
 ```
 
-L0.5 sits between CLAUDE.md (L0) and `_context.md` (L1). `/session-start` loads
+L0.5 sits between CLAUDE.md (L0) and `_context.md` (L1). `/memento:recall` loads
 it after L0 if present. Keep each file under 300 tokens. Total budget: ~800
 tokens per session.
 
@@ -302,4 +302,4 @@ Read gotchas → active artifacts → full decisions → deep vault. Used for:
 for: "Has this problem been solved before anywhere in the vault?"
 
 Radar is expensive (many file reads). Use it for cross-project research only,
-not routine session-start loading
+not routine recall loading

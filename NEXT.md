@@ -63,7 +63,7 @@ remains:
 - **Q1–Q6** in `docs/specs/2026-05-20-v2.4-knowledge-os-feature-port.md`. Four of six are
   resolvable from the codebase and their defaults stand (Q1, Q2, Q4, Q5 — see the plan for the
   evidence; Q4's wording needs tightening to "does not write **to the vault**", since
-  session-start already writes `~/.claude/memento-auto-log`). **Only Q3 and Q6 need you.**
+  recall already writes `~/.claude/memento-auto-log`). **Only Q3 and Q6 need you.**
 
 ## Blocked
 

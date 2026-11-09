@@ -1,4 +1,4 @@
-memento:lint — vault validation report (vault: /Users/ayalnogovitsyn/Documents/Developer/memento-os/tests/fixtures/clean)
+memento:check — vault validation report (vault: /Users/ayalnogovitsyn/Documents/Developer/memento-os/tests/fixtures/clean)
 
 _context.md
   L12   [D]#1      OK

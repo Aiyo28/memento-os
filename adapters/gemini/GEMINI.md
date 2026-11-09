@@ -86,7 +86,7 @@ Before any decision or gap-filling from training data:
 
 ---
 
-## Session Start Workflow
+## Recall Workflow
 
 Triggers: "start session", "what's the context", "where were we", "catch me up"
 
@@ -126,7 +126,7 @@ Memory score: artifact count (0–2) + critical decisions (0–2) + recency (0�
 
 ---
 
-## Session Complete Workflow
+## End Workflow
 
 Triggers: "done", "wrap up", "session complete", "end of session", "about to compact"
 
@@ -135,7 +135,7 @@ Modes: **default** (full extraction) or **compact** (quick extraction). Both upd
 1. **Scan** conversation for `[D]`, `[I]`, `[E]`, `[S]` artifacts. Compact mode: skip impact prompt, default to `settled`.
 2. **Contradiction check:** New supersedes existing → evict old to `Decisions/` with `status: superseded`. Conflict (both may be valid) → flag for user. Compact: auto-supersede, flag conflicts only.
 3. **Confirm:** "I found these artifacts: [list]. Anything to add or correct?" Then: "High or low impact?" for each (skip in compact).
-4. **Write:** inline entries to `_context.md`; full files to `Decisions/` for critical/volatile.
+4. **Write:** inline entries to `_context.md`; full files to `Decisions/` for critical/volatile. Then run check (`python3 <path-to-memento-os>/skills/check/lint.py --quiet <folder>`) and fix any violation in a row you just wrote.
 5. **Update NEXT.md:** move completed items, add new ones, update date, keep under 15 lines.
 6. **Enforce cap:** If table > 24 entries, evict noise → settled → volatile. Never evict critical.
 7. **Show delta:** `Memory: {old} → {new}/10 ({delta})`
@@ -161,7 +161,7 @@ Triggers: "decide", "should we", "which option", "evaluate", "compare", "let's t
 
 ---
 
-## Vault Audit Workflow
+## Audit Workflow
 
 Triggers: "vault audit", "check vault", "what's stale", "clean up vault"
 
@@ -169,11 +169,13 @@ Triggers: "vault audit", "check vault", "what's stale", "clean up vault"
 2. **Staleness scan:** Check expiry dates first (EXPIRED). Then priority-based: critical > 90d, volatile > 30d, settled > 90d, noise = immediate.
 3. **Inbox:** Process `_inbox/` items — identify type, route to correct folder, add frontmatter, update `_context.md` doc index.
 4. **Fluff:** Flag drafts > 30 days old, orphaned files (no wikilinks), dormant seeds > 90 days.
-5. **Report:**
+5. **Forget:** run `python3 <path-to-memento-os>/skills/forget/decay.py --format json <vault root>` and list its LIKELY STALE and REVIEW candidates. Mark nothing superseded here.
+6. **Report:**
    ```
    ## Vault Audit — {date}
    Structure: {OK or issues}
    Stale artifacts: {count by priority}
+   Possibly stale decisions: {likely} likely, {review} to review
    Inbox: {processed / remaining}
    Suggestions: {cleanup actions}
    ```
@@ -190,9 +192,9 @@ Triggers: "vault audit", "check vault", "what's stale", "clean up vault"
 
 ---
 
-## Memento Lint
+## Check
 
-Triggers: "lint vault", "validate artifacts", "check artifact schema", "memento lint"
+Triggers: "lint vault", "validate artifacts", "check artifact schema", "memento check"
 
 Walks every `_context.md` under the vault root and validates each reasoning artifact against the schema. Exit non-zero on any violation — runnable as a pre-commit hook or in CI.
 
@@ -205,24 +207,24 @@ Walks every `_context.md` under the vault root and validates each reasoning arti
 
 **Invoke:**
 ```bash
-python3 <path-to-memento-os>/skills/memento-lint/lint.py [vault_root] [--strict] [--ci] [--format json] [--quiet]
+python3 <path-to-memento-os>/skills/check/lint.py [vault_root] [--strict] [--ci] [--format json] [--quiet]
 ```
 
 Vault root resolution: argument → `$MEMENTO_VAULT_ROOT` → CWD. `--ci` is sugar for `--strict --quiet`. Exit: 0 clean, 1 violations, 2 usage error.
 
-**After violations surface:** ask the user the missing field for each, edit the artifact row in place, re-run lint to confirm clean. Do not auto-fix.
+**After violations surface:** ask the user the missing field for each, edit the artifact row in place, re-run check to confirm clean. Do not auto-fix.
 
 ---
 
-## Memento Decay
+## Forget
 
-Triggers: "decay check", "what's stale", "memento decay", "audit aged decisions"
+Triggers: "decay check", "what's stale", "memento forget", "audit aged decisions"
 
 Finds aged `[D]` artifacts (default >30 days) whose invalidation triggers may have fired. Scores from three signals: git-log keyword grep (commits grouped by hash, multi-keyword AND weighted higher), vault-state contradiction (newer artifact with ≥2 overlapping terms), and age past 90 days.
 
 **Invoke:**
 ```bash
-python3 <path-to-memento-os>/skills/memento-decay/decay.py [vault_root] [--age 30] [--format json] [--no-git] [--all] [--stopwords <file>]
+python3 <path-to-memento-os>/skills/forget/decay.py [vault_root] [--age 30] [--format json] [--no-git] [--all] [--stopwords <file>]
 ```
 
 A per-vault stopword list at `<vault_root>/.memento-stopwords` is loaded automatically.

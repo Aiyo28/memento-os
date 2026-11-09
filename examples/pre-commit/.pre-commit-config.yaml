@@ -1,4 +1,4 @@
-# Example pre-commit config — wires memento:lint as a local hook.
+# Example pre-commit config — wires memento:check as a local hook.
 # Copy to the root of your project, adjust the entry path, then:
 #   pre-commit install
 #
@@ -8,9 +8,9 @@
 repos:
   - repo: local
     hooks:
-      - id: memento-lint
-        name: memento:lint
-        entry: python3 .claude/plugins/memento-os/skills/memento-lint/lint.py
+      - id: memento-check
+        name: memento:check
+        entry: python3 .claude/plugins/memento-os/skills/check/lint.py
         language: system
         pass_filenames: false
         files: '_context\.md$'

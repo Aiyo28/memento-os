@@ -1,5 +1,49 @@
 # Changelog
 
+## [3.0.0] — 2026-11-10
+
+### Changed (breaking)
+- **The plugin is now called `memento`**, so Claude Code registers the commands the docs always
+  named: `/memento:end`, `/memento:init` and so on. Under the old name it registered
+  `/memento-os:end` and `/memento-os:memento:init`, and typing `/memento:end` worked only when
+  Claude found the skill by itself. Install with `claude plugin install memento@aiyo`. To upgrade
+  from 2.x, run `claude plugin uninstall memento-os@aiyo` first: `claude plugin update` can't
+  follow a rename. The repository is still `Aiyo28/memento-os`. `init` and `stats` moved from
+  `commands/memento/` to `commands/`.
+- **Five skills renamed** to follow one loop: decide, remember, forget. The old names no
+  longer work.
+
+  | Before | Now |
+  |--------|-----|
+  | `/memento:session-complete` | `/memento:end` |
+  | `/memento:session-start` | `/memento:recall` |
+  | `/memento:decay` | `/memento:forget` |
+  | `/memento:lint` | `/memento:check` |
+  | `/memento:vault-audit` | `/memento:audit` |
+
+  `decide`, `grill-me`, `init` and `stats` keep their names. The Codex skills, the Continue
+  prompts, the Cursor, Windsurf, Cline and Gemini rules and the Aider commands use the new
+  names too.
+- **Script paths moved.** `skills/memento-lint/lint.py` is now `skills/check/lint.py`, and
+  `skills/memento-decay/decay.py` is now `skills/forget/decay.py`. Nothing is left at the old
+  paths. If you copied the pre-commit or GitHub Actions example, change the path in its
+  `entry:` or `run:` line. The workflow example is now `examples/github-actions/memento-check.yml`
+  and the pre-commit hook id is `memento-check`.
+
+### Added
+- `/memento:end` runs check on the `_context.md` it wrote and fixes violations in the rows it
+  added.
+- `/memento:audit` runs forget and lists decisions whose invalidation trigger may have fired.
+- The README skills table and the `/memento:init` report group the skills by Decide, Remember
+  and Forget.
+- `scripts/check_manifests.py` fails when a skill folder and its name differ, or when the README
+  names a `/memento:` command that does not exist.
+
+### Fixed
+- The Codex `check` and `forget` skills ran `.agents/skills/lint/lint.py` and
+  `.agents/skills/decay/decay.py`, paths that copying `adapters/codex/skills/` never created.
+  They now run `.agents/skills/check/lint.py` and `.agents/skills/forget/decay.py`.
+
 ## [2.3.5] — 2026-11-09
 
 ### Fixed

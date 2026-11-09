@@ -71,7 +71,7 @@ status: active | archived | draft
 
 ## Session Lifecycle
 
-### Session Start (do this when beginning work)
+### Recall (do this when beginning work)
 
 1. Read `NEXT.md` in the project root — note blockers and next actions
 2. Read the top 3 sections of `_context.md` (Summary, Key Numbers, Active Artifacts)
@@ -79,14 +79,15 @@ status: active | archived | draft
 4. Check artifact staleness — flag any `[D]` or `[I]` past their invalidation trigger
 5. Display a short briefing: current focus, active artifacts count, any blockers
 
-### Session Complete (do this before ending work)
+### End (do this before ending work)
 
 1. Scan the conversation — identify conclusions, insights, errors, and seeds
 2. For each candidate artifact: assign type, priority, and invalidation trigger
 3. Check for contradictions with existing `[D]` artifacts in the vault
 4. Confirm the artifact list with the user before writing
 5. Write confirmed artifacts to the project's `_context.md` Active Artifacts table
-6. Update `NEXT.md` — remove completed items, add new blockers or next actions
+6. Run check (see Schema Validation below) and fix any violation in the rows you just wrote
+7. Update `NEXT.md` — remove completed items, add new blockers or next actions
 
 ---
 
@@ -109,16 +110,16 @@ The vault is a retrieval source, not just a write destination. Search first, fil
 - Store raw conversation fragments — store conclusions only
 - Auto-evict `critical` artifacts — always confirm with the user
 - Reference "Knowledge OS" or "Agentic Total Recall" — this system is called "Memento OS"
-- Skip session-complete — every session that produces conclusions must end with a write
+- Skip the end workflow — every session that produces conclusions must end with a write
 
 ---
 
-## Schema Validation: `memento:lint`
+## Schema Validation: `memento:check`
 
 When the user asks to "lint", "validate artifacts", or "check the schema", run:
 
 ```bash
-python3 ${MEMENTO_PLUGIN_ROOT}/skills/memento-lint/lint.py [vault_root] [--strict] [--ci] [--format json] [--quiet]
+python3 ${MEMENTO_PLUGIN_ROOT}/skills/check/lint.py [vault_root] [--strict] [--ci] [--format json] [--quiet]
 ```
 
 Rules enforced (case-insensitive):
@@ -130,16 +131,16 @@ Rules enforced (case-insensitive):
 
 `--ci` = `--strict --quiet`. Exit codes: 0 clean, 1 violations, 2 usage error.
 
-For each violation, ask the user the missing field, then edit the artifact row in place. Re-run lint to confirm clean. Never auto-fix without confirmation.
+For each violation, ask the user the missing field, then edit the artifact row in place. Re-run check to confirm clean. Never auto-fix without confirmation.
 
 ---
 
-## Decay Audit: `memento:decay`
+## Forget: `memento:forget`
 
 When the user asks for "decay check", "what's stale", or "audit aged decisions", run:
 
 ```bash
-python3 ${MEMENTO_PLUGIN_ROOT}/skills/memento-decay/decay.py [vault_root] [--age 30] [--format json] [--no-git] [--all] [--stopwords <file>]
+python3 ${MEMENTO_PLUGIN_ROOT}/skills/forget/decay.py [vault_root] [--age 30] [--format json] [--no-git] [--all] [--stopwords <file>]
 ```
 
 Finds aged `[D]` artifacts (default >30 days) whose invalidation triggers may have fired. Scores from three signals: git-log keyword grep (multi-keyword AND in same commit weighted higher), vault-state contradiction (newer artifact with ≥2 overlapping terms), and age past 90 days.

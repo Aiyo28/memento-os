@@ -139,7 +139,7 @@ A self-evaluation methodology for grading any AI agent memory system. Score each
 | 2 | Semantic retrieval | 4/10 | Grep/glob only. No vector search in agent loop. | — |
 | 3 | Recency awareness | 6/10 | NEXT.md is manual. File timestamps exist but no ranking. | — |
 | 4 | Compaction handling | 3/10 | Manual strategic-compact skill. Often forgotten. | [0007](../docs/adr/0007-compaction-loss.md) |
-| 5 | Auto-capture reliability | 5.5/10 | session-complete exists but is manual. Criteria framework helps track quality. | [0008](../docs/adr/0008-write-discipline.md) |
+| 5 | Auto-capture reliability | 5.5/10 | `end` exists but is manual. Criteria framework helps track quality. | [0008](../docs/adr/0008-write-discipline.md) |
 | 6 | Cross-file linking | 7/10 | 4 MOC hubs, pattern extraction, wikilinks. | [0004](../docs/adr/0004-cross-project-linking.md) |
 | 7 | Storage scalability | 6/10 | L0/L1/L2 tiered loading. 200-line session log cap. No auto-archival. | [0001](../docs/adr/0001-tiered-context.md) |
 | 8 | Knowledge OS fit | 9/10 | Deep vault integration. Sync hook, conventions, MOCs. | [0003](../docs/adr/0003-vault-bridge.md) |

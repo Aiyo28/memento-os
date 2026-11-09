@@ -14,13 +14,13 @@ Exit 0 = all pass. Exit 1 = at least one assertion failed.
 
 | Suite | What it asserts |
 |-------|----------------|
-| `memento:lint` clean | Exit 0, "0 violations" summary, all 5 fixture artifacts checked |
-| `memento:lint` violations | Exit 1, every rule (R1–R6) surfaces on its targeted row |
-| `memento:lint` strict | `--strict` mode rejects `activates when` form |
-| `memento:lint` JSON | `--format json` produces parseable output with rule codes |
-| `memento:decay` text | Vault-overlap signal flags [D]#1 LIKELY STALE; recent [D] excluded |
-| `memento:decay` JSON | `--format json` produces candidates with signal types |
-| `memento:decay` age | High `--age` produces empty candidate list |
+| `memento:check` clean | Exit 0, "0 violations" summary, all 5 fixture artifacts checked |
+| `memento:check` violations | Exit 1, every rule (R1–R6) surfaces on its targeted row |
+| `memento:check` strict | `--strict` mode rejects `activates when` form |
+| `memento:check` JSON | `--format json` produces parseable output with rule codes |
+| `memento:forget` text | Vault-overlap signal flags [D]#1 LIKELY STALE; recent [D] excluded |
+| `memento:forget` JSON | `--format json` produces candidates with signal types |
+| `memento:forget` age | High `--age` produces empty candidate list |
 | hooks Stop | Hook input JSON in, decision out: blocks once on unsaved artifacts; silent when `stop_hook_active`, when saved in `_context.md` or `Decisions/`, when uninitialized or skipped |
 | hooks lookup | `memory_path` from `.memento/config.yaml`; input `cwd` when `CLAUDE_PROJECT_DIR` is unset |
 | hooks escape | A config path or symlink to a file not named `_context.md` is ignored; a vault `_context.md` outside the project works; a path with spaces is not printed |
