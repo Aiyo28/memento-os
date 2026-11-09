@@ -75,7 +75,7 @@ remains:
 
 ## Next release (v2.4.0) — Option B locked
 
-Port 4 Knowledge OS features (DIES stays, no DICE rename). Spec: `docs/specs/2026-05-20-v2.4-knowledge-os-feature-port.md`.
+Port 4 Knowledge OS features (DIES stays, no schema rename). Spec: `docs/specs/2026-05-20-v2.4-knowledge-os-feature-port.md`.
 
 | Block | Feature | Status |
 |-------|---------|--------|
