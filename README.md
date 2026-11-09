@@ -1,7 +1,15 @@
+<p align="center">
+  <img src="assets/banner.png" alt="Memento OS" width="420">
+</p>
+
 <h3 align="center">Store conclusions, not notes.</h3>
 
 <p align="center">
   <em>Unlike the guy in Memento, your AI actually remembers correctly — and knows when to forget.</em>
+</p>
+
+<p align="center">
+  <img src="assets/decisions.gif" alt="Memento OS: Decisions, Insights, Seeds and Errors → Fixes, written like the tattoos in Memento" width="720">
 </p>
 
 <p align="center">
@@ -56,6 +64,10 @@ Already installed? `claude plugin update memento-os@aiyo`. Updating the marketpl
 Codex, Cursor and the other tools: see [Works With](#works-with).
 
 ## How It Works
+
+<p align="center">
+  <img src="assets/how-it-works.png" alt="Capture: /memento:decide, /memento:grill-me, /memento:session-complete and the hooks write [D] [I] [E] [S] artifacts into memento/ (_context.md, NEXT.md, Decisions/). Recall: /memento:session-start, /memento:lint, /memento:decay and /memento:vault-audit read them back." width="800">
+</p>
 
 7 skills. One loop.
 

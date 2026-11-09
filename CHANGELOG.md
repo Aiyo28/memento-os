@@ -5,8 +5,9 @@
 ### Changed
 - **README rewritten for first-time visitors.** One-line description, a one-command terminal
   install (`claude plugin marketplace add Aiyo28/memento-os && claude plugin install memento-os@aiyo`),
-  a Known Limitations section, and license and donation links in one place. The film-clip banner
-  is no longer shown.
+  a Known Limitations section, and license and donation links in one place. New banner, a
+  "How It Works" diagram, and the GIF shown larger.
+- **Plugin icon** at `.claude-plugin/icon.png` (1024×1024).
 - `plugin.json` and `marketplace.json` descriptions now open with the same sentence as the README
   and the GitHub description.
 - Donation links: PayPal and Ko-fi, in the README and the Sponsor button (`FUNDING.yml`).
