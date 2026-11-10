@@ -25,7 +25,17 @@
 
 Memento OS gives Claude Code, Codex and Cursor a memory between sessions: it saves your decisions, each with the condition that makes it wrong.
 
-Every conclusion is stored as a reasoning artifact with an invalidation trigger, so your agent remembers what matters and knows when to re-evaluate. `/memento:check` fails any decision saved without its condition, and `/memento:forget` finds decisions whose condition may have fired. It's plain markdown, in your project or your Obsidian vault.
+Most second-brain and memory setups save more: transcripts, notes, everything you said. A few months in, the vault is full and your agent still asks why you picked Supabase, or keeps trusting a choice that stopped being true. Memento saves less. Each entry is one conclusion and the condition that ends it:
+
+```
+[D] Use Supabase over Firebase — invalidates if Firebase adds RLS   [critical]
+```
+
+- **Your agent starts from your decisions, not your chat log.** `/memento:recall` briefs it from `_context.md`, capped at 24 artifacts, for about 620 tokens a session.
+- **Old decisions don't go stale quietly.** `/memento:forget` finds decisions whose condition may have fired. `/memento:check` fails any decision saved without one.
+- **Nothing to migrate.** It's plain markdown, in your project or the Obsidian vault you already use.
+
+New to this? You don't need a vault or a system first. `/memento:init` asks for the hardest decision you've made so far and saves it as your first artifact. The memory grows from there.
 
 ## The Problem
 
@@ -66,6 +76,10 @@ Coming from 2.x? The plugin was renamed from `memento-os` to `memento`, so `upda
 Codex, Cursor and the other tools: see [Works With](#works-with).
 
 ## How It Works
+
+<p align="center">
+  <img src="assets/dies.png" alt="Every conclusion carries the condition that makes it wrong. [D] Decision and [I] Insight carry 'invalidates if', [E] Error carries 'fix:', [S] Seed carries 'activates when'. Each is saved by /memento:end, or when the Stop hook reminds Claude, as one row in _context.md: number, type, conclusion, condition, priority; max 24. /memento:check verifies every row has its condition, /memento:forget marks fired decisions superseded, /memento:recall shows seeds whose condition is met. Over 24, noise, then settled, then volatile move to Decisions/; critical is never evicted." width="800">
+</p>
 
 <p align="center">
   <img src="assets/how-it-works.png" alt="Capture: /memento:decide, /memento:grill-me, /memento:end and the hooks remind Claude each turn to save new [D] [I] [E] [S] artifacts into memento/ (_context.md, NEXT.md, Decisions/). Recall: /memento:recall, /memento:check, /memento:forget and /memento:audit read them back." width="800">
